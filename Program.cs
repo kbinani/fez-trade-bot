@@ -3,10 +3,17 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.IO;
+using Growl.Connector;
+using Growl.CoreLibrary;
 
 namespace com.github.kbinani.feztradenotify {
     class Program {
+        private const string APPLICATION_NAME = "FEZ trade notify";
+
         private static Bitmap iconMask = null;
+        private static GrowlConnector connector = null;
+        private static Growl.Connector.Application application = null;
+        private static NotificationType notificationType;
 
         static void Main( string[] args ) {
             IntPtr handle = WindowsAPI.FindWindow( null, "Fantasy Earth Zero" );
@@ -16,9 +23,33 @@ namespace com.github.kbinani.feztradenotify {
             }
             Bitmap screenShot = CaptureWindow( handle );
             Bitmap iconArea = ClipIconArea( screenShot );
-            bool result = isTradeIcon( iconArea );
+            if( isTradeIcon( iconArea ) ) {
+                SendNotify( iconArea );
+            }
         }
 
+        private static GrowlConnector GetConnector() {
+            if( connector == null ) {
+                connector = new GrowlConnector();
+
+                application = new Growl.Connector.Application( APPLICATION_NAME );
+                notificationType = new NotificationType( "FEZ_TRADE_NOTIFICATION", "Trade Notification" );
+                connector.Register( application, new NotificationType[] { notificationType } );
+
+                connector.EncryptionAlgorithm = Cryptography.SymmetricAlgorithmType.PlainText;
+            }
+            return connector;
+        }
+
+        private static void SendNotify( Bitmap screenShot ) {
+            var connector = GetConnector();
+            CallbackContext callbackContext = new CallbackContext( "some fake information", "fake data" );
+
+            Notification notification = new Notification(
+                application.Name, notificationType.Name, DateTime.Now.Ticks.ToString(),
+                "Trade Notification", "trade request received", screenShot, false, Priority.Normal, "0" );
+            connector.Notify( notification, callbackContext );
+        }
 
         /// <summary>
         /// アイコン領域の画像の中に，トレード要請を表すアイコンが表示されているかどうかを取得する
