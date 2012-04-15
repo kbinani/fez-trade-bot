@@ -15,6 +15,16 @@ namespace com.github.kbinani.feztradenotify {
         private Growl.Connector.Application application = null;
         private NotificationType notificationType;
 
+        private string host;
+        private string pass;
+        private int port;
+
+        public DaemonRunner( string host, string pass, int port ) {
+            this.host = host;
+            this.pass = pass;
+            this.port = port;
+        }
+
         public void Run() {
             while( true ) {
                 IntPtr handle = WindowsAPI.FindWindow( null, "Fantasy Earth Zero" );
@@ -25,13 +35,14 @@ namespace com.github.kbinani.feztradenotify {
                         SendNotify( iconArea );
                     }
                 }
+                GC.Collect();
                 Thread.Sleep( 1000 );
             }
         }
 
         private GrowlConnector GetConnector() {
             if( connector == null ) {
-                connector = new GrowlConnector();
+                connector = new GrowlConnector( this.pass, this.host, this.port );
 
                 application = new Growl.Connector.Application( APPLICATION_NAME );
                 notificationType = new NotificationType( "FEZ_TRADE_NOTIFICATION", "Trade Notification" );
@@ -112,10 +123,6 @@ namespace com.github.kbinani.feztradenotify {
         /// <param name="handle"></param>
         /// <returns></returns>
         private Bitmap CaptureWindow( IntPtr handle ) {
-            //TODO: 既にforegroundだったら，全面に持ってくる処理とsleepをしない，という処理を入れたい
-            WindowsAPI.SetForegroundWindow( handle );
-            Thread.Sleep( 300 );
-
             IntPtr winDC = WindowsAPI.GetWindowDC( handle );
             WindowsAPI.RECT winRect = new WindowsAPI.RECT();
             WindowsAPI.GetWindowRect( handle, ref winRect );
