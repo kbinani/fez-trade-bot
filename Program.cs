@@ -23,7 +23,7 @@ namespace com.github.kbinani.feztradenotify {
             }
             Bitmap screenShot = CaptureWindow( handle );
             Bitmap iconArea = ClipIconArea( screenShot );
-            if( isTradeIcon( iconArea ) ) {
+            if( IsTradeIcon( iconArea ) ) {
                 SendNotify( iconArea );
             }
         }
@@ -55,8 +55,8 @@ namespace com.github.kbinani.feztradenotify {
         /// アイコン領域の画像の中に，トレード要請を表すアイコンが表示されているかどうかを取得する
         /// </summary>
         /// <returns></returns>
-        private static bool isTradeIcon( Bitmap iconArea ) {
-            Bitmap mask = getIconMask();
+        private static bool IsTradeIcon( Bitmap iconArea ) {
+            Bitmap mask = GetIconMask();
             Color maskColor = mask.GetPixel( 0, 0 );
 
             int totalPixels = 0;
@@ -85,7 +85,7 @@ namespace com.github.kbinani.feztradenotify {
         /// マスク画像を取得する
         /// </summary>
         /// <returns></returns>
-        private static Bitmap getIconMask() {
+        private static Bitmap GetIconMask() {
             if( iconMask == null ) {
                 iconMask = Resource.icon_mask;
             }
