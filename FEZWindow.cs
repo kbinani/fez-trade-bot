@@ -73,7 +73,7 @@ namespace com.github.kbinani.feztradenotify {
             // アイコン画像テンプレートとの差があるピクセルの個数が，
             // 全体のピクセル数の 1% 以下であれば，テンプレートと同じとみなす
             double diffPercentage = (totalPixels - matchPixels) * 100.0 / totalPixels;
-            return diffPercentage <= 1.0;
+            return diffPercentage <= 5.0;
         }
 
         /// <summary>
