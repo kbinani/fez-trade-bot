@@ -16,15 +16,16 @@ namespace com.github.kbinani.feztradenotify {
         private NotificationType notificationType;
 
         public void Run() {
-            IntPtr handle = WindowsAPI.FindWindow( null, "Fantasy Earth Zero" );
-            if( handle == IntPtr.Zero ) {
-                //TODO: 何がしか処理
-                return;
-            }
-            Bitmap screenShot = CaptureWindow( handle );
-            Bitmap iconArea = ClipIconArea( screenShot );
-            if( IsTradeIcon( iconArea ) ) {
-                SendNotify( iconArea );
+            while( true ) {
+                IntPtr handle = WindowsAPI.FindWindow( null, "Fantasy Earth Zero" );
+                if( handle != IntPtr.Zero ) {
+                    Bitmap screenShot = CaptureWindow( handle );
+                    Bitmap iconArea = ClipIconArea( screenShot );
+                    if( IsTradeIcon( iconArea ) ) {
+                        SendNotify( iconArea );
+                    }
+                }
+                Thread.Sleep( 1000 );
             }
         }
 
