@@ -22,7 +22,7 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <returns></returns>
         public Point GetTradeIconLocation() {
-            Bitmap screenShot = CaptureWindow( this.windowHandle );
+            Bitmap screenShot = screenShot = CaptureWindow( this.windowHandle );
             Rectangle iconAreaRectangle = GetIconAreaRectangle( screenShot );
             Bitmap iconArea = screenShot.Clone( iconAreaRectangle, screenShot.PixelFormat );
             if( IsTradeIcon( iconArea ) ) {
@@ -97,7 +97,9 @@ namespace com.github.kbinani.feztradenotify {
         private Bitmap CaptureWindow( IntPtr handle ) {
             IntPtr winDC = WindowsAPI.GetWindowDC( handle );
             WindowsAPI.RECT winRect = new WindowsAPI.RECT();
-            WindowsAPI.GetWindowRect( handle, ref winRect );
+            if( !WindowsAPI.GetWindowRect( handle, ref winRect ) ) {
+                throw new ApplicationException( "ウィンドウサイズを取得できなかった" );
+            }
             Bitmap bmp = new Bitmap( winRect.right - winRect.left,
                 winRect.bottom - winRect.top );
 

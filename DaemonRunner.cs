@@ -18,27 +18,39 @@ namespace com.github.kbinani.feztradenotify {
         private string pass;
         private int port;
 
-        private FEZWindow window = null;
-
         public DaemonRunner( string host, string pass, int port ) {
             this.host = host;
             this.pass = pass;
             this.port = port;
-
-            IntPtr handle = WindowsAPI.FindWindow( null, "Fantasy Earth Zero" );
-            this.window = new FEZWindow( handle );
         }
 
         public void Run() {
+            FEZWindow window = null;
             while( true ) {
-                try {
-                    this.window.GetTradeIconLocation();
-                    Bitmap iconArea = this.window.GetTradeIcon();
-                    SendNotify( iconArea );
-                } catch( ApplicationException e ) {
-                }
                 GC.Collect();
                 Thread.Sleep( 1000 );
+                if( window == null ) {
+                    try {
+                        IntPtr handle = WindowsAPI.FindWindow( null, "Fantasy Earth Zero" );
+                        if( handle == IntPtr.Zero ) {
+                            Console.WriteLine( "FEZの画面が見つからなかった" );
+                            continue;
+                        }
+                        window = new FEZWindow( handle );
+                    } catch( ApplicationException e ) {
+                        Console.WriteLine( e.Message );
+                        continue;
+                    }
+                }
+
+                try {
+                    window.GetTradeIconLocation();
+                    Bitmap iconArea = window.GetTradeIcon();
+                    SendNotify( iconArea );
+                } catch( ApplicationException e ) {
+                    Console.WriteLine( e.Message );
+                    window = null;
+                }
             }
         }
 
