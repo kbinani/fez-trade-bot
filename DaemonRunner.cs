@@ -58,7 +58,7 @@ namespace com.github.kbinani.feztradenotify {
             SendNotify( iconArea );
 
             // ログを出力する
-            string fileName = DateTime.Now.ToString( "yyyy-MM-dd" + "_" + @"HH\ch" + @"mm\cm" + @"ss.ff\cs" + ".png" );
+            string fileName = DateTime.Now.ToString( "yyyy-MM-dd" + "_" + @"HH\h" + @"mm\m" + @"ss.ff\s" ) + ".png";
             iconArea.Save( fileName, ImageFormat.Png );
         }
 
