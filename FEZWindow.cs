@@ -18,39 +18,11 @@ namespace com.github.kbinani.feztradenotify {
         }
 
         /// <summary>
-        /// トレードボタンの位置を取得する
-        /// </summary>
-        /// <returns></returns>
-        public Point GetTradeIconLocation() {
-            Bitmap screenShot = screenShot = CaptureWindow( this.windowHandle );
-            Rectangle iconAreaRectangle = GetIconAreaRectangle( screenShot );
-            Bitmap iconArea = screenShot.Clone( iconAreaRectangle, screenShot.PixelFormat );
-            if( IsTradeIcon( iconArea ) ) {
-                var windowRect = new WindowsAPI.RECT();
-                WindowsAPI.GetWindowRect( this.windowHandle, ref windowRect );
-                int x = windowRect.left + iconAreaRectangle.Left + iconAreaRectangle.Width / 2;
-                int y = windowRect.top + iconAreaRectangle.Top + iconAreaRectangle.Height / 2;
-                return new Point( x, y );
-            } else {
-                throw new ApplicationException( "トレードボタンの位置を取得できなかった" );
-            }
-        }
-
-        /// <summary>
-        /// 取引アイコンが出る位置の画像を取得する
-        /// </summary>
-        /// <returns></returns>
-        public Bitmap GetTradeIcon() {
-            Bitmap screenShot = CaptureWindow( this.windowHandle );
-            Rectangle iconAreaRectangle = GetIconAreaRectangle( screenShot );
-            return screenShot.Clone( iconAreaRectangle, screenShot.PixelFormat );
-        }
-
-        /// <summary>
         /// アイコン領域の画像の中に，トレード要請を表すアイコンが表示されているかどうかを取得する
         /// </summary>
         /// <returns></returns>
-        private bool IsTradeIcon( Bitmap iconArea ) {
+        public bool HasTradeIcon( Bitmap screenShot ) {
+            Bitmap iconArea = (Bitmap)screenShot.Clone( GetIconAreaRectangle( screenShot ), screenShot.PixelFormat );
             Bitmap mask = Resource.icon_mask;
             Color maskColor = mask.GetPixel( 0, 0 );
 
@@ -81,7 +53,7 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <param name="screenShot"></param>
         /// <returns></returns>
-        private Rectangle GetIconAreaRectangle( Bitmap screenShot ) {
+        public Rectangle GetIconAreaRectangle( Bitmap screenShot ) {
             int left = screenShot.Width - 105;
             int top = screenShot.Height - 216;
             int width = 97;
@@ -90,14 +62,25 @@ namespace com.github.kbinani.feztradenotify {
         }
 
         /// <summary>
+        /// トレード要求をしてきたユーザー名が表示されている領域を取得する
+        /// </summary>
+        /// <param name="screenShot"></param>
+        /// <returns></returns>
+        public Rectangle GetTradeUserNameRectangle( Bitmap screenShot ) {
+            Rectangle result = GetIconAreaRectangle( screenShot );
+            result.Height = 11;
+            return result;
+        }
+
+        /// <summary>
         /// 指定されたハンドルのウィンドウについて，スクリーンキャプチャを行う
         /// </summary>
         /// <param name="handle"></param>
         /// <returns></returns>
-        private Bitmap CaptureWindow( IntPtr handle ) {
-            IntPtr winDC = WindowsAPI.GetWindowDC( handle );
+        public Bitmap CaptureWindow(){
+            IntPtr winDC = WindowsAPI.GetWindowDC( this.windowHandle );
             WindowsAPI.RECT winRect = new WindowsAPI.RECT();
-            if( !WindowsAPI.GetWindowRect( handle, ref winRect ) ) {
+            if( !WindowsAPI.GetWindowRect( this.windowHandle, ref winRect ) ) {
                 throw new ApplicationException( "ウィンドウサイズを取得できなかった" );
             }
             Bitmap bmp = new Bitmap( winRect.right - winRect.left,
@@ -110,7 +93,7 @@ namespace com.github.kbinani.feztradenotify {
 
             g.ReleaseHdc( hDC );
             g.Dispose();
-            WindowsAPI.ReleaseDC( handle, winDC );
+            WindowsAPI.ReleaseDC( this.windowHandle, winDC );
 
             return bmp;
         }

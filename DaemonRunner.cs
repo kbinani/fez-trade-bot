@@ -39,9 +39,12 @@ namespace com.github.kbinani.feztradenotify {
                     }
                 }
 
+                Bitmap screenShot = null;
                 try {
-                    window.GetTradeIconLocation();
-                    ProcessTradeNotify( window );
+                    screenShot = window.CaptureWindow();
+                    if( window.HasTradeIcon( screenShot ) ) {
+                        ProcessTradeNotify( window, screenShot );
+                    }
                 } catch( ApplicationException e ) {
                     Console.WriteLine( e.Message );
                     window = null;
@@ -52,14 +55,15 @@ namespace com.github.kbinani.feztradenotify {
         /// <summary>
         /// トレード枠が来た時の処理を行う
         /// </summary>
-        private void ProcessTradeNotify( FEZWindow window ) {
+        private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot ) {
             // Growly で通知
-            Bitmap iconArea = window.GetTradeIcon();
-            SendNotify( iconArea );
+            Rectangle tradeUserNameRectangle = window.GetTradeUserNameRectangle( screenShot );
+            Bitmap tradeUserName = (Bitmap)screenShot.Clone( tradeUserNameRectangle, screenShot.PixelFormat );
+            SendNotify( tradeUserName );
 
             // ログを出力する
             string fileName = DateTime.Now.ToString( "yyyy-MM-dd" + "_" + @"HH\h" + @"mm\m" + @"ss.ff\s" ) + ".png";
-            iconArea.Save( fileName, ImageFormat.Png );
+            tradeUserName.Save( Path.Combine( settings.LogDirectory, fileName ), ImageFormat.Png );
         }
 
         private GrowlConnector GetConnector() {
