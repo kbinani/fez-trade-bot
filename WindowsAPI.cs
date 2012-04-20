@@ -17,6 +17,9 @@ namespace com.github.kbinani.feztradenotify {
         public const uint XDOWN = 0x00000080;
         public const uint XUP = 0x00000100;
 
+        public const byte VK_ESCAPE = 0x1B;
+        public const byte KEYEVENTF_KEYUP = 0x0002;
+
         [DllImport( "user32.dll", CharSet = CharSet.Auto )]
         public static extern IntPtr FindWindow( string lpClassName, string lpWindowName );
 
@@ -45,6 +48,9 @@ namespace com.github.kbinani.feztradenotify {
         [DllImport( "user32.dll" )]
         public static extern void mouse_event( uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo );
 
+        [DllImport( "user32.dll" )]
+        public static extern void keybd_event( byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo );
+        
         [StructLayout( LayoutKind.Sequential )]
         public struct RECT {
             public int left;

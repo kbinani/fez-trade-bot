@@ -51,7 +51,7 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot ) {
             // Growly で通知
-            Rectangle tradeUserNameRectangle = window.GetTradeUserNameRectangle( screenShot );
+            Rectangle tradeUserNameRectangle = window.GetTradeUserNameRectangle();
             var tradeUserName = (Bitmap)screenShot.Clone( tradeUserNameRectangle, screenShot.PixelFormat );
             var growlNotifyTask = new GrowlNotifyTask( settings, "", tradeUserName );
             growlNotifyTask.Run();

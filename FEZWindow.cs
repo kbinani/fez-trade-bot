@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace com.github.kbinani.feztradenotify {
     /// <summary>
@@ -9,6 +10,8 @@ namespace com.github.kbinani.feztradenotify {
     /// </summary>
     class FEZWindow {
         private IntPtr windowHandle;
+        private int _width;
+        private int _height;
 
         /// <summary>
         /// FEZのゲーム画面のウィンドウハンドルを指定し，初期化する
@@ -16,6 +19,11 @@ namespace com.github.kbinani.feztradenotify {
         /// <param name="handle"></param>
         public FEZWindow( IntPtr handle ) {
             this.windowHandle = handle;
+
+            var geometry = new WindowsAPI.RECT();
+            WindowsAPI.GetWindowRect( handle, ref geometry );
+            this._width = geometry.right - geometry.left;
+            this._height = geometry.bottom - geometry.top;
         }
 
         /// <summary>
@@ -23,7 +31,7 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <returns></returns>
         public bool HasTradeIcon( Bitmap screenShot ) {
-            Bitmap iconArea = (Bitmap)screenShot.Clone( GetIconAreaRectangle( screenShot ), screenShot.PixelFormat );
+            Bitmap iconArea = (Bitmap)screenShot.Clone( GetIconAreaRectangle(), screenShot.PixelFormat );
             Bitmap mask = Resource.icon_mask;
             return ImageComparator.Compare( iconArea, Resource.icon_mask );
         }
@@ -33,9 +41,9 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <param name="screenShot"></param>
         /// <returns></returns>
-        public Rectangle GetIconAreaRectangle( Bitmap screenShot ) {
-            int left = screenShot.Width - 105;
-            int top = screenShot.Height - 216;
+        public Rectangle GetIconAreaRectangle() {
+            int left = this.Width - 105;
+            int top = this.Height - 216;
             int width = 97;
             int height = 57;
             return new Rectangle( left, top, width, height );
@@ -46,18 +54,29 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <param name="screenShot"></param>
         /// <returns></returns>
-        public Rectangle GetTradeWindowItemAreaGeometry( Bitmap screenShot ) {
-            const int TRADE_WINDOW_WIDTH = 434;
+        public Rectangle GetTradeWindowItemAreaGeometry() {
+            var result = GetTradeWindowGeometry();
+
             const int X_OFFSET = 16;
-            int x = screenShot.Width / 2 - TRADE_WINDOW_WIDTH / 2 + X_OFFSET;
-
-            const int TRADE_WINDOW_HEIGHT = 368;
             const int Y_OFFSET = 56;
-            int y = screenShot.Height / 2 - TRADE_WINDOW_HEIGHT / 2 + Y_OFFSET;
-
             const int ICON_AREA_WIDTH = 159;
             const int ICON_AREA_HEIGHT = 255;
-            return new Rectangle( x, y, ICON_AREA_WIDTH, ICON_AREA_HEIGHT );
+            return new Rectangle( result.Left + X_OFFSET, result.Top + Y_OFFSET, ICON_AREA_WIDTH, ICON_AREA_HEIGHT );
+        }
+
+        /// <summary>
+        /// トレードウィンドウの領域を取得する
+        /// </summary>
+        /// <param name="screenShot"></param>
+        /// <returns></returns>
+        public Rectangle GetTradeWindowGeometry() {
+            const int TRADE_WINDOW_WIDTH = 434;
+            int x = this.Width / 2 - TRADE_WINDOW_WIDTH / 2;
+
+            const int TRADE_WINDOW_HEIGHT = 368;
+            int y = this.Height / 2 - TRADE_WINDOW_HEIGHT / 2;
+
+            return new Rectangle( x, y, TRADE_WINDOW_WIDTH, TRADE_WINDOW_HEIGHT );
         }
 
         /// <summary>
@@ -65,10 +84,24 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <param name="screenShot"></param>
         /// <returns></returns>
-        public Rectangle GetTradeUserNameRectangle( Bitmap screenShot ) {
-            Rectangle result = GetIconAreaRectangle( screenShot );
+        public Rectangle GetTradeUserNameRectangle() {
+            Rectangle result = GetIconAreaRectangle();
             result.Height = 11;
             return result;
+        }
+
+        /// <summary>
+        /// トレードウィンドウを閉じるためのボタンの位置を取得する
+        /// </summary>
+        /// <param name="screenShot"></param>
+        /// <returns></returns>
+        public Point GetTradeWindowCancelButtonPosition() {
+            var tradeWindowGeometry = GetTradeWindowGeometry();
+            //右下: 729 568
+            // ボタン中央 689 536
+            int x = tradeWindowGeometry.Right - 40;
+            int y = tradeWindowGeometry.Bottom - 32;
+            return new Point( x, y );
         }
 
         /// <summary>
@@ -116,11 +149,41 @@ namespace com.github.kbinani.feztradenotify {
         }
 
         /// <summary>
+        /// トレードウィンドウ内の，アイテムの位置を順に返す反復子を取得する
+        /// </summary>
+        /// <param name="screenShot"></param>
+        /// <returns></returns>
+        public IEnumerable<Rectangle> GetTradeItemGeometryEnumerator() {
+            var tradeAreaGeometry = GetTradeWindowItemAreaGeometry();
+            const int ITEM_WIDTH = 32;
+            const int ITEM_HEIGHT = 64;
+            for( int y = 0; y < 4; y++ ) {
+                int top = y * ITEM_HEIGHT + tradeAreaGeometry.Top;
+                for( int x = 0; x < 5; x++ ) {
+                    int left = x * ITEM_WIDTH + tradeAreaGeometry.Left;
+                    yield return new Rectangle( left, top, ITEM_WIDTH - 1, ITEM_HEIGHT - 1 );
+                }
+            }
+        }
+
+        /// <summary>
         /// ゲーム画面のウィンドウハンドルを取得する
         /// </summary>
         public IntPtr Handle {
             get {
                 return this.windowHandle;
+            }
+        }
+
+        public int Width {
+            get {
+                return _width;
+            }
+        }
+
+        public int Height {
+            get {
+                return _height;
             }
         }
     }

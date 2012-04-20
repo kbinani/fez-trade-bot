@@ -68,6 +68,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="beast_blood.png" />
     <Content Include="icon_mask.png" />
   </ItemGroup>
   <ItemGroup>

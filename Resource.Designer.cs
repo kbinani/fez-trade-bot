@@ -60,6 +60,13 @@ namespace com.github.kbinani.feztradenotify {
             }
         }
         
+        internal static System.Drawing.Bitmap beast_blood {
+            get {
+                object obj = ResourceManager.GetObject("beast_blood", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap icon_mask {
             get {
                 object obj = ResourceManager.GetObject("icon_mask", resourceCulture);
