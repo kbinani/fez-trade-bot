@@ -53,6 +53,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="RuntimeSettings.cs" />
     <Compile Include="WindowsAPI.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon_mask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fez-trade-notify.conf.tmpl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

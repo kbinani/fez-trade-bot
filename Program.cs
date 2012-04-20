@@ -4,34 +4,9 @@ using System.Threading;
 namespace com.github.kbinani.feztradenotify {
     class Program {
         static void Main( string[] args ) {
-            string host = "localhost";
-            string pass = "";
-            int port = 23053;
-            using( StreamReader reader = new StreamReader( "fez-trade-notify.conf" ) ) {
-                string line;
-                while( (line = reader.ReadLine()) != null ) {
-                    string[] parameters = line.Split( '=' );
-                    if( 2 <= parameters.Length ) {
-                        string key = parameters[0];
-                        string value = parameters[1];
-                        switch( key ) {
-                            case "growlHost": {
-                                host = value;
-                                break;
-                            }
-                            case "growlServerPass": {
-                                pass = value;
-                                break;
-                            }
-                            case "growlPort": {
-                                port = int.Parse( value );
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            var runner = new DaemonRunner( host, pass, port );
+            RuntimeSettings settings = new RuntimeSettings( args );
+
+            var runner = new DaemonRunner( settings.GrowlyHost, settings.GrowlyPass, settings.GrowlyPort );
             var t = new Thread( new ThreadStart( runner.Run ) );
             t.Start();
             t.Join();

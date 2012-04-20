@@ -45,13 +45,23 @@ namespace com.github.kbinani.feztradenotify {
 
                 try {
                     window.GetTradeIconLocation();
-                    Bitmap iconArea = window.GetTradeIcon();
-                    SendNotify( iconArea );
+                    ProcessTradeNotify( window );
                 } catch( ApplicationException e ) {
                     Console.WriteLine( e.Message );
                     window = null;
                 }
             }
+        }
+
+        /// <summary>
+        /// トレード枠が来た時の処理を行う
+        /// </summary>
+        private void ProcessTradeNotify( FEZWindow window ) {
+            // Growly で通知
+            Bitmap iconArea = window.GetTradeIcon();
+            SendNotify( iconArea );
+
+            // ログを出力する
         }
 
         private GrowlConnector GetConnector() {
