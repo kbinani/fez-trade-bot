@@ -25,28 +25,7 @@ namespace com.github.kbinani.feztradenotify {
         public bool HasTradeIcon( Bitmap screenShot ) {
             Bitmap iconArea = (Bitmap)screenShot.Clone( GetIconAreaRectangle( screenShot ), screenShot.PixelFormat );
             Bitmap mask = Resource.icon_mask;
-            Color maskColor = mask.GetPixel( 0, 0 );
-
-            int totalPixels = 0;
-            int matchPixels = 0;
-
-            for( int y = 0; y < mask.Height; y++ ) {
-                for( int x = 0; x < mask.Width; x++ ) {
-                    Color colorOfMask = mask.GetPixel( x, y );
-                    if( colorOfMask != maskColor ) {
-                        Color colorOfActual = iconArea.GetPixel( x, y );
-                        totalPixels++;
-                        if( colorOfActual == colorOfMask ) {
-                            matchPixels++;
-                        }
-                    }
-                }
-            }
-
-            // アイコン画像テンプレートとの差があるピクセルの個数が，
-            // 全体のピクセル数の 1% 以下であれば，テンプレートと同じとみなす
-            double diffPercentage = (totalPixels - matchPixels) * 100.0 / totalPixels;
-            return diffPercentage <= 5.0;
+            return ImageComparator.Compare( iconArea, Resource.icon_mask );
         }
 
         /// <summary>
@@ -60,6 +39,25 @@ namespace com.github.kbinani.feztradenotify {
             int width = 97;
             int height = 57;
             return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
+        /// トレードウィンドウの，自分のアイテム一欄が表示される領域を取得する
+        /// </summary>
+        /// <param name="screenShot"></param>
+        /// <returns></returns>
+        public Rectangle GetTradeWindowItemAreaGeometry( Bitmap screenShot ) {
+            const int TRADE_WINDOW_WIDTH = 434;
+            const int X_OFFSET = 16;
+            int x = screenShot.Width / 2 - TRADE_WINDOW_WIDTH / 2 + X_OFFSET;
+
+            const int TRADE_WINDOW_HEIGHT = 368;
+            const int Y_OFFSET = 56;
+            int y = screenShot.Height / 2 - TRADE_WINDOW_HEIGHT / 2 + Y_OFFSET;
+
+            const int ICON_AREA_WIDTH = 159;
+            const int ICON_AREA_HEIGHT = 255;
+            return new Rectangle( x, y, ICON_AREA_WIDTH, ICON_AREA_HEIGHT );
         }
 
         /// <summary>
