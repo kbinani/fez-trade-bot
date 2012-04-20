@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading;
 
 namespace com.github.kbinani.feztradenotify {
     /// <summary>
@@ -96,6 +97,33 @@ namespace com.github.kbinani.feztradenotify {
             WindowsAPI.ReleaseDC( this.windowHandle, winDC );
 
             return bmp;
+        }
+
+        /// <summary>
+        /// 画面の指定した位置をクリックする．座標には，ゲーム画面に対する相対座標を指定する
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void Click( int x, int y ) {
+            var geometry = new WindowsAPI.RECT();
+            WindowsAPI.GetWindowRect( this.windowHandle, ref geometry );
+            var clickPosition = new Point();
+            clickPosition.X = geometry.left + x;
+            clickPosition.Y = geometry.top + y;
+            WindowsAPI.SetCursorPos( clickPosition.X, clickPosition.Y );
+
+            WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
+            Thread.Sleep( 200 );
+            WindowsAPI.mouse_event( WindowsAPI.LEFTUP, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
+        }
+
+        /// <summary>
+        /// ゲーム画面のウィンドウハンドルを取得する
+        /// </summary>
+        public IntPtr Handle {
+            get {
+                return this.windowHandle;
+            }
         }
     }
 }

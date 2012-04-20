@@ -45,6 +45,9 @@
   <ItemGroup>
     <Compile Include="ApplicationException.cs" />
     <Compile Include="DaemonRunner.cs" />
+    <Compile Include="DoTradeTask.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="FEZWindow.cs" />
     <Compile Include="GrowlNotifyTask.cs" />
     <Compile Include="Program.cs" />
