@@ -1,63 +1,65 @@
 ﻿using System.IO;
 
-class RuntimeSettings {
-    private string host = "localhost";
-    private string pass = "";
-    private int port = 23053;
-    private string logDirectory = "";
+namespace com.github.kbinani.feztradenotify {
+    class RuntimeSettings {
+        private string host = "localhost";
+        private string pass = "";
+        private int port = 23053;
+        private string logDirectory = "";
 
-    public RuntimeSettings( string[] args ) {
-        using( StreamReader reader = new StreamReader( "fez-trade-notify.conf" ) ) {
-            string line;
-            while( (line = reader.ReadLine()) != null ) {
-                string[] parameters = line.Split( '=' );
-                if( 2 <= parameters.Length ) {
-                    string key = parameters[0];
-                    string value = parameters[1];
-                    switch( key ) {
-                        case "growlHost": {
-                            host = value;
-                            break;
-                        }
-                        case "growlServerPass": {
-                            pass = value;
-                            break;
-                        }
-                        case "growlPort": {
-                            port = int.Parse( value );
-                            break;
-                        }
-                        case "logDirectory": {
-                            logDirectory = value;
-                            break;
+        public RuntimeSettings( string[] args ) {
+            using( StreamReader reader = new StreamReader( "fez-trade-notify.conf" ) ) {
+                string line;
+                while( (line = reader.ReadLine()) != null ) {
+                    string[] parameters = line.Split( '=' );
+                    if( 2 <= parameters.Length ) {
+                        string key = parameters[0];
+                        string value = parameters[1];
+                        switch( key ) {
+                            case "growlHost": {
+                                host = value;
+                                break;
+                            }
+                            case "growlServerPass": {
+                                pass = value;
+                                break;
+                            }
+                            case "growlPort": {
+                                port = int.Parse( value );
+                                break;
+                            }
+                            case "logDirectory": {
+                                logDirectory = value;
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
-    public string GrowlyHost {
-        get {
-            return host;
+        public string GrowlyHost {
+            get {
+                return host;
+            }
         }
-    }
 
-    public string GrowlyPass {
-        get {
-            return pass;
+        public string GrowlyPass {
+            get {
+                return pass;
+            }
         }
-    }
 
-    public int GrowlyPort {
-        get {
-            return port;
+        public int GrowlyPort {
+            get {
+                return port;
+            }
         }
-    }
 
-    public string LogDirectory {
-        get {
-            return logDirectory;
+        public string LogDirectory {
+            get {
+                return logDirectory;
+            }
         }
     }
 }
