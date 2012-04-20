@@ -14,14 +14,10 @@ namespace com.github.kbinani.feztradenotify {
         private Growl.Connector.Application application = null;
         private NotificationType notificationType;
 
-        private string host;
-        private string pass;
-        private int port;
+        private RuntimeSettings settings;
 
-        public DaemonRunner( string host, string pass, int port ) {
-            this.host = host;
-            this.pass = pass;
-            this.port = port;
+        public DaemonRunner( RuntimeSettings settings ) {
+            this.settings = settings;
         }
 
         public void Run() {
@@ -62,11 +58,13 @@ namespace com.github.kbinani.feztradenotify {
             SendNotify( iconArea );
 
             // ログを出力する
+            string fileName = DateTime.Now.ToString( "yyyy-MM-dd" + "_" + @"HH\ch" + @"mm\cm" + @"ss.ff\cs" + ".png" );
+            iconArea.Save( fileName, ImageFormat.Png );
         }
 
         private GrowlConnector GetConnector() {
             if( connector == null ) {
-                connector = new GrowlConnector( this.pass, this.host, this.port );
+                connector = new GrowlConnector( settings.GrowlyPass, settings.GrowlyHost, settings.GrowlyPort );
 
                 application = new Growl.Connector.Application( APPLICATION_NAME );
                 notificationType = new NotificationType( "FEZ_TRADE_NOTIFICATION", "Trade Notification" );

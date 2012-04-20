@@ -4,6 +4,7 @@ class RuntimeSettings {
     private string host = "localhost";
     private string pass = "";
     private int port = 23053;
+    private string logDirectory = "";
 
     public RuntimeSettings( string[] args ) {
         using( StreamReader reader = new StreamReader( "fez-trade-notify.conf" ) ) {
@@ -24,6 +25,10 @@ class RuntimeSettings {
                         }
                         case "growlPort": {
                             port = int.Parse( value );
+                            break;
+                        }
+                        case "logDirectory": {
+                            logDirectory = value;
                             break;
                         }
                     }
@@ -47,6 +52,12 @@ class RuntimeSettings {
     public int GrowlyPort {
         get {
             return port;
+        }
+    }
+
+    public string LogDirectory {
+        get {
+            return logDirectory;
         }
     }
 }

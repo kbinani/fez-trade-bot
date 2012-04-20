@@ -6,7 +6,7 @@ namespace com.github.kbinani.feztradenotify {
         static void Main( string[] args ) {
             RuntimeSettings settings = new RuntimeSettings( args );
 
-            var runner = new DaemonRunner( settings.GrowlyHost, settings.GrowlyPass, settings.GrowlyPort );
+            var runner = new DaemonRunner( settings );
             var t = new Thread( new ThreadStart( runner.Run ) );
             t.Start();
             t.Join();
