@@ -15,15 +15,15 @@ namespace com.github.kbinani.feztradenotify {
                         string key = parameters[0];
                         string value = parameters[1];
                         switch( key ) {
-                            case "host": {
+                            case "growlHost": {
                                 host = value;
                                 break;
                             }
-                            case "pass": {
+                            case "growlServerPass": {
                                 pass = value;
                                 break;
                             }
-                            case "port": {
+                            case "growlPort": {
                                 port = int.Parse( value );
                                 break;
                             }
