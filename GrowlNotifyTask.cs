@@ -16,7 +16,7 @@ namespace com.github.kbinani.feztradenotify {
         }
 
         public void Run() {
-            var connector = new GrowlConnector( settings.GrowlyPass, settings.GrowlyHost, settings.GrowlyPort );
+            var connector = new GrowlConnector( settings.GrowlPass, settings.GrowlHost, settings.GrowlPort );
             var application = new Growl.Connector.Application( "FEZ trade notify" );
             var notificationType = new NotificationType( "FEZ_TRADE_NOTIFICATION", "Trade Notification" );
             connector.Register( application, new NotificationType[] { notificationType } );

@@ -38,19 +38,19 @@ namespace com.github.kbinani.feztradenotify {
             }
         }
 
-        public string GrowlyHost {
+        public string GrowlHost {
             get {
                 return host;
             }
         }
 
-        public string GrowlyPass {
+        public string GrowlPass {
             get {
                 return pass;
             }
         }
 
-        public int GrowlyPort {
+        public int GrowlPort {
             get {
                 return port;
             }
