@@ -8,12 +8,6 @@ using Growl.CoreLibrary;
 
 namespace com.github.kbinani.feztradenotify {
     class DaemonRunner {
-        private const string APPLICATION_NAME = "FEZ trade notify";
-
-        private GrowlConnector connector = null;
-        private Growl.Connector.Application application = null;
-        private NotificationType notificationType;
-
         private RuntimeSettings settings;
 
         public DaemonRunner( RuntimeSettings settings ) {
@@ -58,35 +52,13 @@ namespace com.github.kbinani.feztradenotify {
         private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot ) {
             // Growly で通知
             Rectangle tradeUserNameRectangle = window.GetTradeUserNameRectangle( screenShot );
-            Bitmap tradeUserName = (Bitmap)screenShot.Clone( tradeUserNameRectangle, screenShot.PixelFormat );
-            SendNotify( tradeUserName );
+            var tradeUserName = (Bitmap)screenShot.Clone( tradeUserNameRectangle, screenShot.PixelFormat );
+            var growlNotifyTask = new GrowlNotifyTask( settings, "", tradeUserName );
+            growlNotifyTask.Run();
 
             // ログを出力する
             string fileName = DateTime.Now.ToString( "yyyy-MM-dd" + "_" + @"HH\h" + @"mm\m" + @"ss.ff\s" ) + ".png";
             tradeUserName.Save( Path.Combine( settings.LogDirectory, fileName ), ImageFormat.Png );
-        }
-
-        private GrowlConnector GetConnector() {
-            if( connector == null ) {
-                connector = new GrowlConnector( settings.GrowlyPass, settings.GrowlyHost, settings.GrowlyPort );
-
-                application = new Growl.Connector.Application( APPLICATION_NAME );
-                notificationType = new NotificationType( "FEZ_TRADE_NOTIFICATION", "Trade Notification" );
-                connector.Register( application, new NotificationType[] { notificationType } );
-
-                connector.EncryptionAlgorithm = Cryptography.SymmetricAlgorithmType.PlainText;
-            }
-            return connector;
-        }
-
-        private void SendNotify( Bitmap screenShot ) {
-            var connector = GetConnector();
-            CallbackContext callbackContext = new CallbackContext( "some fake information", "fake data" );
-
-            Notification notification = new Notification(
-                application.Name, notificationType.Name, DateTime.Now.Ticks.ToString(),
-                "Trade Notification", "trade request received", screenShot, false, Priority.Normal, "0" );
-            connector.Notify( notification, callbackContext );
         }
     }
 }

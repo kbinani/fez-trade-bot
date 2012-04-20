@@ -46,6 +46,7 @@
     <Compile Include="ApplicationException.cs" />
     <Compile Include="DaemonRunner.cs" />
     <Compile Include="FEZWindow.cs" />
+    <Compile Include="GrowlNotifyTask.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.Designer.cs">
