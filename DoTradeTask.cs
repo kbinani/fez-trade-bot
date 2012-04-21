@@ -19,22 +19,32 @@ namespace com.github.kbinani.feztradenotify {
         public void Run() {
             OpenTradeWindow();
             try {
-                Point position = FindTradeItem( Resource.beast_blood );
-
                 // アイテムをダブルクリック
-                //TODO:
+                var position = FindTradeItem( Resource.beast_blood );
+                window.DoubleClick( position.X, position.Y );
 
                 // エントリーボタンを押す
-                //TODO:
+                var entryButtonPosition = window.GetTradeWindowEntryButtonPosition();
+                window.DoubleClick( entryButtonPosition.X, entryButtonPosition.Y );
+                Thread.Sleep( 500 );
+                var inventryErrorDialogGeometry = window.GetTradeErrorDialogGeometry();
+                var inventryErrorDialog = (Bitmap)window.CaptureWindow( inventryErrorDialogGeometry );
+                if( ImageComparator.Compare( inventryErrorDialog, Resource.trade_error_dialog ) ) {
+                    // 相手のカバンがいっぱいの場合ダイアログが出るので，閉じてキャンセルする
+                    var inventryErrorDialogOKButtonPosition = window.GetTradeErrorDialogOKButtonPosition();
+                    window.Click( inventryErrorDialogOKButtonPosition.X, inventryErrorDialogOKButtonPosition.Y );
+                    Thread.Sleep( 200 );
+                    CloseTradeWindow();
+                } else {
+                    // 決定ボタンがハイライト状態になるまで，エントリーボタンを押し続ける
+                    //TODO:
 
-                // 決定ボタンがハイライト状態になるまで，エントリーボタンを押し続ける
-                //TODO:
+                    // トレードウィンドウが消えるまで，決定ボタンを押し続ける
+                    //TODO:
 
-                // トレードウィンドウが消えるまで，決定ボタンを押し続ける
-                //TODO:
-
-                // インベントリを開いて，ソートする
-                //TODO:
+                    // インベントリを開いて，ソートする
+                    //TODO:
+                }
             } catch( ApplicationException e ) {
                 CloseTradeWindow();
             }

@@ -105,11 +105,53 @@ namespace com.github.kbinani.feztradenotify {
         }
 
         /// <summary>
-        /// 指定されたハンドルのウィンドウについて，スクリーンキャプチャを行う
+        /// トレードウィンドウにて，アイテムをトレード候補に登録するための「エントリー」ボタンの位置を取得する
         /// </summary>
-        /// <param name="handle"></param>
+        /// <param name="screenShot"></param>
         /// <returns></returns>
-        public Bitmap CaptureWindow(){
+        public Point GetTradeWindowEntryButtonPosition() {
+            var tradeWindowGeometry = GetTradeWindowGeometry();
+            // トレードウィンドウ右下: x=729, y=568
+            // ボタン中央: x=562, y=536
+            int x = tradeWindowGeometry.Right - 167;
+            int y = tradeWindowGeometry.Bottom - 32;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// トレードの際，相手のカバンがいっぱいの場合にその旨メッセージがポップアップする．
+        /// このメッセージウィンドウの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetTradeErrorDialogGeometry() {
+            // ウィンドウサイズ 1024*768の場合に
+            // ダイアログ左上: x=352, y=344
+            // ダイアログ右下: x=672, y=424
+            const int TRADE_ERROR_DIALOG_WIDTH = 672 - 352;
+            const int TRADE_ERROR_DIALOG_HEIGHT = 424 - 344;
+            int left = this.Width / 2 - TRADE_ERROR_DIALOG_WIDTH / 2;
+            int top = this.Height / 2 - TRADE_ERROR_DIALOG_HEIGHT / 2;
+            return new Rectangle( left, top, TRADE_ERROR_DIALOG_WIDTH, TRADE_ERROR_DIALOG_HEIGHT );
+        }
+
+        /// <summary>
+        /// トレードの際，相手のカバンがいっぱいの場合にその旨メッセージがポップアップする．
+        /// このウィンドウを閉じるための「OK」ボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetTradeErrorDialogOKButtonPosition() {
+            var dialogGeometry = GetTradeErrorDialogGeometry();
+            // ウィンドウに対して
+            // ボタンの右下: x=230, y=64
+            // ボタンの左上: x=90, y=48
+            return new Point( dialogGeometry.Left + 160, dialogGeometry.Top + 56 );
+        }
+
+        /// <summary>
+        /// ゲームウィンドウ全体の画像を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Bitmap CaptureWindow() {
             IntPtr winDC = WindowsAPI.GetWindowDC( this.windowHandle );
             WindowsAPI.RECT winRect = new WindowsAPI.RECT();
             if( !WindowsAPI.GetWindowRect( this.windowHandle, ref winRect ) ) {
@@ -131,6 +173,16 @@ namespace com.github.kbinani.feztradenotify {
         }
 
         /// <summary>
+        /// ゲームウィンドウの指定した領域の画像を取得する
+        /// </summary>
+        /// <param name="area"></param>
+        /// <returns></returns>
+        public Bitmap CaptureWindow( Rectangle area ){
+            var result = CaptureWindow();
+            return (Bitmap)result.Clone( area, result.PixelFormat );
+        }
+
+        /// <summary>
         /// 画面の指定した位置をクリックする．座標には，ゲーム画面に対する相対座標を指定する
         /// </summary>
         /// <param name="x"></param>
@@ -143,6 +195,28 @@ namespace com.github.kbinani.feztradenotify {
             clickPosition.Y = geometry.top + y;
             WindowsAPI.SetCursorPos( clickPosition.X, clickPosition.Y );
 
+            WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
+            Thread.Sleep( 200 );
+            WindowsAPI.mouse_event( WindowsAPI.LEFTUP, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
+        }
+
+        /// <summary>
+        /// 画面の指定した位置をダブルクリックする．座標には，ゲーム画面に対する相対座標を指定する
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void DoubleClick( int x, int y ) {
+            var geometry = new WindowsAPI.RECT();
+            WindowsAPI.GetWindowRect( this.windowHandle, ref geometry );
+            var clickPosition = new Point();
+            clickPosition.X = geometry.left + x;
+            clickPosition.Y = geometry.top + y;
+            WindowsAPI.SetCursorPos( clickPosition.X, clickPosition.Y );
+
+            WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
+            Thread.Sleep( 200 );
+            WindowsAPI.mouse_event( WindowsAPI.LEFTUP, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
+            Thread.Sleep( 200 );
             WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
             Thread.Sleep( 200 );
             WindowsAPI.mouse_event( WindowsAPI.LEFTUP, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );

@@ -70,6 +70,7 @@
   <ItemGroup>
     <Content Include="beast_blood.png" />
     <Content Include="icon_mask.png" />
+    <Content Include="trade_error_dialog.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fez-trade-notify.conf.tmpl" />
