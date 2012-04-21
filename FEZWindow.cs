@@ -328,12 +328,37 @@ namespace com.github.kbinani.feztradenotify {
         /// <returns></returns>
         public IEnumerable<Rectangle> GetTradeItemGeometryEnumerator() {
             var tradeAreaGeometry = GetTradeWindowItemAreaGeometry();
+            return GetItemGeometryEnumerator( tradeAreaGeometry.Location, 5, 4 );
+        }
+
+        /// <summary>
+        /// トレード相手がエントリーしたアイテム位置を順に返す反復子を取得する
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Rectangle> GetTradeCustomerEntriedItemGeometryEnumerator() {
+            var tradeWindow = GetTradeWindowGeometry();
+            // トレードウィンドウに対して
+            // 左上: x=321, y=56
+            int x = tradeWindow.Left + 321;
+            int y = tradeWindow.Top + 56;
+            return GetItemGeometryEnumerator( new Point( x, y ), 3, 3 );
+        }
+
+        /// <summary>
+        /// 左上隅の座標と，アイテム枠の縦横の個数を指定することで，
+        /// アイテム枠の領域を順に返す反復子を取得する
+        /// </summary>
+        /// <param name="topLeft"></param>
+        /// <param name="columnCount"></param>
+        /// <param name="rowCount"></param>
+        /// <returns></returns>
+        private IEnumerable<Rectangle> GetItemGeometryEnumerator( Point topLeft, int columnCount, int rowCount ) {
             const int ITEM_WIDTH = 32;
             const int ITEM_HEIGHT = 64;
-            for( int y = 0; y < 4; y++ ) {
-                int top = y * ITEM_HEIGHT + tradeAreaGeometry.Top;
-                for( int x = 0; x < 5; x++ ) {
-                    int left = x * ITEM_WIDTH + tradeAreaGeometry.Left;
+            for( int y = 0; y < rowCount; y++ ) {
+                int top = y * ITEM_HEIGHT + topLeft.Y;
+                for( int x = 0; x < columnCount; x++ ) {
+                    int left = x * ITEM_WIDTH + topLeft.X;
                     yield return new Rectangle( left, top, ITEM_WIDTH - 1, ITEM_HEIGHT - 1 );
                 }
             }

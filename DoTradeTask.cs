@@ -20,6 +20,9 @@ namespace com.github.kbinani.feztradenotify {
         public TradeResult Run() {
             OpenTradeWindow();
             try {
+                // 何も入っていないアイテム枠の画像を取得する
+                var emptyItemSlot = GetEmptyItemSlot();
+
                 // アイテムをダブルクリック
                 var position = FindTradeItem( Resource.beast_blood );
                 window.DoubleClick( position );
@@ -40,7 +43,7 @@ namespace com.github.kbinani.feztradenotify {
                     return new TradeResult( TradeResult.StatusType.INVENTRY_NO_SPACE, DateTime.Now, screenShot, "" );
                 } else {
                     // トレードウィンドウを閉じ，トレードを終了する
-                    var tradeWindowFinalizer = new TradeWinowFinalizer( window );
+                    var tradeWindowFinalizer = new TradeWinowFinalizer( window, emptyItemSlot );
                     Thread thread = new Thread( new ThreadStart( tradeWindowFinalizer.Run ) );
                     thread.Start();
 
@@ -53,7 +56,8 @@ namespace com.github.kbinani.feztradenotify {
                             break;
                         }
                     }
-                    var lastScreenShot = tradeWindowFinalizer.getLastScreenShot();
+                    var lastScreenShot = tradeWindowFinalizer.LastScreenShot;
+                    var weiredItemEntried = tradeWindowFinalizer.IsWeiredItemEntried;
 
                     if( thread.IsAlive ) {
                         // WAIT_SECONDS 秒間処理してもトレードウィンドウが閉じていない場合，
@@ -61,6 +65,9 @@ namespace com.github.kbinani.feztradenotify {
                         thread.Abort();
                         CloseTradeWindow();
                         return new TradeResult( TradeResult.StatusType.FAILED, DateTime.Now, lastScreenShot, "" );
+                    } else if( weiredItemEntried ) {
+                        CloseTradeWindow();
+                        return new TradeResult( TradeResult.StatusType.WEIRED_ITEM_ENTRIED, DateTime.Now, lastScreenShot, "" );
                     } else {
                         // トレードが成功
                         // インベントリを開いて，ソートする
@@ -120,6 +127,19 @@ namespace com.github.kbinani.feztradenotify {
                 }
             }
             throw new ApplicationException( "アイテムを見つけられなかった" );
+        }
+
+        /// <summary>
+        /// トレード相手側のエントリー枠のうち，何も入っていない枠の画像を取得する
+        /// 現在は，このメソッドがトレード枠開いた直後に呼ばれる前提とし，相手側エントリー枠の右下の画像を取得する
+        /// </summary>
+        /// <returns></returns>
+        private Bitmap GetEmptyItemSlot() {
+            var rightBottomItemSlot = Rectangle.Empty;
+            foreach( var geometry in window.GetTradeCustomerEntriedItemGeometryEnumerator() ){
+                rightBottomItemSlot = geometry;
+            }
+            return window.CaptureWindow( rightBottomItemSlot );
         }
     }
 }

@@ -21,6 +21,11 @@ namespace com.github.kbinani.feztradenotify {
             /// 相手のインベントリが満タン
             /// </summary>
             INVENTRY_NO_SPACE,
+
+            /// <summary>
+            /// 相手が野獣の血以外のアイテムを渡してきた
+            /// </summary>
+            WEIRED_ITEM_ENTRIED,
         }
 
         private StatusType status;
