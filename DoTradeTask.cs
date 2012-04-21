@@ -19,13 +19,22 @@ namespace com.github.kbinani.feztradenotify {
 
         public TradeResult Run() {
             OpenTradeWindow();
-            try {
-                // 何も入っていないアイテム枠の画像を取得する
-                var emptyItemSlot = GetEmptyItemSlot();
 
+            // 何も入っていないアイテム枠の画像を取得する
+            var emptyItemSlot = GetEmptyItemSlot();
+
+            // トレードで渡すアイテムの位置を取得する
+            Point position = Point.Empty;
+            try {
+                position = FindTradeItem( Resource.beast_blood );
+            } catch( ApplicationException e ) {
+            }
+
+            try {
                 // アイテムをダブルクリック
-                var position = FindTradeItem( Resource.beast_blood );
-                window.DoubleClick( position );
+                if( position != Point.Empty ) {
+                    window.DoubleClick( position );
+                }
 
                 // エントリーボタンを押す
                 var entryButtonPosition = window.GetTradeWindowEntryButtonPosition();
@@ -136,7 +145,7 @@ namespace com.github.kbinani.feztradenotify {
         /// <returns></returns>
         private Bitmap GetEmptyItemSlot() {
             var rightBottomItemSlot = Rectangle.Empty;
-            foreach( var geometry in window.GetTradeCustomerEntriedItemGeometryEnumerator() ){
+            foreach( var geometry in window.GetTradeCustomerEntriedItemGeometryEnumerator() ) {
                 rightBottomItemSlot = geometry;
             }
             return window.CaptureWindow( rightBottomItemSlot );
