@@ -32,6 +32,9 @@ namespace com.github.kbinani.feztradenotify {
 
                 // トレードウィンドウが消えるまで，決定ボタンを押し続ける
                 //TODO:
+
+                // インベントリを開いて，ソートする
+                //TODO:
             } catch( ApplicationException e ) {
                 CloseTradeWindow();
             }

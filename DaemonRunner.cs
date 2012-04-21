@@ -8,17 +8,47 @@ using Growl.CoreLibrary;
 
 namespace com.github.kbinani.feztradenotify {
     class DaemonRunner {
+        enum Status {
+            RUNNING,
+            PAUSING,
+        }
+
         private RuntimeSettings settings;
+        private Status status = Status.PAUSING;
 
         public DaemonRunner( RuntimeSettings settings ) {
             this.settings = settings;
+            this.status = Status.RUNNING;
         }
 
         public void Run() {
             FEZWindow window = null;
             while( true ) {
                 GC.Collect();
+
+                // コマンドが入力されていたら状態を変更する
+                string command = Program.PopCommand();
+                if( command == "quit" ) {
+                    break;
+                } else if( command == "pause" ) {
+                    this.status = Status.PAUSING;
+                } else if( command == "resume" ) {
+                    this.status = Status.RUNNING;
+                } else if ( command == "capture" ) {
+                    window.CaptureWindow().Save( "capture_" + DateTime.Now.ToString( "yyyy-MM-dd" + "_" + @"HH\h" + @"mm\m" + @"ss.ff\s" ) + ".png", ImageFormat.Png );
+                } else if( command == "help" ) {
+                    Console.WriteLine( "available commands:" );
+                    Console.WriteLine( "    capture  take a screen shot" );
+                    Console.WriteLine( "    help     show command help" );
+                    Console.WriteLine( "    pause    pause monitoring game window" );
+                    Console.WriteLine( "    quit     terminate this program" );
+                    Console.WriteLine( "    resume   resume monitoring game window" );
+                }
+
                 Thread.Sleep( 1000 );
+                if( this.status == Status.PAUSING ) {
+                    continue;
+                }
                 if( window == null ) {
                     try {
                         IntPtr handle = WindowsAPI.FindWindow( null, "Fantasy Earth Zero" );
@@ -50,7 +80,7 @@ namespace com.github.kbinani.feztradenotify {
         /// トレード枠が来た時の処理を行う
         /// </summary>
         private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot ) {
-            // Growly で通知
+            // Growl で通知
             Rectangle tradeUserNameRectangle = window.GetTradeUserNameRectangle();
             var tradeUserName = (Bitmap)screenShot.Clone( tradeUserNameRectangle, screenShot.PixelFormat );
             var growlNotifyTask = new GrowlNotifyTask( settings, "", tradeUserName );
