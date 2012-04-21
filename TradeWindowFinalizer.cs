@@ -23,7 +23,7 @@ namespace com.github.kbinani.feztradenotify {
                     break;
                 }
 
-                window.Click( okButtonGeometry.X, okButtonGeometry.Y );
+                window.Click( okButtonGeometry );
                 Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
             }
         }

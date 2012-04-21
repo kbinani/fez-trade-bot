@@ -22,18 +22,18 @@ namespace com.github.kbinani.feztradenotify {
             try {
                 // アイテムをダブルクリック
                 var position = FindTradeItem( Resource.beast_blood );
-                window.DoubleClick( position.X, position.Y );
+                window.DoubleClick( position );
 
                 // エントリーボタンを押す
                 var entryButtonPosition = window.GetTradeWindowEntryButtonPosition();
-                window.DoubleClick( entryButtonPosition.X, entryButtonPosition.Y );
+                window.DoubleClick( entryButtonPosition );
                 Thread.Sleep( 500 );
                 var inventryErrorDialogGeometry = window.GetTradeErrorDialogGeometry();
                 var inventryErrorDialog = (Bitmap)window.CaptureWindow( inventryErrorDialogGeometry );
                 if( ImageComparator.Compare( inventryErrorDialog, Resource.trade_error_dialog ) ) {
                     // 相手のカバンがいっぱいの場合ダイアログが出るので，閉じてキャンセルする
                     var inventryErrorDialogOKButtonPosition = window.GetTradeErrorDialogOKButtonPosition();
-                    window.Click( inventryErrorDialogOKButtonPosition.X, inventryErrorDialogOKButtonPosition.Y );
+                    window.Click( inventryErrorDialogOKButtonPosition );
                     Thread.Sleep( 200 );
                     CloseTradeWindow();
                 } else {
@@ -61,15 +61,15 @@ namespace com.github.kbinani.feztradenotify {
                         // トレードが成功
                         // インベントリを開いて，ソートする
                         var itemButtonPosition = window.GetItemButtonPosition();
-                        window.Click( itemButtonPosition.X, itemButtonPosition.Y );
+                        window.Click( itemButtonPosition );
                         Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
 
                         var sortButtonPosition = window.GetInventorySortButtonPosition();
-                        window.Click( sortButtonPosition.X, sortButtonPosition.Y );
+                        window.Click( sortButtonPosition );
                         Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
 
                         var closeButtonPosition = window.GetInventoryCloseButtonPosition();
-                        window.Click( closeButtonPosition.X, closeButtonPosition.Y );
+                        window.Click( closeButtonPosition );
                         Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
                     }
 
@@ -86,11 +86,11 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <param name="screenShot"></param>
         private void OpenTradeWindow() {
-            Rectangle iconArea = window.GetIconAreaRectangle();
-            window.Click(
-                iconArea.Left + iconArea.Width / 2,
-                iconArea.Top + iconArea.Height / 2
-            );
+            var iconArea = window.GetIconAreaRectangle();
+            int x = iconArea.Left + iconArea.Width / 2;
+            int y = iconArea.Top + iconArea.Height / 2;
+            var position = new Point( x, y );
+            window.Click( position );
             Thread.Sleep( 3000 );
         }
 
@@ -99,7 +99,7 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         private void CloseTradeWindow() {
             Point cancelButtonPosition = window.GetTradeWindowCancelButtonPosition();
-            window.Click( cancelButtonPosition.X, cancelButtonPosition.Y );
+            window.Click( cancelButtonPosition );
         }
 
         /// <summary>

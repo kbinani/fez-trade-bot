@@ -254,12 +254,12 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void Click( int x, int y ) {
+        public void Click( Point position ) {
             var geometry = new WindowsAPI.RECT();
             WindowsAPI.GetWindowRect( this.windowHandle, ref geometry );
             var clickPosition = new Point();
-            clickPosition.X = geometry.left + x;
-            clickPosition.Y = geometry.top + y;
+            clickPosition.X = geometry.left + position.X;
+            clickPosition.Y = geometry.top + position.Y;
             WindowsAPI.SetCursorPos( clickPosition.X, clickPosition.Y );
 
             WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
@@ -272,12 +272,12 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void DoubleClick( int x, int y ) {
+        public void DoubleClick( Point position ) {
             var geometry = new WindowsAPI.RECT();
             WindowsAPI.GetWindowRect( this.windowHandle, ref geometry );
             var clickPosition = new Point();
-            clickPosition.X = geometry.left + x;
-            clickPosition.Y = geometry.top + y;
+            clickPosition.X = geometry.left + position.X;
+            clickPosition.Y = geometry.top + position.Y;
             WindowsAPI.SetCursorPos( clickPosition.X, clickPosition.Y );
 
             WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
