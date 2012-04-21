@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Threading;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace com.github.kbinani.feztradenotify {
     /// <summary>
@@ -59,7 +60,17 @@ namespace com.github.kbinani.feztradenotify {
                     } else {
                         // トレードが成功
                         // インベントリを開いて，ソートする
-                        //TODO:
+                        var itemButtonPosition = window.GetItemButtonPosition();
+                        window.Click( itemButtonPosition.X, itemButtonPosition.Y );
+                        Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
+
+                        var sortButtonPosition = window.GetInventorySortButtonPosition();
+                        window.Click( sortButtonPosition.X, sortButtonPosition.Y );
+                        Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+
+                        var closeButtonPosition = window.GetInventoryCloseButtonPosition();
+                        window.Click( closeButtonPosition.X, closeButtonPosition.Y );
+                        Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
                     }
 
                     // 念のためトレードウィンドウを閉じる操作を再度行う

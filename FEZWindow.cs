@@ -160,6 +160,61 @@ namespace com.github.kbinani.feztradenotify {
         }
 
         /// <summary>
+        /// ゲーム画面右下にある「アイテム」ボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetItemButtonPosition() {
+            // ウィンドウサイズ 1024*768の場合に
+            // ボタン左上: x=920, y=613
+            // ボタン右下: x=1012, y=636
+            // なのでボタン中央: x=966, y=625
+            int x = this.Width - 58;
+            int y = this.Height - 143;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// インベントリの「ソート」ボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetInventorySortButtonPosition() {
+            // インベントリの左上に対して:
+            // ボタン中央: x=96, y=356
+            var inventoryGeometry = GetInventoryGeometry();
+            int x = inventoryGeometry.Left + 96;
+            int y = inventoryGeometry.Top + 356;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// インベントリの「閉じる」ボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetInventoryCloseButtonPosition() {
+            // インベントリの左上に対して:
+            // ボタン中央: x=96, y=376
+            var inventoryGeometry = GetInventoryGeometry();
+            int x = inventoryGeometry.Left + 96;
+            int y = inventoryGeometry.Top + 376;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// インベントリウィンドウの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle GetInventoryGeometry() {
+            // ウィンドウサイズが1024*768の時，
+            // 左上: x=780, y=4
+            // 右下: x=972, y=408
+            int left = this.Width - 244;
+            int top = 4;
+            const int INVENTORY_WIDTH = 192;
+            const int INVENTORY_HEIGHT = 404;
+            return new Rectangle( left, top, INVENTORY_WIDTH, INVENTORY_HEIGHT );
+        }
+
+        /// <summary>
         /// ゲームウィンドウ全体の画像を取得する
         /// </summary>
         /// <returns></returns>
