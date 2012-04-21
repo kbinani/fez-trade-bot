@@ -17,7 +17,7 @@ namespace com.github.kbinani.feztradenotify {
             this.screenShot = screenShot;
         }
 
-        public void Run() {
+        public TradeResult Run() {
             OpenTradeWindow();
             try {
                 // アイテムをダブルクリック
@@ -34,8 +34,10 @@ namespace com.github.kbinani.feztradenotify {
                     // 相手のカバンがいっぱいの場合ダイアログが出るので，閉じてキャンセルする
                     var inventryErrorDialogOKButtonPosition = window.GetTradeErrorDialogOKButtonPosition();
                     window.Click( inventryErrorDialogOKButtonPosition );
+                    Bitmap screenShot = window.CaptureWindow();
                     Thread.Sleep( 200 );
                     CloseTradeWindow();
+                    return new TradeResult( TradeResult.StatusType.INVENTRY_NO_SPACE, DateTime.Now, screenShot, "" );
                 } else {
                     // トレードウィンドウを閉じ，トレードを終了する
                     var tradeWindowFinalizer = new TradeWinowFinalizer( window );
@@ -51,12 +53,14 @@ namespace com.github.kbinani.feztradenotify {
                             break;
                         }
                     }
+                    var lastScreenShot = tradeWindowFinalizer.getLastScreenShot();
 
                     if( thread.IsAlive ) {
                         // WAIT_SECONDS 秒間処理してもトレードウィンドウが閉じていない場合，
                         // キャンセルボタンを押してトレードを中断する
                         thread.Abort();
                         CloseTradeWindow();
+                        return new TradeResult( TradeResult.StatusType.FAILED, DateTime.Now, lastScreenShot, "" );
                     } else {
                         // トレードが成功
                         // インベントリを開いて，ソートする
@@ -71,13 +75,13 @@ namespace com.github.kbinani.feztradenotify {
                         var closeButtonPosition = window.GetInventoryCloseButtonPosition();
                         window.Click( closeButtonPosition );
                         Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                        return new TradeResult( TradeResult.StatusType.SUCCEEDED, DateTime.Now, lastScreenShot, "" );
                     }
-
-                    // 念のためトレードウィンドウを閉じる操作を再度行う
-                    CloseTradeWindow();
                 }
             } catch( ApplicationException e ) {
+                var screenShot = window.CaptureWindow();
                 CloseTradeWindow();
+                return new TradeResult( TradeResult.StatusType.FAILED, DateTime.Now, screenShot, e.Message );
             }
         }
 

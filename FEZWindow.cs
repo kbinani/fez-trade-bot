@@ -131,6 +131,38 @@ namespace com.github.kbinani.feztradenotify {
         }
 
         /// <summary>
+        /// トレードウィンドウの，取引相手の名前が描画された領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetTradeWindowCustomerNameGeometry() {
+            var tradeWindowGeometry = GetTradeWindowGeometry();
+            // トレードウィンドウに対して
+            // 左上: x=318, y=40
+            // 右下: x=419, y=55
+            int left = tradeWindowGeometry.Left + 318;
+            int top = tradeWindowGeometry.Top + 40;
+            const int width = 419 - 318;
+            const int height = 55 - 40;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
+        /// トレードウィンドウの，自キャラの名前が描画された領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetTradeWindowNameGeometry() {
+            var tradeWindowGeometry = GetTradeWindowGeometry();
+            // トレードウィンドウに対して
+            // 左上: x=205, y=40
+            // 右下: x=306, y=55
+            int left = tradeWindowGeometry.Left + 205;
+            int top = tradeWindowGeometry.Top + 40;
+            const int width = 306 - 205;
+            const int height = 55 - 40;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
         /// トレードの際，相手のカバンがいっぱいの場合にその旨メッセージがポップアップする．
         /// このメッセージウィンドウの領域を取得する
         /// </summary>

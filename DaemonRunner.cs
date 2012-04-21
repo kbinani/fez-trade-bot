@@ -86,12 +86,13 @@ namespace com.github.kbinani.feztradenotify {
             var growlNotifyTask = new GrowlNotifyTask( settings, "", tradeUserName );
             growlNotifyTask.Run();
 
+            // トレードを行う
             var doTradeTask = new DoTradeTask( window, screenShot );
-            doTradeTask.Run();
+            TradeResult result = doTradeTask.Run();
 
             // ログを出力する
-            string fileName = DateTime.Now.ToString( "yyyy-MM-dd" + "_" + @"HH\h" + @"mm\m" + @"ss.ff\s" ) + ".png";
-            tradeUserName.Save( Path.Combine( settings.LogDirectory, fileName ), ImageFormat.Png );
+            var loggingTask = new LoggingTask( result, settings );
+            loggingTask.Run();
         }
     }
 }
