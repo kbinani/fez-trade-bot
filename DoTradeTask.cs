@@ -36,14 +36,34 @@ namespace com.github.kbinani.feztradenotify {
                     Thread.Sleep( 200 );
                     CloseTradeWindow();
                 } else {
-                    // 決定ボタンがハイライト状態になるまで，エントリーボタンを押し続ける
-                    //TODO:
+                    // トレードウィンドウを閉じ，トレードを終了する
+                    var tradeWindowFinalizer = new TradeWinowFinalizer( window );
+                    Thread thread = new Thread( new ThreadStart( tradeWindowFinalizer.Run ) );
+                    thread.Start();
 
-                    // トレードウィンドウが消えるまで，決定ボタンを押し続ける
-                    //TODO:
+                    // 最大 WAIT_SECONDS 秒間，スレッドが終了していないかチェックし，終了していれば処理を続行する
+                    const int WAIT_SECONDS = 10;
+                    const int WAIT_UNIT_MILLI_SECONDS = 200;
+                    for( var i = 0; i < WAIT_SECONDS * 1000 / WAIT_UNIT_MILLI_SECONDS; i++ ) {
+                        Thread.Sleep( TimeSpan.FromMilliseconds( WAIT_UNIT_MILLI_SECONDS ) );
+                        if( !thread.IsAlive ) {
+                            break;
+                        }
+                    }
 
-                    // インベントリを開いて，ソートする
-                    //TODO:
+                    if( thread.IsAlive ) {
+                        // WAIT_SECONDS 秒間処理してもトレードウィンドウが閉じていない場合，
+                        // キャンセルボタンを押してトレードを中断する
+                        thread.Abort();
+                        CloseTradeWindow();
+                    } else {
+                        // トレードが成功
+                        // インベントリを開いて，ソートする
+                        //TODO:
+                    }
+
+                    // 念のためトレードウィンドウを閉じる操作を再度行う
+                    CloseTradeWindow();
                 }
             } catch( ApplicationException e ) {
                 CloseTradeWindow();

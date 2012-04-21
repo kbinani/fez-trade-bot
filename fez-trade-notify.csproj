@@ -59,6 +59,7 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="RuntimeSettings.cs" />
+    <Compile Include="TradeWindowFinalizer.cs" />
     <Compile Include="WindowsAPI.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +72,7 @@
     <Content Include="beast_blood.png" />
     <Content Include="icon_mask.png" />
     <Content Include="trade_error_dialog.png" />
+    <Content Include="trade_window.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fez-trade-notify.conf.tmpl" />

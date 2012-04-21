@@ -93,7 +93,6 @@ namespace com.github.kbinani.feztradenotify {
         /// <summary>
         /// トレードウィンドウを閉じるためのボタンの位置を取得する
         /// </summary>
-        /// <param name="screenShot"></param>
         /// <returns></returns>
         public Point GetTradeWindowCancelButtonPosition() {
             var tradeWindowGeometry = GetTradeWindowGeometry();
@@ -107,13 +106,26 @@ namespace com.github.kbinani.feztradenotify {
         /// <summary>
         /// トレードウィンドウにて，アイテムをトレード候補に登録するための「エントリー」ボタンの位置を取得する
         /// </summary>
-        /// <param name="screenShot"></param>
         /// <returns></returns>
         public Point GetTradeWindowEntryButtonPosition() {
             var tradeWindowGeometry = GetTradeWindowGeometry();
             // トレードウィンドウ右下: x=729, y=568
             // ボタン中央: x=562, y=536
             int x = tradeWindowGeometry.Right - 167;
+            int y = tradeWindowGeometry.Bottom - 32;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// トレードウィンドウにて，トレードを完了させるための「完了」ボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetTradeWindowOkButtonPosition() {
+            var tradeWindowGeometry = GetTradeWindowGeometry();
+            // ゲーム画面に対して，
+            // トレードウィンドウ右下: x=729, y=568
+            // 完了ボタン中央: x=625, y=536
+            int x = tradeWindowGeometry.Right - 104;
             int y = tradeWindowGeometry.Bottom - 32;
             return new Point( x, y );
         }

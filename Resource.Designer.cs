@@ -80,5 +80,12 @@ namespace com.github.kbinani.feztradenotify {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap trade_window {
+            get {
+                object obj = ResourceManager.GetObject("trade_window", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
