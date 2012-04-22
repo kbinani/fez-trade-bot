@@ -121,6 +121,9 @@
   <data name="beast_blood" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>beast_blood.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="chronicle_notify_message" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>chronicle_notify_message.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="icon_mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icon_mask.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

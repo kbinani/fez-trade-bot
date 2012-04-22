@@ -8,7 +8,7 @@ namespace com.github.kbinani.feztradenotify {
     /// <summary>
     /// トレードを実行するタスク
     /// </summary>
-    class DoTradeTask {
+    class DoTradeTask : IDisposable {
         private FEZWindow window;
 
         public DoTradeTask( FEZWindow window ) {
@@ -104,6 +104,10 @@ namespace com.github.kbinani.feztradenotify {
                 CloseTradeWindow();
                 return new TradeResult( TradeResult.StatusType.FAILED, DateTime.Now, screenShot, e.Message );
             }
+        }
+
+        public void Dispose() {
+            this.window.Dispose();
         }
 
         /// <summary>

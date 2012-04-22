@@ -67,6 +67,13 @@ namespace com.github.kbinani.feztradenotify {
             }
         }
         
+        internal static System.Drawing.Bitmap chronicle_notify_message {
+            get {
+                object obj = ResourceManager.GetObject("chronicle_notify_message", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap icon_mask {
             get {
                 object obj = ResourceManager.GetObject("icon_mask", resourceCulture);

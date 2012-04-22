@@ -69,6 +69,7 @@ namespace com.github.kbinani.feztradenotify {
                     }
                 } catch( ApplicationException e ) {
                     Console.WriteLine( e.Message );
+                    window.Dispose();
                     window = null;
                 }
             }
@@ -79,8 +80,10 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot ) {
             // トレードを行う
-            var doTradeTask = new DoTradeTask( window );
-            TradeResult result = doTradeTask.Run();
+            TradeResult result = null;
+            using( var doTradeTask = new DoTradeTask( window ) ) {
+                result = doTradeTask.Run();
+            }
 
             // ログを出力する
             var loggingTask = new LoggingTask( result, settings );

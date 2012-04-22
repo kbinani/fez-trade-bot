@@ -8,10 +8,11 @@ namespace com.github.kbinani.feztradenotify {
     /// <summary>
     /// FEZのゲーム画面からの情報取得処理と操作処理を行うクラス
     /// </summary>
-    class FEZWindow {
+    class FEZWindow : IDisposable {
         private IntPtr windowHandle;
         private int _width;
         private int _height;
+        private ChronicleNotifyCloser closer = null;
 
         /// <summary>
         /// FEZのゲーム画面のウィンドウハンドルを指定し，初期化する
@@ -24,6 +25,10 @@ namespace com.github.kbinani.feztradenotify {
             WindowsAPI.GetWindowRect( handle, ref geometry );
             this._width = geometry.right - geometry.left;
             this._height = geometry.bottom - geometry.top;
+
+            this.closer = new ChronicleNotifyCloser( this );
+            Thread thread = new Thread( new ThreadStart( this.closer.Run ) );
+            thread.Start();
         }
 
         /// <summary>
@@ -247,6 +252,34 @@ namespace com.github.kbinani.feztradenotify {
         }
 
         /// <summary>
+        /// クロニクルの任務破棄ダイアログの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetChronicleNotifyMessageGeometry() {
+            // ウィンドウサイズが1024*768の時
+            // 左上: x=352, y=344
+            // 右下: x=672, y=424
+            int width = 320;
+            int height = 80;
+            int left = this.Width / 2 - width / 2;
+            int top = this.Height / 2 - height / 2;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
+        /// クロニクルの任務破棄ダイアログの，okボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetChronicleNotifyMessageOkButtonPosition() {
+            var geometry = GetChronicleNotifyMessageGeometry();
+            // ダイアログの左上に対して，
+            // ボタン中央: x=160, y=56
+            int x = geometry.Left + 160;
+            int y = geometry.Top + 56;
+            return new Point( x, y );
+        }
+
+        /// <summary>
         /// ゲームウィンドウ全体の画像を取得する
         /// </summary>
         /// <returns></returns>
@@ -276,7 +309,7 @@ namespace com.github.kbinani.feztradenotify {
         /// </summary>
         /// <param name="area"></param>
         /// <returns></returns>
-        public Bitmap CaptureWindow( Rectangle area ){
+        public Bitmap CaptureWindow( Rectangle area ) {
             var result = CaptureWindow();
             return (Bitmap)result.Clone( area, result.PixelFormat );
         }
@@ -342,6 +375,10 @@ namespace com.github.kbinani.feztradenotify {
             int x = tradeWindow.Left + 321;
             int y = tradeWindow.Top + 56;
             return GetItemGeometryEnumerator( new Point( x, y ), 3, 3 );
+        }
+
+        public void Dispose() {
+            this.closer.StopAsync();
         }
 
         /// <summary>
