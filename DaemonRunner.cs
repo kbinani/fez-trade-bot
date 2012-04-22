@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.IO;
-using Growl.Connector;
-using Growl.CoreLibrary;
 
 namespace com.github.kbinani.feztradenotify {
     class DaemonRunner {
@@ -80,12 +78,6 @@ namespace com.github.kbinani.feztradenotify {
         /// トレード枠が来た時の処理を行う
         /// </summary>
         private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot ) {
-            // Growl で通知
-            Rectangle tradeUserNameRectangle = window.GetTradeUserNameRectangle();
-            var tradeUserName = (Bitmap)screenShot.Clone( tradeUserNameRectangle, screenShot.PixelFormat );
-            var growlNotifyTask = new GrowlNotifyTask( settings, "", tradeUserName );
-            growlNotifyTask.Run();
-
             // トレードを行う
             var doTradeTask = new DoTradeTask( window );
             TradeResult result = doTradeTask.Run();
