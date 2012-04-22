@@ -87,7 +87,7 @@ namespace com.github.kbinani.feztradenotify {
             growlNotifyTask.Run();
 
             // トレードを行う
-            var doTradeTask = new DoTradeTask( window, screenShot );
+            var doTradeTask = new DoTradeTask( window );
             TradeResult result = doTradeTask.Run();
 
             // ログを出力する

@@ -10,11 +10,9 @@ namespace com.github.kbinani.feztradenotify {
     /// </summary>
     class DoTradeTask {
         private FEZWindow window;
-        private Bitmap screenShot;
 
-        public DoTradeTask( FEZWindow window, Bitmap screenShot ) {
+        public DoTradeTask( FEZWindow window ) {
             this.window = window;
-            this.screenShot = screenShot;
         }
 
         public TradeResult Run() {
