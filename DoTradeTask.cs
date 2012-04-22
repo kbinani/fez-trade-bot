@@ -19,6 +19,7 @@ namespace com.github.kbinani.feztradenotify {
 
         public TradeResult Run() {
             OpenTradeWindow();
+            var initialTradeWindow = window.CaptureWindow();
 
             // 何も入っていないアイテム枠の画像を取得する
             var emptyItemSlot = GetEmptyItemSlot();
@@ -78,20 +79,26 @@ namespace com.github.kbinani.feztradenotify {
                         CloseTradeWindow();
                         return new TradeResult( TradeResult.StatusType.WEIRED_ITEM_ENTRIED, DateTime.Now, lastScreenShot, "" );
                     } else {
-                        // トレードが成功
-                        // インベントリを開いて，ソートする
-                        var itemButtonPosition = window.GetItemButtonPosition();
-                        window.Click( itemButtonPosition );
-                        Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
+                        if( tradeWindowFinalizer.LastScreenShot == null ) {
+                            // こちらが決定ボタンを押す直前のスクリーンショットが取れなかった
+                            // つまり，相手がキャンセルボタンを押したためトレードウィンドウが閉じられた
+                            return new TradeResult( TradeResult.StatusType.CANCELLED_BY_CUSTOMER, DateTime.Now, initialTradeWindow, "" );
+                        } else {
+                            // トレードが成功
+                            // インベントリを開いて，ソートする
+                            var itemButtonPosition = window.GetItemButtonPosition();
+                            window.Click( itemButtonPosition );
+                            Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
 
-                        var sortButtonPosition = window.GetInventorySortButtonPosition();
-                        window.Click( sortButtonPosition );
-                        Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+                            var sortButtonPosition = window.GetInventorySortButtonPosition();
+                            window.Click( sortButtonPosition );
+                            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
 
-                        var closeButtonPosition = window.GetInventoryCloseButtonPosition();
-                        window.Click( closeButtonPosition );
-                        Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
-                        return new TradeResult( TradeResult.StatusType.SUCCEEDED, DateTime.Now, lastScreenShot, "" );
+                            var closeButtonPosition = window.GetInventoryCloseButtonPosition();
+                            window.Click( closeButtonPosition );
+                            Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                            return new TradeResult( TradeResult.StatusType.SUCCEEDED, DateTime.Now, lastScreenShot, "" );
+                        }
                     }
                 }
             } catch( ApplicationException e ) {

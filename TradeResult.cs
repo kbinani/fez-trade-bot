@@ -26,6 +26,11 @@ namespace com.github.kbinani.feztradenotify {
             /// 相手が野獣の血以外のアイテムを渡してきた
             /// </summary>
             WEIRED_ITEM_ENTRIED,
+
+            /// <summary>
+            /// トレード相手によるキャンセル処理
+            /// </summary>
+            CANCELLED_BY_CUSTOMER,
         }
 
         private StatusType status;
