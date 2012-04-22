@@ -90,7 +90,7 @@ namespace com.github.kbinani.feztradenotify {
 
                             var sortButtonPosition = window.GetInventorySortButtonPosition();
                             window.Click( sortButtonPosition );
-                            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+                            Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
 
                             var closeButtonPosition = window.GetInventoryCloseButtonPosition();
                             window.Click( closeButtonPosition );
