@@ -31,13 +31,12 @@ namespace com.github.kbinani.feztradenotify {
                 }
             }
 
-            if ( totalPixels != matchPixels ) {
-                WriteLog( image, template, totalPixels, matchPixels );
-            }
-
             // アイコン画像テンプレートとの差があるピクセルの個数が，
             // 全体のピクセル数の 5% 以下であれば，テンプレートと同じとみなす
             double diffPercentage = (totalPixels - matchPixels) * 100.0 / totalPixels;
+            if( totalPixels != matchPixels && diffPercentage <= 10.0 ) {
+                WriteLog( image, template, totalPixels, matchPixels );
+            }
             return diffPercentage <= 5.0;
         }
 
