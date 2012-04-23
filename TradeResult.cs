@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     /// <summary>
     /// トレードの実行結果を表現するクラス
     /// </summary>

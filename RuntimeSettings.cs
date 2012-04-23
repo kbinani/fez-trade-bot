@@ -1,11 +1,11 @@
 using System.IO;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     class RuntimeSettings {
         private string logDirectory = "";
 
         public RuntimeSettings( string[] args ) {
-            using( StreamReader reader = new StreamReader( "fez-trade-notify.conf" ) ) {
+            using( StreamReader reader = new StreamReader( "fez-trade-bot.conf" ) ) {
                 string line;
                 while( (line = reader.ReadLine()) != null ) {
                     string[] parameters = line.Split( '=' );

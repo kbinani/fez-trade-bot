@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Drawing.Imaging;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     class LoggingTask {
         private TradeResult tradeResult;
         private RuntimeSettings settings;

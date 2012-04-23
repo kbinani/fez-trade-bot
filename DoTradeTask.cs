@@ -4,7 +4,7 @@ using System.Threading;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     /// <summary>
     /// トレードを実行するタスク
     /// </summary>

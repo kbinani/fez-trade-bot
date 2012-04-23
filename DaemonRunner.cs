@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.IO;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     class DaemonRunner {
         enum Status {
             RUNNING,

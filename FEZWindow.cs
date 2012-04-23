@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.Collections.Generic;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     /// <summary>
     /// FEZのゲーム画面からの情報取得処理と操作処理を行うクラス
     /// </summary>

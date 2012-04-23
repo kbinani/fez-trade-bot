@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     /// <summary>
     /// クロニクルの任務破棄ダイアログを閉じるタスク
     /// </summary>

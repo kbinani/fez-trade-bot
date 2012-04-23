@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Drawing;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     /// <summary>
     /// トレードウィンドウで，アイテムをエントリーした後ウィンドウを閉じるまでの処理を行う
     /// </summary>

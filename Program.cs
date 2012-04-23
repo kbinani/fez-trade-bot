@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     class Program {
         static Queue<string> commands = new Queue<string>();
         static string buffer = "";

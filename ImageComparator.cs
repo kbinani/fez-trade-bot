@@ -4,7 +4,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace com.github.kbinani.feztradenotify {
+namespace com.github.kbinani.feztradebot {
     class ImageComparator {
         /// <summary>
         /// 画像を比較する．
