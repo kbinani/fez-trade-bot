@@ -1,4 +1,8 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.IO;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace com.github.kbinani.feztradenotify {
     class ImageComparator {
@@ -27,10 +31,46 @@ namespace com.github.kbinani.feztradenotify {
                 }
             }
 
+            if ( totalPixels != matchPixels ) {
+                WriteLog( image, template, totalPixels, matchPixels );
+            }
+
             // アイコン画像テンプレートとの差があるピクセルの個数が，
             // 全体のピクセル数の 5% 以下であれば，テンプレートと同じとみなす
             double diffPercentage = (totalPixels - matchPixels) * 100.0 / totalPixels;
             return diffPercentage <= 5.0;
+        }
+
+        /// <summary>
+        /// 画像の比較結果をログに残す
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="template"></param>
+        private static void WriteLog( Bitmap image, Bitmap template, int totalPixels, int matchPixels ) {
+            // ディレクトリ作成
+            string executeDirectory = Path.GetDirectoryName( Application.ExecutablePath );
+            string directoryName = Path.Combine( executeDirectory, "image_comparator_log" );
+            if ( !Directory.Exists( directoryName ) ) {
+                Directory.CreateDirectory( directoryName );
+            }
+
+            var now = DateTime.Now;
+            string date = now.ToString( "yyyy-MM-dd" );
+            string subDirectory = Path.Combine( directoryName, date );
+            if ( !Directory.Exists( subDirectory ) ) {
+                Directory.CreateDirectory( subDirectory );
+            }
+
+            string time = DateTime.Now.Ticks.ToString();
+            image.Save( Path.Combine( subDirectory, time + "_image.png" ), ImageFormat.Png );
+            template.Save( Path.Combine( subDirectory, time + "_template.png" ), ImageFormat.Png );
+
+            double diffPercentage = (totalPixels - matchPixels) * 100.0 / totalPixels;
+            using ( StreamWriter writer = new StreamWriter( Path.Combine( subDirectory, time + "_result.txt" ) ) ) {
+                writer.WriteLine( "totalPixels=" + totalPixels );
+                writer.WriteLine( "matchPixels=" + matchPixels );
+                writer.WriteLine( "diffPercentage=" + diffPercentage + "%" );
+            }
         }
     }
 }
