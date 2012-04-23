@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace com.github.kbinani.feztradenotify {
     class ApplicationException : Exception {
