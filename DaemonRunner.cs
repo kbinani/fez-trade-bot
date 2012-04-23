@@ -27,6 +27,9 @@ namespace com.github.kbinani.feztradenotify {
                 // コマンドが入力されていたら状態を変更する
                 string command = Program.PopCommand();
                 if( command == "quit" ) {
+                    if( window != null ) {
+                        window.Dispose();
+                    }
                     break;
                 } else if( command == "pause" ) {
                     this.status = Status.PAUSING;
