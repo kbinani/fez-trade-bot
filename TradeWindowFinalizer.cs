@@ -38,7 +38,7 @@ namespace com.github.kbinani.feztradebot {
                 if( !ImageComparator.Compare( tradeWindow, Resource.trade_window ) ) {
                     break;
                 }
-                this.screenShot = captured;
+                this.screenShot = tradeWindow;
 
                 // トレード相手が変なアイテム渡してきてないか確認する
                 foreach( var geometry in window.GetTradeCustomerEntriedItemGeometryEnumerator() ) {
