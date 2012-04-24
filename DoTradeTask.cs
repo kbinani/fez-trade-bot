@@ -48,7 +48,7 @@ namespace com.github.kbinani.feztradebot {
                     Bitmap screenShot = window.CaptureWindow();
                     Thread.Sleep( 200 );
                     CloseTradeWindow();
-                    return new TradeResult( TradeResult.StatusType.INVENTRY_NO_SPACE, DateTime.Now, screenShot, "" );
+                    return new TradeResult( TradeResult.StatusType.INVENTRY_NO_SPACE, screenShot, "" );
                 } else {
                     // トレードウィンドウを閉じ，トレードを終了する
                     var tradeWindowFinalizer = new TradeWinowFinalizer( window, emptyItemSlot );
@@ -72,15 +72,15 @@ namespace com.github.kbinani.feztradebot {
                         // キャンセルボタンを押してトレードを中断する
                         thread.Abort();
                         CloseTradeWindow();
-                        return new TradeResult( TradeResult.StatusType.FAILED, DateTime.Now, lastScreenShot, "" );
+                        return new TradeResult( TradeResult.StatusType.FAILED, lastScreenShot, "" );
                     } else if( weiredItemEntried ) {
                         CloseTradeWindow();
-                        return new TradeResult( TradeResult.StatusType.WEIRED_ITEM_ENTRIED, DateTime.Now, lastScreenShot, "" );
+                        return new TradeResult( TradeResult.StatusType.WEIRED_ITEM_ENTRIED, lastScreenShot, "" );
                     } else {
                         if( tradeWindowFinalizer.LastScreenShot == null ) {
                             // こちらが決定ボタンを押す直前のスクリーンショットが取れなかった
                             // つまり，相手がキャンセルボタンを押したためトレードウィンドウが閉じられた
-                            return new TradeResult( TradeResult.StatusType.CANCELLED_BY_CUSTOMER, DateTime.Now, initialTradeWindow, "" );
+                            return new TradeResult( TradeResult.StatusType.CANCELLED_BY_CUSTOMER, initialTradeWindow, "" );
                         } else {
                             // トレードが成功
                             // インベントリを開いて，ソートする
@@ -95,14 +95,14 @@ namespace com.github.kbinani.feztradebot {
                             var closeButtonPosition = window.GetInventoryCloseButtonPosition();
                             window.Click( closeButtonPosition );
                             Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
-                            return new TradeResult( TradeResult.StatusType.SUCCEEDED, DateTime.Now, lastScreenShot, "" );
+                            return new TradeResult( TradeResult.StatusType.SUCCEEDED, lastScreenShot, "" );
                         }
                     }
                 }
             } catch( ApplicationException e ) {
                 var screenShot = window.CaptureWindow();
                 CloseTradeWindow();
-                return new TradeResult( TradeResult.StatusType.FAILED, DateTime.Now, screenShot, e.Message );
+                return new TradeResult( TradeResult.StatusType.FAILED, screenShot, e.Message );
             }
         }
 

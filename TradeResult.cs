@@ -38,9 +38,9 @@ namespace com.github.kbinani.feztradebot {
         private Bitmap screenShot;
         private string message;
 
-        public TradeResult( StatusType status, DateTime time, Bitmap screenShot, string message ) {
+        public TradeResult( StatusType status, Bitmap screenShot, string message ) {
             this.status = status;
-            this.time = time;
+            this.time = DateTime.Now;
             this.screenShot = screenShot;
             this.message = message;
         }
