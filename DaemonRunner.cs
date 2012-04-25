@@ -52,7 +52,7 @@ namespace com.github.kbinani.feztradebot {
                 }
                 if( window == null ) {
                     try {
-                        IntPtr handle = WindowsAPI.FindWindow( null, "Fantasy Earth Zero" );
+                        IntPtr handle = FEZWindow.GetClientWindow();
                         if( handle == IntPtr.Zero ) {
                             Console.WriteLine( "FEZの画面が見つからなかった" );
                             continue;

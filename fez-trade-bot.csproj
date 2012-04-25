@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="ApplicationException.cs" />
     <Compile Include="ChronicleNotifyCloser.cs" />
+    <Compile Include="ClientLaunchTask.cs" />
     <Compile Include="DaemonRunner.cs" />
     <Compile Include="DoTradeTask.cs">
       <SubType>Code</SubType>
@@ -67,6 +68,7 @@
     <Content Include="beast_blood.png" />
     <Content Include="chronicle_notify_message.png" />
     <Content Include="icon_mask.png" />
+    <Content Include="login.png" />
     <Content Include="trade_error_dialog.png" />
     <Content Include="trade_window.png" />
   </ItemGroup>

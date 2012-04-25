@@ -3,6 +3,7 @@ using System.IO;
 namespace com.github.kbinani.feztradebot {
     class RuntimeSettings {
         private string logDirectory = "";
+        private string fezLauncher = "";
 
         public RuntimeSettings( string[] args ) {
             using( StreamReader reader = new StreamReader( "fez-trade-bot.conf" ) ) {
@@ -17,6 +18,10 @@ namespace com.github.kbinani.feztradebot {
                                 logDirectory = value;
                                 break;
                             }
+                            case "fezLauncher": {
+                                fezLauncher = value;
+                                break;
+                            }
                         }
                     }
                 }
@@ -26,6 +31,12 @@ namespace com.github.kbinani.feztradebot {
         public string LogDirectory {
             get {
                 return logDirectory;
+            }
+        }
+
+        public string FezLauncher {
+            get {
+                return fezLauncher;
             }
         }
     }

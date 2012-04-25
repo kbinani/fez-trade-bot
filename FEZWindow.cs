@@ -31,6 +31,29 @@ namespace com.github.kbinani.feztradebot {
             thread.Start();
         }
 
+        public static void DoClick( int x, int y ) {
+            WindowsAPI.SetCursorPos( x, y );
+            WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)x, (uint)y, 0, UIntPtr.Zero );
+            Thread.Sleep( 200 );
+            WindowsAPI.mouse_event( WindowsAPI.LEFTUP, (uint)x, (uint)y, 0, UIntPtr.Zero );
+        }
+
+        /// <summary>
+        /// ゲームクライアントのウィンドウハンドルを取得する
+        /// </summary>
+        /// <returns></returns>
+        public static IntPtr GetClientWindow() {
+            return WindowsAPI.FindWindow( "MainWindow", "Fantasy Earth Zero" );
+        }
+
+        /// <summary>
+        /// ゲームランチャーのウィンドウハンドルを取得する
+        /// </summary>
+        /// <returns></returns>
+        public static IntPtr GetLauncherWindow() {
+            return WindowsAPI.FindWindow( "#32770", "Fantasy Earth Zero" );
+        }
+
         /// <summary>
         /// アイコン領域の画像の中に，トレード要請を表すアイコンが表示されているかどうかを取得する
         /// </summary>
@@ -280,6 +303,52 @@ namespace com.github.kbinani.feztradebot {
         }
 
         /// <summary>
+        /// ログイン画面のSTARTボタンの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetLoginStartButtonGeometry() {
+            int startButtonLeft = 212 * Width / 800;
+            int startButtonRight = 595 * Width / 800;
+            int startButtonTop = 420 * Height / 600;
+
+            int exitButtonTop = 450 * Height / 600;
+            int height = exitButtonTop - 1 - startButtonTop;
+            return new Rectangle( startButtonLeft,
+                                  startButtonTop,
+                                  startButtonRight - startButtonLeft,
+                                  height );
+        }
+
+        /// <summary>
+        /// ログイン画面のEXITボタンの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetLoginExitButtonGeometry() {
+            var startButtonGeometry = GetLoginStartButtonGeometry();
+            int left = startButtonGeometry.Left;
+            int top = startButtonGeometry.Bottom + 1;
+            return new Rectangle( left, top, startButtonGeometry.Width, startButtonGeometry.Height );
+        }
+
+        /// <summary>
+        /// ID とパスワードを入力するダイアログの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetLoginDialogGeometry() {
+            //1024*768の時，Rectangle( 384, 456, 248, 148 )
+            //800*600の時，Rectangle( 272, 372, 248, 148 )
+            //1152*864の時，Rectangle( 448, 504, 248, 148 )
+            const int TOP_OFFSET = 72;
+            const int LEFT_OFFSET = 4;
+            const int WIDTH = 248;
+            const int HEIGHT = 148;
+
+            int top = this.Height / 2 + TOP_OFFSET;
+            int left = this.Width / 2 - WIDTH / 2 - LEFT_OFFSET;
+            return new Rectangle( left, top, WIDTH, HEIGHT );
+        }
+        
+        /// <summary>
         /// ゲームウィンドウ全体の画像を取得する
         /// </summary>
         /// <returns></returns>
@@ -325,11 +394,8 @@ namespace com.github.kbinani.feztradebot {
             var clickPosition = new Point();
             clickPosition.X = geometry.left + position.X;
             clickPosition.Y = geometry.top + position.Y;
-            WindowsAPI.SetCursorPos( clickPosition.X, clickPosition.Y );
 
-            WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
-            Thread.Sleep( 200 );
-            WindowsAPI.mouse_event( WindowsAPI.LEFTUP, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
+            DoClick( clickPosition.X, clickPosition.Y );
         }
 
         /// <summary>

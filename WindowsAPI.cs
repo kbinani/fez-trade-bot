@@ -23,6 +23,9 @@ namespace com.github.kbinani.feztradebot {
         [DllImport( "user32.dll", CharSet = CharSet.Auto )]
         public static extern IntPtr FindWindow( string lpClassName, string lpWindowName );
 
+        [DllImport( "user32.dll", SetLastError = true )]
+        public static extern IntPtr FindWindowEx( IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle );
+
         [DllImport( "user32.dll" )]
         public static extern bool GetWindowRect( IntPtr hWnd, ref RECT rect );
 
