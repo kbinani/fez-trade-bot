@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Drawing;
 
 namespace com.github.kbinani.feztradebot {
     /// <summary>
@@ -19,10 +20,24 @@ namespace com.github.kbinani.feztradebot {
                 Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
                 lock( window ) {
                     var notifyMessageGeometry = window.GetChronicleNotifyMessageGeometry();
-                    var notifyMessage = window.CaptureWindow( window.GetChronicleNotifyMessageGeometry() );
-                    if( ImageComparator.Compare( notifyMessage, Resource.chronicle_notify_message ) ) {
-                        var okButtonPosition = window.GetChronicleNotifyMessageOkButtonPosition();
+                    Bitmap notifyMessage = null;
+                    try {
+                        notifyMessage = window.CaptureWindow( window.GetChronicleNotifyMessageGeometry() );
+                    } catch( ApplicationException e ) {
+                        Console.Error.WriteLine( e.Message );
+                        break;
+                    }
+
+                    if( !ImageComparator.Compare( notifyMessage, Resource.chronicle_notify_message ) ) {
+                        continue;
+                    }
+                    
+                    var okButtonPosition = window.GetChronicleNotifyMessageOkButtonPosition();
+                    try {
                         window.Click( okButtonPosition );
+                    } catch( ApplicationException e ) {
+                        Console.Error.WriteLine( e.Message );
+                        break;
                     }
                 }
             }
