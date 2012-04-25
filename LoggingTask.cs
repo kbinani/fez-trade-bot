@@ -21,7 +21,11 @@ namespace com.github.kbinani.feztradebot {
             if( !Directory.Exists( imageDirectory ) ) {
                 Directory.CreateDirectory( imageDirectory );
             }
-            string imageFilePath = Path.Combine( imageDirectory, imageFileName );
+            string subDirectory = Path.Combine( imageDirectory, tradeResult.Time.ToString( "yyyy-MM-dd" ) );
+            if( !Directory.Exists( subDirectory ) ) {
+                Directory.CreateDirectory( subDirectory );
+            }
+            string imageFilePath = Path.Combine( subDirectory, imageFileName );
             tradeResult.ScreenShot.Save( imageFilePath, ImageFormat.Png );
 
             // ログファイルをcsvで保存
