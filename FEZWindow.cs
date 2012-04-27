@@ -347,7 +347,35 @@ namespace com.github.kbinani.feztradebot {
             int left = this.Width / 2 - WIDTH / 2 - LEFT_OFFSET;
             return new Rectangle( left, top, WIDTH, HEIGHT );
         }
-        
+
+        /// <summary>
+        /// ログインダイアログの，ID入力欄の位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetLoginDialogIDPosition() {
+            var loginDialogGeometry = GetLoginDialogGeometry();
+            // ログインダイアログに対して，
+            // 左上: x=112, y=32
+            // 右下: x=223, y=47
+            int x = loginDialogGeometry.Left + 167;
+            int y = loginDialogGeometry.Top + 39;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// ログインダイアログの，パスワード入力欄の位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetLoginDialogPasswordPosition() {
+            var loginDialogGeometry = GetLoginDialogGeometry();
+            // ログインダイアログに対して，
+            // 左上: x=112, y=72
+            // 右下: x=223, y=87
+            int x = loginDialogGeometry.Left + 167;
+            int y = loginDialogGeometry.Top + 79;
+            return new Point( x, y );
+        }
+
         /// <summary>
         /// ゲームウィンドウ全体の画像を取得する
         /// </summary>

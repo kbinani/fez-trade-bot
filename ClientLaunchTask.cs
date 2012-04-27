@@ -37,13 +37,25 @@ namespace com.github.kbinani.feztradebot {
             while( stopRequested == false ) {
                 Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
                 var login = window.CaptureWindow( loginGeometry );
-                {//TODO:
-                    login.Save( "login_captured.png", ImageFormat.Png );
-                }
                 if( ImageComparator.Compare( login, Resource.login ) ) {
                     break;
                 }
                 window.Click( new Point( x, y ) );
+            }
+
+            // ログインID&PASS入力
+            //TODO: 大文字・が来た時の処理
+            //TODO: 既に入っているログインIDを消去する処理
+            //TODO: ログインIDを保存する，のオプションのチェックを外した状態にする
+            window.Click( window.GetLoginDialogIDPosition() );
+            foreach( char c in settings.LoginId.ToUpper().ToCharArray() ) {
+                WindowsAPI.keybd_event( (byte)c, 0, 0, UIntPtr.Zero );
+                WindowsAPI.keybd_event( (byte)c, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
+            }
+            window.Click( window.GetLoginDialogPasswordPosition() );
+            foreach( char c in settings.LoginPassword.ToUpper().ToCharArray() ) {
+                WindowsAPI.keybd_event( (byte)c, 0, 0, UIntPtr.Zero );
+                WindowsAPI.keybd_event( (byte)c, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
         }
 
