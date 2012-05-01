@@ -6,13 +6,18 @@ using System.Windows.Forms;
 
 namespace com.github.kbinani.feztradebot {
     class ImageComparator {
+        public static bool Compare( Bitmap image, Bitmap template ) {
+            return Compare( image, template, 5 );
+        }
+
         /// <summary>
         /// 画像を比較する．
         /// </summary>
         /// <param name="image">ゲーム画面からキャプチャした何らかの画像</param>
         /// <param name="template">imageと同じサイズの，比較対象の画像．左上のピクセルをマスク色として利用する</param>
+        /// <param name="thresholdDifferencePercentage">色に違いのあるピクセルの割合がパーセンテージ以下であれば，画像は同じと判断する</param>
         /// <returns></returns>
-        public static bool Compare( Bitmap image, Bitmap template ) {
+        public static bool Compare( Bitmap image, Bitmap template, int thresholdDifferencePercentage ) {
             Color maskColor = template.GetPixel( 0, 0 );
 
             int totalPixels = 0;
@@ -32,12 +37,16 @@ namespace com.github.kbinani.feztradebot {
             }
 
             // アイコン画像テンプレートとの差があるピクセルの個数が，
-            // 全体のピクセル数の 5% 以下であれば，テンプレートと同じとみなす
+            // 全体のピクセル数の指定割合以下であれば，テンプレートと同じとみなす
             double diffPercentage = (totalPixels - matchPixels) * 100.0 / totalPixels;
             if( totalPixels != matchPixels && diffPercentage <= 10.0 ) {
                 WriteLog( image, template, totalPixels, matchPixels );
             }
-            return diffPercentage <= 5.0;
+            if( totalPixels == matchPixels ) {
+                return true;
+            } else {
+                return diffPercentage <= thresholdDifferencePercentage;
+            }
         }
 
         /// <summary>
