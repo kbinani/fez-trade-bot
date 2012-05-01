@@ -73,17 +73,11 @@
     <Content Include="chronicle_notify_message.png" />
     <Content Include="icon_mask.png" />
     <Content Include="login.png" />
-    <Content Include="tesseract\tesseract.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="trade_error_dialog.png" />
     <Content Include="trade_window.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fez-trade-bot.conf.tmpl" />
-    <None Include="tesseract\tessdata\jpn.traineddata">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
