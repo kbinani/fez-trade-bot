@@ -17,7 +17,7 @@ namespace com.github.kbinani.feztradebot {
         private static Font font = null;
 
         public static void ResetMask( int index, int width, Bitmap result ) {
-            int clipX = 6 + index * CHARACTER_WIDTH + 1;
+            int clipX = -1 + index * CHARACTER_WIDTH + 2;
             using( var graphics = Graphics.FromImage( result ) ) {
                 graphics.FillRectangle(
                     new SolidBrush( Color.FromArgb( 255, 0, 255 ) ),
@@ -25,7 +25,7 @@ namespace com.github.kbinani.feztradebot {
                 );
                 graphics.FillRectangle(
                     Brushes.White,
-                    clipX, 0, width * CHARACTER_WIDTH, FEZWindow.TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT
+                    clipX, 1, width * CHARACTER_WIDTH, FEZWindow.TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT - 2
                 );
             }
         }
@@ -38,8 +38,8 @@ namespace com.github.kbinani.feztradebot {
         /// <param name="howManyBytes">文字がshift_jisに変換した時何バイトか</param>
         /// <returns></returns>
         public static void DrawMask( char c, int index, Bitmap result ) {
-            int drawX = 6 + index * CHARACTER_WIDTH;
-            int drawY = 2;
+            int drawX = -1 + index * CHARACTER_WIDTH;
+            int drawY = 1;
 
             int clipX = drawX + 1;
             //int width = CHARACTER_WIDTH * howManyBytes;
