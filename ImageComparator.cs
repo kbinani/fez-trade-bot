@@ -10,6 +10,14 @@ namespace com.github.kbinani.feztradebot {
             return Compare( image, template, 5 );
         }
 
+        public static bool Compare( Bitmap image, Bitmap template, int thresholdDifferencePercentage ) {
+            if( thresholdDifferencePercentage == 0 ) {
+                return CompareStrict( image, template );
+            } else {
+                return CompareLoose( image, template, thresholdDifferencePercentage );
+            }
+        }
+
         /// <summary>
         /// 画像を比較する．
         /// </summary>
@@ -17,7 +25,7 @@ namespace com.github.kbinani.feztradebot {
         /// <param name="template">imageと同じサイズの，比較対象の画像．左上のピクセルをマスク色として利用する</param>
         /// <param name="thresholdDifferencePercentage">色に違いのあるピクセルの割合がパーセンテージ以下であれば，画像は同じと判断する</param>
         /// <returns></returns>
-        public static bool Compare( Bitmap image, Bitmap template, int thresholdDifferencePercentage ) {
+        private static bool CompareLoose( Bitmap image, Bitmap template, int thresholdDifferencePercentage ) {
             Color maskColor = template.GetPixel( 0, 0 );
 
             int totalPixels = 0;
@@ -47,6 +55,30 @@ namespace com.github.kbinani.feztradebot {
             } else {
                 return diffPercentage <= thresholdDifferencePercentage;
             }
+        }
+
+        /// <summary>
+        /// 1ピクセルの差もなく，2つの画像が同じかどうかを調べる．
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        private static bool CompareStrict( Bitmap image, Bitmap template ) {
+            Color maskColor = template.GetPixel( 0, 0 );
+
+            for( int y = 0; y < template.Height; y++ ) {
+                for( int x = 0; x < template.Width; x++ ) {
+                    Color colorOfMask = template.GetPixel( x, y );
+                    if( colorOfMask != maskColor ) {
+                        Color colorOfActual = image.GetPixel( x, y );
+                        if( colorOfActual != colorOfMask ) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
