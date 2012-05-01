@@ -19,11 +19,6 @@ namespace com.github.kbinani.feztradebot {
         /// </summary>
         public const int TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT = 55 - 40;
 
-        /// <summary>
-        /// トレードウィンドウの背景色
-        /// </summary>
-        public static readonly Color TRADE_WINDOW_BACKGROUND_COLOR = Color.FromArgb( 249, 248, 237 );
-
         private IntPtr windowHandle;
         private int _width;
         private int _height;
