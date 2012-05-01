@@ -54,9 +54,6 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="RuntimeSettings.cs" />
-    <Compile Include="Tesseract.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="TradeResult.cs" />
     <Compile Include="TradeWindowFinalizer.cs" />
     <Compile Include="WindowsAPI.cs" />
