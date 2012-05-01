@@ -39,20 +39,30 @@ namespace com.github.kbinani.feztradebot {
         private string GetCustomerName( Bitmap customerNameImage ) {
             string result = "";
             int index = 0;
+
+            var mask = new Bitmap(
+                FEZWindow.TRADE_WINDOW_CUSTOMER_GEOMETRY_WIDTH,
+                FEZWindow.TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT,
+                PixelFormat.Format24bppRgb );
+
             while( index < 16 ) {
-                int howManyBytes = 0;
                 char found = '\0';
 
-                if( ImageComparator.Compare( customerNameImage, StringMaskFactory.GetEmpty( index, 2 ), 0 ) &&
-                    ImageComparator.Compare( customerNameImage, StringMaskFactory.GetEmpty( index, 1 ), 0 ) ) {
-                    break;
+                StringMaskFactory.ResetMask( index, 2, mask );
+                if( ImageComparator.Compare( customerNameImage, mask, 0 ) ){
+                    StringMaskFactory.ResetMask( index, 1, mask );
+                    if( ImageComparator.Compare( customerNameImage, mask, 0 ) ) {
+                        break;
+                    }
                 }
 
                 foreach( var c in ShiftJISCharacterEnumerator.GetEnumerator() ) {
-                    var mask = StringMaskFactory.Get( c, index, out howManyBytes );
+                    var isHalfWidth = StringMaskFactory.IsHalfWidthCharacter( c );
+                    StringMaskFactory.ResetMask( index, isHalfWidth ? 1 : 2, mask );
+                    StringMaskFactory.DrawMask( c, index, mask );
                     if( ImageComparator.Compare( customerNameImage, mask, 0 ) ) {
                         found = c;
-                        index += howManyBytes;
+                        index += isHalfWidth ? 1 : 2;
                         break;
                     }
                 }

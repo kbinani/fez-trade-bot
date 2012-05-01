@@ -8,13 +8,16 @@ namespace com.github.kbinani.feztradebot {
     /// トレードウィンドウの，トレード相手の名前を調べる際に使用するマスク画像を作成する
     /// </summary>
     class StringMaskFactory {
-        public static Bitmap GetEmpty( int index, int width ) {
-            var result = new Bitmap(
-                FEZWindow.TRADE_WINDOW_CUSTOMER_GEOMETRY_WIDTH,
-                FEZWindow.TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT,
-                PixelFormat.Format24bppRgb
-            );
-            int clipX = 6 + index * 6 + 1;
+        /// <summary>
+        /// 文字の幅（ピクセル単位）
+        /// </summary>
+        public const int CHARACTER_WIDTH = 6;
+
+        private static System.Text.Encoder encoder = null;
+        private static Font font = null;
+
+        public static void ResetMask( int index, int width, Bitmap result ) {
+            int clipX = 6 + index * CHARACTER_WIDTH + 1;
             using( var graphics = Graphics.FromImage( result ) ) {
                 graphics.FillRectangle(
                     new SolidBrush( Color.FromArgb( 255, 0, 255 ) ),
@@ -22,10 +25,9 @@ namespace com.github.kbinani.feztradebot {
                 );
                 graphics.FillRectangle(
                     Brushes.White,
-                    clipX, 0, width * 6, FEZWindow.TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT
+                    clipX, 0, width * CHARACTER_WIDTH, FEZWindow.TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT
                 );
             }
-            return result;
         }
 
         /// <summary>
@@ -35,22 +37,41 @@ namespace com.github.kbinani.feztradebot {
         /// <param name="index">左から何バイト目の文字であるかを指定する</param>
         /// <param name="howManyBytes">文字がshift_jisに変換した時何バイトか</param>
         /// <returns></returns>
-        public static Bitmap Get( char c, int index, out int howManyBytes ) {
-            howManyBytes = Encoding.GetEncoding( "Shift_JIS" ).GetEncoder().GetByteCount( new char[] { c }, 0, 1, true );
-            int drawX = 6 + index * 6;
+        public static void DrawMask( char c, int index, Bitmap result ) {
+            int drawX = 6 + index * CHARACTER_WIDTH;
             int drawY = 2;
 
             int clipX = drawX + 1;
-            int width = 6 * howManyBytes;
-            var result = GetEmpty( index, howManyBytes );
+            //int width = CHARACTER_WIDTH * howManyBytes;
             using( var graphics = Graphics.FromImage( result ) ) {
                 graphics.DrawString(
-                    new string( c, 1 ), new Font( "ＭＳ ゴシック", 9 ), Brushes.Black,
+                    new string( c, 1 ), GetFont(), Brushes.Black,
                     drawX, drawY
                 );
             }
+        }
 
-            return result;
+        /// <summary>
+        /// 指定した文字が半角文字かどうかを取得する
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static bool IsHalfWidthCharacter( char c ) {
+            return GetEncoder().GetByteCount( new char[] { c }, 0, 1, true ) == 1;
+        }
+
+        private static System.Text.Encoder GetEncoder() {
+            if( encoder == null ) {
+                encoder = Encoding.GetEncoding( "Shift_JIS" ).GetEncoder();
+            }
+            return encoder;
+        }
+
+        private static Font GetFont() {
+            if( font == null ) {
+                font = new Font( "ＭＳ ゴシック", 9 );
+            }
+            return font;
         }
     }
 }
