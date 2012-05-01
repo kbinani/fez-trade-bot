@@ -9,6 +9,21 @@ namespace com.github.kbinani.feztradebot {
     /// FEZのゲーム画面からの情報取得処理と操作処理を行うクラス
     /// </summary>
     class FEZWindow : IDisposable {
+        /// <summary>
+        /// トレードウィンドウの，トレード相手の名前が表示されているエリアの幅
+        /// </summary>
+        public const int TRADE_WINDOW_CUSTOMER_GEOMETRY_WIDTH = 419 - 318;
+
+        /// <summary>
+        /// トレードウィンドウの，トレード相手の名前が表示されているエリアの高さ
+        /// </summary>
+        public const int TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT = 55 - 40;
+
+        /// <summary>
+        /// トレードウィンドウの背景色
+        /// </summary>
+        public static readonly Color TRADE_WINDOW_BACKGROUND_COLOR = Color.FromArgb( 249, 248, 237 );
+
         private IntPtr windowHandle;
         private int _width;
         private int _height;
@@ -108,7 +123,7 @@ namespace com.github.kbinani.feztradebot {
         }
 
         /// <summary>
-        /// トレード要求をしてきたユーザー名が表示されている領域を取得する
+        /// 左下に表示されるトレード要求アイコン領域のうち，ユーザー名が表示されている領域を取得する
         /// </summary>
         /// <param name="screenShot"></param>
         /// <returns></returns>
@@ -169,8 +184,8 @@ namespace com.github.kbinani.feztradebot {
             // 右下: x=419, y=55
             int left = tradeWindowGeometry.Left + 318;
             int top = tradeWindowGeometry.Top + 40;
-            const int width = 419 - 318;
-            const int height = 55 - 40;
+            const int width = TRADE_WINDOW_CUSTOMER_GEOMETRY_WIDTH;
+            const int height = TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT;
             return new Rectangle( left, top, width, height );
         }
 
