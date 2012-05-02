@@ -88,7 +88,7 @@ namespace com.github.kbinani.feztradebot {
                 result = doTradeTask.Run();
             }
 
-            var replyTask = new ReplyTask( window, result );
+            var replyTask = new ReplyTask( window, result, settings );
             replyTask.Run();
 
             // ログを出力する

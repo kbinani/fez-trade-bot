@@ -11,10 +11,12 @@ namespace com.github.kbinani.feztradebot {
     class ReplyTask {
         private FEZWindow window;
         private TradeResult tradeResult;
+        private RuntimeSettings settings;
 
-        public ReplyTask( FEZWindow window, TradeResult tradeResult ) {
+        public ReplyTask( FEZWindow window, TradeResult tradeResult, RuntimeSettings settings ) {
             this.window = window;
             this.tradeResult = tradeResult;
+            this.settings = settings;
         }
 
         public void Run() {
@@ -34,7 +36,26 @@ namespace com.github.kbinani.feztradebot {
                 return;
             }
 
-            string message = "/tell " + targetName + " test";
+            string statusMessage = "";
+            switch( tradeResult.Status ) {
+                case TradeResult.StatusType.SUCCEEDED: {
+                    statusMessage = settings.TellMessageSucceeded;
+                    break;
+                }
+                case TradeResult.StatusType.INVENTRY_NO_SPACE: {
+                    statusMessage = settings.TellMessageInventoryNoSpace;
+                    break;
+                }
+                case TradeResult.StatusType.WEIRED_ITEM_ENTRIED: {
+                    statusMessage = settings.TellMessageWeiredItemEntried;
+                    break;
+                }
+            }
+            if( statusMessage == "" ) {
+                return;
+            }
+
+            string message = "/tell " + targetName + " " + statusMessage;
             SendMessage( message );
         }
 
