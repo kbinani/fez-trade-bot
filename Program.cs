@@ -10,6 +10,7 @@ namespace com.github.kbinani.feztradebot {
         static bool stopRequied = false;
 
         static void Main( string[] args ) {
+            TextFinder.Initialize();
             RuntimeSettings settings = new RuntimeSettings( args );
 
             var keyListener = new Thread( new ThreadStart( ReceiveKeyPress ) );

@@ -12,12 +12,12 @@ namespace com.github.kbinani.feztradebot {
         /// <summary>
         /// トレードウィンドウの，トレード相手の名前が表示されているエリアの幅
         /// </summary>
-        public const int TRADE_WINDOW_CUSTOMER_GEOMETRY_WIDTH = 419 - 318 - 3;
+        public const int TRADE_WINDOW_CUSTOMER_GEOMETRY_WIDTH = 419 - 318 - 5;
 
         /// <summary>
         /// トレードウィンドウの，トレード相手の名前が表示されているエリアの高さ
         /// </summary>
-        public const int TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT = 55 - 40 - 1;
+        public const int TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT = 55 - 40 - 3;
 
         private IntPtr windowHandle;
         private int _width;
@@ -177,8 +177,8 @@ namespace com.github.kbinani.feztradebot {
             // トレードウィンドウに対して
             // 左上: x=318, y=40
             // 右下: x=419, y=55
-            int left = tradeWindowGeometry.Left + 318 + 7;
-            int top = tradeWindowGeometry.Top + 40 + 1;
+            int left = tradeWindowGeometry.Left + 318 + 8;
+            int top = tradeWindowGeometry.Top + 40 + 2;
             const int width = TRADE_WINDOW_CUSTOMER_GEOMETRY_WIDTH;
             const int height = TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT;
             return new Rectangle( left, top, width, height );
