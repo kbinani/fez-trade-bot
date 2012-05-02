@@ -244,6 +244,33 @@ namespace com.github.kbinani.feztradebot {
         }
 
         /// <summary>
+        /// ゲーム画面右下にある「システム」ボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetSystemButtonPosition() {
+            // ウィンドウサイズ 1024*768の場合に
+            // ボタン左上: x=920, y=688
+            // ボタン右下: x=1012, y=711
+            int x = this.Width - 58;
+            int y = this.Height - 68;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// ゲーム画面右下の「システム」ボタンを押すことで現れるメニューの中の，
+        /// 「部隊リスト」メニューのいちを取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetSystemGuildListMenuPosition() {
+            // ウィンドウサイズが800*600の場合に，
+            // 左上: x=552, y=334
+            // 右下: x=678, y=350
+            int x = this.Width - 185;
+            int y = this.Height - 258;
+            return new Point( x, y );
+        }
+
+        /// <summary>
         /// インベントリの「ソート」ボタンの位置を取得する
         /// </summary>
         /// <returns></returns>
@@ -384,6 +411,71 @@ namespace com.github.kbinani.feztradebot {
             int x = loginDialogGeometry.Left + 167;
             int y = loginDialogGeometry.Top + 79;
             return new Point( x, y );
+        }
+
+        /// <summary>
+        /// 部隊リストダイアログの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetGuildListDialogGeometry() {
+            // 800*600の時，
+            // 左上: x=16, y=104
+            // 右下: x=784, y=496
+            int width = 768;
+            int height = 392;
+            int left = this.Width / 2 - width / 2;
+            int top = this.Height / 2 - height / 2;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
+        /// 部隊リストに表示されている index 番目のメンバーの領域を取得する
+        /// index は 0 から始まる．返す座標は，ゲーム画面左上に対して
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public Rectangle GetGuildListDialogMemberGeometry( int index ) {
+            var guildListGeometry = GetGuildListDialogGeometry();//746,92
+            // 0 番目の領域: { left=8, top=76, width=738, height=16 }; ダイアログ左上に対して
+            // 1 番目の領域: { left=8, top=94, width=738, height=16 }; ダイアログ左上に対して
+            int x = 8;
+            int y = 76 + index * 18;
+            return new Rectangle(
+                guildListGeometry.Left + x, guildListGeometry.Top + y,
+                738, 16 );
+        }
+
+        /// <summary>
+        /// 部隊リストに表示されているメンバーをクリックした時に出現する，「Tellを送信」ボタンの領域を取得する
+        /// </summary>
+        /// <param name="clickPosition">クリックした座標．座標はゲーム画面左上に対して</param>
+        /// <returns>領域．座標はゲーム画面左上に対して</returns>
+        public Rectangle GetGuildListDialogMemberSendTellMenuGeometry( Point clickPosition ) {
+            // クリック位置: x=1120, y=306 の時，
+            // 左上: x=1128, y=310
+            // 右下: x=1188, y=322
+            const int width = 1188 - 1128;
+            const int height = 322 - 310;
+            const int deltaX = 1128 - 1120;
+            const int deltaY = 310 - 306;
+            return new Rectangle(
+                clickPosition.X + deltaX, clickPosition.Y + deltaY,
+                width, height );
+        }
+
+        /// <summary>
+        /// チャット入力欄の領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetChatTextBoxGeometry() {
+            // 800 * 600 の時，
+            // 左上: x=36, y=574
+            // 右下: x=295, y=586
+            int width = 295 - 36;
+            int height = 586 - 574;
+            return new Rectangle(
+                this.Width + 36, this.Height - 26,
+                width, height );
         }
 
         /// <summary>

@@ -29,9 +29,6 @@ namespace com.github.kbinani.feztradebot {
                 if( searchKey == "" ) {
                     if( map.ContainsKey( key ) ) {
                         result += new string( map[key], 1 );
-                        {//TODO:
-                            Console.WriteLine( "key=" + key );
-                        }
                     } else {
                         searchKey = key;
                     }
@@ -39,9 +36,6 @@ namespace com.github.kbinani.feztradebot {
                     searchKey += key;
                     if( map.ContainsKey( searchKey ) ) {
                         result += new string( map[searchKey], 1 );
-                        {//TODO:
-                            Console.WriteLine( "key=" + key );
-                        }
                         searchKey = "";
                     } else if( searchKey == FullWidthEmpty ) {
                         break;

@@ -9,6 +9,7 @@ namespace com.github.kbinani.feztradebot {
         static string buffer = "";
         static bool stopRequied = false;
 
+        [STAThreadAttribute]
         static void Main( string[] args ) {
             TextFinder.Initialize();
             RuntimeSettings settings = new RuntimeSettings( args );
@@ -18,6 +19,7 @@ namespace com.github.kbinani.feztradebot {
 
             var runner = new DaemonRunner( settings );
             var t = new Thread( new ThreadStart( runner.Run ) );
+            t.SetApartmentState( ApartmentState.STA );
             t.Start();
             t.Join();
 

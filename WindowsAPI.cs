@@ -18,7 +18,14 @@ namespace com.github.kbinani.feztradebot {
         public const uint XUP = 0x00000100;
 
         public const byte VK_ESCAPE = 0x1B;
+        public const byte VK_ENTER = 10;
+        public const byte VK_RETURN = 0xD;
+        public const byte VK_CONTROL = 17;
+        public const byte VK_BACK_SPACE = 8;
         public const byte KEYEVENTF_KEYUP = 0x0002;
+
+        public const uint WM_KEYDOWN = 0x0100;
+        public const uint WM_KEYUP = 0x0101;
 
         [DllImport( "user32.dll", CharSet = CharSet.Auto )]
         public static extern IntPtr FindWindow( string lpClassName, string lpWindowName );
@@ -53,7 +60,13 @@ namespace com.github.kbinani.feztradebot {
 
         [DllImport( "user32.dll" )]
         public static extern void keybd_event( byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo );
-        
+
+        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
+        public static extern IntPtr SendMessage( IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam );
+
+        [DllImport( "user32.dll" )]
+        public static extern IntPtr SendMessage( IntPtr hWnd, UInt32 Msg, Int32 wParam, Int32 lParam );
+
         [StructLayout( LayoutKind.Sequential )]
         public struct RECT {
             public int left;
