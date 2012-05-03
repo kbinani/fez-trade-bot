@@ -20,19 +20,23 @@ namespace com.github.kbinani.feztradebot {
         }
 
         public void Run() {
-            if( tradeResult.Status != TradeResult.StatusType.INVENTRY_NO_SPACE &&
-                tradeResult.Status != TradeResult.StatusType.SUCCEEDED &&
-                tradeResult.Status != TradeResult.StatusType.WEIRED_ITEM_ENTRIED
-            ) {
-                return;
-            }
-
             var customerNameImage = GetCustomerNameImage( tradeResult.ScreenShot );
             string targetName = "";
             try {
                 targetName = TextFinder.Find( customerNameImage );
             } catch( ApplicationException e ) {
                 Console.WriteLine( e.Message );
+                return;
+            }
+
+            string adminMessage = "/tell " + settings.AdminPC + " " + targetName + " さんが来店: ステータス=" + tradeResult.Status;
+            SendMessage( adminMessage );
+            Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+
+            if( tradeResult.Status != TradeResult.StatusType.INVENTRY_NO_SPACE &&
+                tradeResult.Status != TradeResult.StatusType.SUCCEEDED &&
+                tradeResult.Status != TradeResult.StatusType.WEIRED_ITEM_ENTRIED
+            ) {
                 return;
             }
 
@@ -57,6 +61,7 @@ namespace com.github.kbinani.feztradebot {
 
             string message = "/tell " + targetName + " " + statusMessage;
             SendMessage( message );
+            Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
         }
 
         /// <summary>

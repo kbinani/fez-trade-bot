@@ -11,6 +11,7 @@ namespace com.github.kbinani.feztradebot {
         private List<string> tellMessageInventoryNoSpace = new List<string>();
         private List<string> tellMessageSucceeded = new List<string>();
         private List<string> tellMessageWeiredItemEntried = new List<string>();
+        private string adminPC = "";
         private Random random = new Random();
 
         public RuntimeSettings( string[] args ) {
@@ -48,6 +49,10 @@ namespace com.github.kbinani.feztradebot {
                             }
                             case "tellMessage.weiredItemEntried": {
                                 tellMessageWeiredItemEntried.Add( value );
+                                break;
+                            }
+                            case "adminPC": {
+                                adminPC = value;
                                 break;
                             }
                         }
@@ -95,6 +100,12 @@ namespace com.github.kbinani.feztradebot {
         public string TellMessageWeiredItemEntried {
             get {
                 return SelectRandomMessage( tellMessageWeiredItemEntried );
+            }
+        }
+
+        public string AdminPC {
+            get {
+                return adminPC;
             }
         }
 
