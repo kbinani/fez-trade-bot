@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="RuntimeSettings.cs" />
     <Compile Include="ShiftJISCharacterEnumerator.cs" />
+    <Compile Include="SortInventoryTask.cs" />
     <Compile Include="TextFinder.cs" />
     <Compile Include="TradeResult.cs" />
     <Compile Include="TradeWindowFinalizer.cs" />

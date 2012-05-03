@@ -91,6 +91,11 @@ namespace com.github.kbinani.feztradebot {
             var replyTask = new ReplyTask( window, result, settings );
             replyTask.Run();
 
+            if( result.Status == TradeResult.StatusType.SUCCEEDED ) {
+                var sortInventoryTask = new SortInventoryTask( window );
+                sortInventoryTask.Run();
+            }
+
             // ログを出力する
             var loggingTask = new LoggingTask( result, settings );
             loggingTask.Run();
