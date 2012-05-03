@@ -414,6 +414,19 @@ namespace com.github.kbinani.feztradebot {
         }
 
         /// <summary>
+        /// キャラクタ選択ダイアログの、キャラクタ情報を表示しているダイアログの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetCharacterSelectDialogGeometry() {
+            // 1024*768のとき、
+            // 左上: x=16, y=64
+            // 右下: x=224, y=320
+            const int width = 224 - 16;
+            const int height = 320 - 64;
+            return new Rectangle( 16, 64, width, height );
+        }
+
+        /// <summary>
         /// 部隊リストダイアログの領域を取得する
         /// </summary>
         /// <returns></returns>
@@ -534,20 +547,9 @@ namespace com.github.kbinani.feztradebot {
         /// <param name="x"></param>
         /// <param name="y"></param>
         public void DoubleClick( Point position ) {
-            var geometry = new WindowsAPI.RECT();
-            WindowsAPI.GetWindowRect( this.windowHandle, ref geometry );
-            var clickPosition = new Point();
-            clickPosition.X = geometry.left + position.X;
-            clickPosition.Y = geometry.top + position.Y;
-            WindowsAPI.SetCursorPos( clickPosition.X, clickPosition.Y );
-
-            WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
-            Thread.Sleep( 200 );
-            WindowsAPI.mouse_event( WindowsAPI.LEFTUP, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
-            Thread.Sleep( 200 );
-            WindowsAPI.mouse_event( WindowsAPI.LEFTDOWN, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
-            Thread.Sleep( 200 );
-            WindowsAPI.mouse_event( WindowsAPI.LEFTUP, (uint)clickPosition.X, (uint)clickPosition.Y, 0, UIntPtr.Zero );
+            Click( position );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+            Click( position );
         }
 
         /// <summary>
@@ -616,6 +618,13 @@ namespace com.github.kbinani.feztradebot {
             get {
                 return _height;
             }
+        }
+
+        /// <summary>
+        /// ウィンドウをアクティブ化する
+        /// </summary>
+        public void Activate() {
+            WindowsAPI.SetForegroundWindow( this.Handle );
         }
     }
 }

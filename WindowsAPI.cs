@@ -26,6 +26,21 @@ namespace com.github.kbinani.feztradebot {
 
         public const uint WM_KEYDOWN = 0x0100;
         public const uint WM_KEYUP = 0x0101;
+        public const uint WM_LBUTTONDOWN = 0x0201;
+        public const uint WM_LBUTTONUP = 0x0202;
+
+        public const uint WINSTA_ENUMDESKTOPS = 0x0001;
+        public const uint WINSTA_READATTRIBUTES = 0x0002;
+        public const uint WINSTA_ACCESSCLIPBOARD = 0x0004;
+        public const uint WINSTA_CREATEDESKTOP = 0x0008;
+        public const uint WINSTA_WRITEATTRIBUTES = 0x0010;
+        public const uint WINSTA_ACCESSGLOBALATOMS = 0x0020;
+        public const uint WINSTA_EXITWINDOWS = 0x0040;
+        public const uint WINSTA_ENUMERATE = 0x0100;
+        public const uint WINSTA_READSCREEN = 0x0200;
+        public const uint WINSTA_ALL_ACCESS = (WINSTA_ENUMDESKTOPS | WINSTA_READATTRIBUTES | WINSTA_ACCESSCLIPBOARD |
+                                     WINSTA_CREATEDESKTOP | WINSTA_WRITEATTRIBUTES | WINSTA_ACCESSGLOBALATOMS |
+                                     WINSTA_EXITWINDOWS | WINSTA_ENUMERATE | WINSTA_READSCREEN);
 
         [DllImport( "user32.dll", CharSet = CharSet.Auto )]
         public static extern IntPtr FindWindow( string lpClassName, string lpWindowName );
@@ -67,12 +82,36 @@ namespace com.github.kbinani.feztradebot {
         [DllImport( "user32.dll" )]
         public static extern IntPtr SendMessage( IntPtr hWnd, UInt32 Msg, Int32 wParam, Int32 lParam );
 
+        [DllImport( "user32.dll", SetLastError = true )]
+        public static extern IntPtr SetActiveWindow( IntPtr hWnd );
+
+        [DllImport( "user32", CharSet = CharSet.Auto )]
+        public static extern IntPtr OpenWindowStation(
+            string lpszWinSta,           // ウィンドウステーションの名前
+            bool fInherit,               // 継承オプション
+            UInt32 dwDesiredAccess  // ハンドルのアクセス権
+        );
+
+        [DllImport( "user32" )]
+        public static extern int SetProcessWindowStation(
+            IntPtr hWinSta  // ウィンドウステーションのハンドル
+        );
+
+        [return: MarshalAs( UnmanagedType.Bool )]
+        [DllImport( "user32.dll", SetLastError = true )]
+        public static extern bool PostMessage( IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam );
+
         [StructLayout( LayoutKind.Sequential )]
         public struct RECT {
             public int left;
             public int top;
             public int right;
             public int bottom;
+        }
+
+        public static IntPtr MAKELPARAM( UInt16 wLow, UInt16 wHigh ) {
+            int result = ((int)(wHigh << 16)) | (int)(0xFFFF & wLow);
+            return new IntPtr( result );
         }
     }
 }
