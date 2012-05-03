@@ -30,7 +30,7 @@ namespace com.github.kbinani.feztradebot {
             var okButtonGeometry = window.GetTradeWindowOkButtonPosition();
             var tradeWindowGeometry = window.GetTradeWindowGeometry();
             while( true ) {
-                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
 
                 // トレードウィンドウが消えるまで，決定ボタンを押し続ける
                 var captured = window.CaptureWindow();
