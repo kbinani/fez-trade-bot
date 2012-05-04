@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace com.github.kbinani.feztradebot {
     class Program {

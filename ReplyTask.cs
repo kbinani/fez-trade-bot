@@ -21,22 +21,57 @@ namespace com.github.kbinani.feztradebot {
 
         public void Run() {
             var customerNameImage = GetCustomerNameImage( tradeResult.ScreenShot );
-            string targetName = "";
+            SendLogMessage( customerNameImage );
+
+            if( tradeResult.Status == TradeResult.StatusType.INVENTRY_NO_SPACE ||
+                tradeResult.Status == TradeResult.StatusType.SUCCEEDED ||
+                tradeResult.Status == TradeResult.StatusType.WEIRED_ITEM_ENTRIED
+            ) {
+                SendThanksMessage( customerNameImage );
+            }
+        }
+
+        /// <summary>
+        /// 来店ログを自キャラに送信
+        /// </summary>
+        /// <param name="customerNameImage"></param>
+        private void SendLogMessage( Bitmap customerNameImage ) {
+            var customerName = "";
             try {
-                targetName = TextFinder.Find( customerNameImage );
+                customerName = TextFinder.FuzzyFind( customerNameImage );
             } catch( ApplicationException e ) {
                 Console.WriteLine( e.Message );
                 return;
             }
 
-            string adminMessage = "/tell " + settings.AdminPC + " " + targetName + " さんが来店: ステータス=" + tradeResult.Status;
-            SendMessage( adminMessage );
-            Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            var mode = "STRICT";
+            try {
+                TextFinder.Find( customerNameImage );
+            } catch( ApplicationException e ) {
+                mode = "FUZZY";
+            }
 
-            if( tradeResult.Status != TradeResult.StatusType.INVENTRY_NO_SPACE &&
-                tradeResult.Status != TradeResult.StatusType.SUCCEEDED &&
-                tradeResult.Status != TradeResult.StatusType.WEIRED_ITEM_ENTRIED
-            ) {
+            if( settings.AdminPC != "" ) {
+                string adminMessage = "/tell " + settings.AdminPC + " " + customerName + " さんが来店, status: " + tradeResult.Status + ", mode: " + mode;
+                SendMessage( adminMessage );
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            }
+        }
+
+        /// <summary>
+        /// 取引相手にメッセージを送る
+        /// </summary>
+        /// <param name="customerNameImage"></param>
+        private void SendThanksMessage( Bitmap customerNameImage ) {
+            string customerName = "";
+            try {
+                customerName = TextFinder.Find( customerNameImage );
+            } catch( ApplicationException e ) {
+                Console.WriteLine( e.Message );
+                return;
+            }
+            if( settings.AdminPC != "" && settings.AdminPC == customerName ) {
+                // 自分自身なので個人チャットしなくてよい
                 return;
             }
 
@@ -59,7 +94,7 @@ namespace com.github.kbinani.feztradebot {
                 return;
             }
 
-            string message = "/tell " + targetName + " " + statusMessage;
+            string message = "/tell " + customerName + " " + statusMessage;
             SendMessage( message );
             Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
         }

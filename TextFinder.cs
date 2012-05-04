@@ -13,43 +13,26 @@ namespace com.github.kbinani.feztradebot {
 
         private static Dictionary<string, char> map;
         private static System.Text.Encoder encoder;
+        private static Dictionary<char, string> dupulicatedKeys;
 
+        /// <summary>
+        /// 画像から文字を探す。画像の高さは12ピクセルである必要がある。描かれている文字は座標(0,0)から始まり、
+        /// 文字の高さも12ピクセルでなければならない。
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public static string Find( Bitmap image ) {
-            if( map == null ) {
-                Initialize();
-            }
+            return FindImplementation( image, false );
+        }
 
-            string result = "";
-            int textCount = image.Width / CHARACTER_WIDTH;
-            string searchKey = "";
-            for( int i = 0; i < textCount; i++ ) {
-                int xoffset = CHARACTER_WIDTH * i;
-                string key = GetKey( image, xoffset );
-
-                if( searchKey == "" ) {
-                    if( map.ContainsKey( key ) ) {
-                        result += new string( map[key], 1 );
-                    } else {
-                        searchKey = key;
-                    }
-                } else {
-                    searchKey += key;
-                    if( map.ContainsKey( searchKey ) ) {
-                        result += new string( map[searchKey], 1 );
-                        searchKey = "";
-                    } else if( searchKey == FullWidthEmpty ) {
-                        break;
-                    } else {
-                        throw new ApplicationException( "該当する文字が見つからなかった" );
-                    }
-                }
-            }
-
-            return result;
+        public static string FuzzyFind( Bitmap image ) {
+            return FindImplementation( image, true );
         }
 
         public static void Initialize() {
             map = new Dictionary<string, char>();
+            dupulicatedKeys = new Dictionary<char, string>();
+
             var image = new Bitmap( 12, 12, PixelFormat.Format24bppRgb );
             using( var g = Graphics.FromImage( image ) ) {
                 var font = new Font( "ＭＳ ゴシック", 9 );
@@ -72,6 +55,8 @@ namespace com.github.kbinani.feztradebot {
                     }
 
                     if( map.ContainsKey( key ) ) {
+                        dupulicatedKeys.Add( map[key], key );
+                        dupulicatedKeys.Add( c, key );
                         map[key] = '\0';
                     } else {
                         map.Add( key, c );
@@ -91,6 +76,42 @@ namespace com.github.kbinani.feztradebot {
                 }
                 map.Remove( foundKey );
             }
+        }
+
+        private static string FindImplementation( Bitmap image, bool isFuzzy ) {
+            if( map == null || dupulicatedKeys == null ) {
+                Initialize();
+            }
+
+            string result = "";
+            int textCount = image.Width / CHARACTER_WIDTH;
+            string searchKey = "";
+            for( int i = 0; i < textCount; i++ ) {
+                int xoffset = CHARACTER_WIDTH * i;
+                string key = GetKey( image, xoffset );
+
+                if( searchKey == "" ) {
+                    var c = GetCharByKey( key, isFuzzy );
+                    if( c == '\0' ) {
+                        searchKey = key;
+                    } else {
+                        result += new string( c, 1 );
+                    }
+                } else {
+                    searchKey += key;
+                    var c = GetCharByKey( searchKey, isFuzzy );
+                    if( c != '\0' ) {
+                        result += new string( c, 1 );
+                        searchKey = "";
+                    } else if( searchKey == FullWidthEmpty ) {
+                        break;
+                    } else {
+                        throw new ApplicationException( "該当する文字が見つからなかった" );
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -138,6 +159,22 @@ namespace com.github.kbinani.feztradebot {
                 encoder = Encoding.GetEncoding( "Shift_JIS" ).GetEncoder();
             }
             return encoder;
+        }
+
+        private static char GetCharByKey( string key, bool isFuzzy ) {
+            var result = '\0';
+            if( map.ContainsKey( key ) ) {
+                result = map[key];
+            }
+            if( result == '\0' && isFuzzy ) {
+                foreach( var c in dupulicatedKeys.Keys ) {
+                    if( dupulicatedKeys[c] == key ) {
+                        result = c;
+                        break;
+                    }
+                }
+            }
+            return result;
         }
     }
 }
