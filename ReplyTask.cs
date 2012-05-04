@@ -14,6 +14,10 @@ namespace com.github.kbinani.feztradebot {
         private TradeResult tradeResult;
         private RuntimeSettings settings;
         private string playerName;
+        /// <summary>
+        /// チャットウィンドウが、半角で最大何文字分表示されるか
+        /// </summary>
+        private const int CHAT_LINE_WIDTH = 52;
 
         public ReplyTask( FEZWindow window, TradeResult tradeResult, RuntimeSettings settings, string playerName ) {
             this.window = window;
@@ -57,7 +61,12 @@ namespace com.github.kbinani.feztradebot {
             }
 
             if( settings.AdminPC != "" ) {
-                string adminMessage = "/tell " + settings.AdminPC + " " + customerName + " さんが来店, status: " + tradeResult.Status + ", mode: " + mode;
+                string[] lines = new string[] {
+                    customerName + " さんが来店",
+                    "status: " + tradeResult.Status,
+                    "mode: " + mode
+                };
+                string adminMessage = GetFormattedTellMessage( lines, playerName, settings.AdminPC );
                 SendMessage( adminMessage );
                 Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
             }
@@ -171,6 +180,60 @@ namespace com.github.kbinani.feztradebot {
             }
             string filePath = Path.Combine( directory, Path.GetRandomFileName() + ".png" );
             customerNameImage.Save( filePath, ImageFormat.Png );
+        }
+
+        /// <summary>
+        /// メッセージが相手に届いた際、メッセージの各行がきれいに改行されるよう、フォーマットする
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="myName"></param>
+        /// <param name="targetName"></param>
+        /// <returns>"/tell {targetName} ～"などに整形された文字列</returns>
+        public static string GetFormattedTellMessage( string[] lines, string myName, string targetName ) {
+            // チャットは、相手に届いた際に、"{myName} <<: "という接頭辞が付く
+            int prefixLength = 0;
+            string prefix = myName + " <<: ";
+            foreach( var c in prefix.ToCharArray() ) {
+                prefixLength += (TextFinder.IsHalfWidthCharacter( c ) ? 1 : 2);
+            }
+
+            // チャットに表示されるのは、一行あたり半角で52文字
+            string result = "/tell " + targetName + " ";
+            foreach( var line in lines ) {
+                result += GetLineMessage( line, prefixLength );
+            }
+            return result;
+        }
+
+        private static string GetLineMessage( string line, int prefixLength ) {
+            int remain = line.Length;
+            string result = "";
+            while( 0 < remain ) {
+                int lineRemain = CHAT_LINE_WIDTH - prefixLength;
+                var count = 0;
+                for( int i = 0; i < line.Length; i++ ){
+                    var c = line[i];
+                    int width = TextFinder.IsHalfWidthCharacter( c ) ? 1 : 2;
+                    if( lineRemain < width ) {
+                        break;
+                    }
+                    result += c;
+                    count = i + 1;
+                    lineRemain -= width;
+                }
+                line = line.Substring( count );
+                remain = line.Length;
+
+                while( 1 < lineRemain ) {
+                    result += "　";
+                    lineRemain -= 2;
+                }
+                while( 0 < lineRemain ) {
+                    result += " ";
+                    lineRemain -= 1;
+                }
+            }
+            return result;
         }
     }
 }

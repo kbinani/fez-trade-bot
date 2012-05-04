@@ -151,7 +151,7 @@ namespace com.github.kbinani.feztradebot {
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        private static bool IsHalfWidthCharacter( char c ) {
+        public static bool IsHalfWidthCharacter( char c ) {
             return GetEncoder().GetByteCount( new char[] { c }, 0, 1, true ) == 1;
         }
 
