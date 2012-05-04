@@ -37,6 +37,7 @@ namespace com.github.kbinani.feztradebot {
                     var c = encoding.GetChars( buffer, 0, 2 )[0];
                     if( !characters.ContainsKey( c ) ) {
                         characters.Add( c, 1 );
+                        yield return c;
                     }
                 }
             }
@@ -47,6 +48,7 @@ namespace com.github.kbinani.feztradebot {
                     var c = encoding.GetChars( buffer, 0, 2 )[0];
                     if( !characters.ContainsKey( c ) ) {
                         characters.Add( c, 1 );
+                        yield return c;
                     }
                 }
                 for( byte second = 0x80; second <= 0xFC; second++ ) {
@@ -54,6 +56,7 @@ namespace com.github.kbinani.feztradebot {
                     var c = encoding.GetChars( buffer, 0, 2 )[0];
                     if( !characters.ContainsKey( c ) ) {
                         characters.Add( c, 1 );
+                        yield return c;
                     }
                 }
             }
