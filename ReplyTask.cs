@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
+using System.IO;
 
 namespace com.github.kbinani.feztradebot {
     /// <summary>
@@ -40,6 +41,7 @@ namespace com.github.kbinani.feztradebot {
             try {
                 customerName = TextFinder.FuzzyFind( customerNameImage );
             } catch( ApplicationException e ) {
+                WriteLog( customerNameImage );
                 Console.WriteLine( e.Message );
                 return;
             }
@@ -48,6 +50,7 @@ namespace com.github.kbinani.feztradebot {
             try {
                 TextFinder.Find( customerNameImage );
             } catch( ApplicationException e ) {
+                WriteLog( customerNameImage );
                 mode = "FUZZY";
             }
 
@@ -153,6 +156,19 @@ namespace com.github.kbinani.feztradebot {
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// 文字列の判定に失敗したものをログに残す
+        /// </summary>
+        /// <param name="customerNameImage"></param>
+        private void WriteLog( Bitmap customerNameImage ) {
+            var directory = Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ), "reply_task" );
+            if( !Directory.Exists( directory ) ) {
+                Directory.CreateDirectory( directory );
+            }
+            string filePath = Path.Combine( directory, Path.GetRandomFileName() + ".png" );
+            customerNameImage.Save( filePath, ImageFormat.Png );
         }
     }
 }
