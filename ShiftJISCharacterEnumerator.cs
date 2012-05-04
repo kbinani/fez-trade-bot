@@ -8,12 +8,14 @@ namespace com.github.kbinani.feztradebot {
     /// </summary>
     static class ShiftJISCharacterEnumerator {
         public static IEnumerable<char> GetEnumerator() {
-            List<char> characters = new List<char>();
+            var characters = new Dictionary<char, int>();
             // ASCII
             for( byte b = 0x21; b <= 0x7E; b++ ) {
+                characters.Add( (char)b, 1 );
                 yield return (char)b;
             }
             for( byte b = 0xA1; b <= 0xDF; b++ ) {
+                characters.Add( (char)b, 1 );
                 yield return (char)b;
             }
 
@@ -24,22 +26,35 @@ namespace com.github.kbinani.feztradebot {
                 buffer[0] = first;
                 for( byte second = 0x40; second <= 0x7E; second++ ) {
                     buffer[1] = second;
-                    yield return encoding.GetChars( buffer, 0, 2 )[0];
+                    var c = encoding.GetChars( buffer, 0, 2 )[0];
+                    if( !characters.ContainsKey( c ) ) {
+                        characters.Add( c, 1 );
+                        yield return c;
+                    }
                 }
                 for( byte second = 0x80; second <= 0xFC; second++ ) {
                     buffer[1] = second;
-                    yield return encoding.GetChars( buffer, 0, 2 )[0];
+                    var c = encoding.GetChars( buffer, 0, 2 )[0];
+                    if( !characters.ContainsKey( c ) ) {
+                        characters.Add( c, 1 );
+                    }
                 }
             }
             for( byte first = 0xE0; first <= 0xEF; first++ ) {
                 buffer[0] = first;
                 for( byte second = 0x40; second <= 0x7E; second++ ) {
                     buffer[1] = second;
-                    yield return encoding.GetChars( buffer, 0, 2 )[0];
+                    var c = encoding.GetChars( buffer, 0, 2 )[0];
+                    if( !characters.ContainsKey( c ) ) {
+                        characters.Add( c, 1 );
+                    }
                 }
                 for( byte second = 0x80; second <= 0xFC; second++ ) {
                     buffer[1] = second;
-                    yield return encoding.GetChars( buffer, 0, 2 )[0];
+                    var c = encoding.GetChars( buffer, 0, 2 )[0];
+                    if( !characters.ContainsKey( c ) ) {
+                        characters.Add( c, 1 );
+                    }
                 }
             }
         }
