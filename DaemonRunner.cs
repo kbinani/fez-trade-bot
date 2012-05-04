@@ -21,6 +21,8 @@ namespace com.github.kbinani.feztradebot {
 
         public void Run() {
             FEZWindow window = null;
+            string playerName = "";
+
             while( true ) {
                 GC.Collect();
 
@@ -57,7 +59,7 @@ namespace com.github.kbinani.feztradebot {
                             Console.WriteLine( "FEZの画面が見つからなかった" );
                             continue;
                         }
-                        window = new FEZWindow( handle );
+                        window = CreateWindow( handle, out playerName );
                     } catch( ApplicationException e ) {
                         Console.WriteLine( e.Message );
                         continue;
@@ -68,7 +70,7 @@ namespace com.github.kbinani.feztradebot {
                 try {
                     screenShot = window.CaptureWindow();
                     if( window.HasTradeIcon( screenShot ) ) {
-                        ProcessTradeNotify( window, screenShot );
+                        ProcessTradeNotify( window, screenShot, playerName );
                     }
                 } catch( ApplicationException e ) {
                     Console.WriteLine( e.Message );
@@ -81,14 +83,14 @@ namespace com.github.kbinani.feztradebot {
         /// <summary>
         /// トレード枠が来た時の処理を行う
         /// </summary>
-        private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot ) {
+        private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot, string playerName ) {
             // トレードを行う
             TradeResult result = null;
             using( var doTradeTask = new DoTradeTask( window ) ) {
                 result = doTradeTask.Run();
             }
 
-            var replyTask = new ReplyTask( window, result, settings );
+            var replyTask = new ReplyTask( window, result, settings, playerName );
             replyTask.Run();
 
             if( result.Status == TradeResult.StatusType.SUCCEEDED ) {
@@ -99,6 +101,20 @@ namespace com.github.kbinani.feztradebot {
             // ログを出力する
             var loggingTask = new LoggingTask( result, settings );
             loggingTask.Run();
+        }
+
+        /// <summary>
+        /// FEZWindow のインスタンスを作成する
+        /// </summary>
+        /// <returns></returns>
+        private FEZWindow CreateWindow( IntPtr handle, out string playerName ) {
+            var result = new FEZWindow( handle );
+
+            var task = new GetNameTask( result );
+            task.Run();
+            playerName = task.PlayerName;
+
+            return result;
         }
     }
 }

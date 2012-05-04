@@ -257,6 +257,47 @@ namespace com.github.kbinani.feztradebot {
         }
 
         /// <summary>
+        /// ゲーム画面右下にある「ステータス」ボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetStatusButtonPosition() {
+            // ウィンドウサイズ 1366*768のとき
+            // ボタン左上: x=1262, y=663
+            // ボタン右下: x=1354, y=686
+            int x = this.Width - 58;
+            int y = this.Height - 94;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// ステータスダイアログの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetStatusDialogGeometry() {
+            // ウィンドウサイズ 1366*768のとき、
+            // 左上: x=1139, y=4
+            // 右下: x=1314, y=428
+            const int width = 1314 - 1139;
+            const int height = 428 - 4;
+            int x = this.Width - 227;
+            int y = 4;
+            return new Rectangle( x, y, width, height );
+        }
+
+        /// <summary>
+        /// ステータスダイアログの、プレイヤー名が表示されている領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetStatusDialogPlayerNameGeometry() {
+            // ステータスダイアログ左上に対して
+            // 左上: x=61, y=50
+            var dialogGeometry = GetStatusDialogGeometry();
+            int left = dialogGeometry.Left + 61;
+            int top = dialogGeometry.Top + 50;
+            return new Rectangle( left, top, 6 * 16, 12 );
+        }
+
+        /// <summary>
         /// ゲーム画面右下の「システム」ボタンを押すことで現れるメニューの中の，
         /// 「部隊リスト」メニューのいちを取得する
         /// </summary>

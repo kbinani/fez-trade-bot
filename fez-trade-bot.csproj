@@ -44,6 +44,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FEZWindow.cs" />
+    <Compile Include="GetNameTask.cs" />
     <Compile Include="ImageComparator.cs" />
     <Compile Include="LoggingTask.cs" />
     <Compile Include="Program.cs" />

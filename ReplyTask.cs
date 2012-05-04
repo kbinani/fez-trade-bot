@@ -13,11 +13,13 @@ namespace com.github.kbinani.feztradebot {
         private FEZWindow window;
         private TradeResult tradeResult;
         private RuntimeSettings settings;
+        private string playerName;
 
-        public ReplyTask( FEZWindow window, TradeResult tradeResult, RuntimeSettings settings ) {
+        public ReplyTask( FEZWindow window, TradeResult tradeResult, RuntimeSettings settings, string playerName ) {
             this.window = window;
             this.tradeResult = tradeResult;
             this.settings = settings;
+            this.playerName = playerName;
         }
 
         public void Run() {
