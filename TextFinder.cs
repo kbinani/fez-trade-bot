@@ -13,7 +13,7 @@ namespace com.github.kbinani.feztradebot {
 
         private static Dictionary<string, char> map;
         private static System.Text.Encoder encoder;
-        private static Dictionary<char, string> dupulicatedKeys;
+        private static Dictionary<string, char> dupulicatedKeys;
 
         /// <summary>
         /// 画像から文字を探す。画像の高さは12ピクセルである必要がある。描かれている文字は座標(0,0)から始まり、
@@ -31,7 +31,7 @@ namespace com.github.kbinani.feztradebot {
 
         public static void Initialize() {
             map = new Dictionary<string, char>();
-            dupulicatedKeys = new Dictionary<char, string>();
+            dupulicatedKeys = new Dictionary<string, char>();
 
             var image = new Bitmap( 12, 12, PixelFormat.Format24bppRgb );
             using( var g = Graphics.FromImage( image ) ) {
@@ -55,8 +55,9 @@ namespace com.github.kbinani.feztradebot {
                     }
 
                     if( map.ContainsKey( key ) ) {
-                        dupulicatedKeys.Add( map[key], key );
-                        dupulicatedKeys.Add( c, key );
+                        if( !dupulicatedKeys.ContainsKey( key ) ) {
+                            dupulicatedKeys.Add( key, map[key] );
+                        }
                         map[key] = '\0';
                     } else {
                         map.Add( key, c );
@@ -167,11 +168,8 @@ namespace com.github.kbinani.feztradebot {
                 result = map[key];
             }
             if( result == '\0' && isFuzzy ) {
-                foreach( var c in dupulicatedKeys.Keys ) {
-                    if( dupulicatedKeys[c] == key ) {
-                        result = c;
-                        break;
-                    }
+                if( dupulicatedKeys.ContainsKey( key ) ) {
+                    result = dupulicatedKeys[key];
                 }
             }
             return result;
