@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationException.cs" />
+    <Compile Include="ChatLogStream.cs" />
     <Compile Include="ChronicleNotifyCloser.cs" />
     <Compile Include="ClientLaunchTask.cs" />
     <Compile Include="DaemonRunner.cs" />
@@ -97,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\beast_blood.png" />
+    <Content Include="Resources\chat_log_scroll_up_button.png" />
     <Content Include="Resources\chronicle_notify_message.png" />
     <Content Include="Resources\icon_mask.png" />
     <Content Include="Resources\login.png" />

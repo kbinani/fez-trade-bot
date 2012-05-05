@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
+using System.IO;
 
 namespace com.github.kbinani.feztradebot {
     static class TextFinder {
@@ -22,11 +24,11 @@ namespace com.github.kbinani.feztradebot {
         /// <param name="image"></param>
         /// <returns></returns>
         public static string Find( Bitmap image ) {
-            return FindImplementation( image, false );
+            return Find( image, false, true );
         }
 
         public static string FuzzyFind( Bitmap image ) {
-            return FindImplementation( image, true );
+            return Find( image, true, true );
         }
 
         public static void Initialize() {
@@ -79,7 +81,115 @@ namespace com.github.kbinani.feztradebot {
             }
         }
 
-        private static string FindImplementation( Bitmap image, bool isFuzzy ) {
+        public static string Find( Bitmap image, bool isFuzzy, bool ignoreWhiteSpace ) {
+            if( map == null || dupulicatedKeys == null ) {
+                Initialize();
+            }
+
+            int textCount = image.Width / CHARACTER_WIDTH;
+
+            string[] keys = new string[textCount];
+            for( int i = 0; i < textCount; i++ ) {
+                int xoffset = CHARACTER_WIDTH * i;
+                keys[i] = GetKey( image, xoffset );
+            }
+
+            string[] halfWidthMatch = new string[textCount];
+            string[] evenFullWidthMatch = new string[textCount / 2];
+            string[] oddFullWidthMatch = new string[(textCount - 1) / 2];
+            for( int i = 0; i < halfWidthMatch.Length; i++ ) {
+                var key = keys[i];
+                var c = GetCharByKey( key, isFuzzy, ignoreWhiteSpace );
+                if( c == '\0' ) {
+                    halfWidthMatch[i] = "";
+                } else {
+                    halfWidthMatch[i] = new string( c, 1 );
+                }
+            }
+            for( int i = 0; i < evenFullWidthMatch.Length; i++ ) {
+                var key = keys[i * 2] + keys[i * 2 + 1];
+                var c = GetCharByKey( key, isFuzzy, ignoreWhiteSpace );
+                if( c == '\0' ) {
+                    evenFullWidthMatch[i] = "";
+                } else {
+                    evenFullWidthMatch[i] = new string( c, 1 );
+                }
+            }
+            for( int i = 0; i < oddFullWidthMatch.Length; i++ ) {
+                var key = keys[i * 2 + 1] + keys[i * 2 + 2];
+                var c = GetCharByKey( key, isFuzzy, ignoreWhiteSpace );
+                if( c == '\0' ) {
+                    oddFullWidthMatch[i] = "";
+                } else {
+                    oddFullWidthMatch[i] = new string( c, 1 );
+                }
+            }
+
+            string[] resultArray = new string[textCount];
+            for( int i = 0; i < oddFullWidthMatch.Length; i++ ) {
+                if( oddFullWidthMatch[i] != "" ) {
+                    resultArray[i * 2 + 1] = oddFullWidthMatch[i];
+                    halfWidthMatch[i * 2 + 1] = "";
+                    halfWidthMatch[i * 2 + 2] = "";
+                    evenFullWidthMatch[i] = "";
+                    if( i + 1 < evenFullWidthMatch.Length ) {
+                        evenFullWidthMatch[i + 1] = "";
+                    }
+                }
+            }
+            for( int i = 0; i < evenFullWidthMatch.Length; i++ ) {
+                if( evenFullWidthMatch[i] != "" ) {
+                    resultArray[i * 2] = evenFullWidthMatch[i];
+                    halfWidthMatch[i * 2] = "";
+                    halfWidthMatch[i * 2 + 1] = "";
+                }
+            }
+            for( int i = 0; i < halfWidthMatch.Length; i++ ) {
+                if( halfWidthMatch[i] != "" ) {
+                    resultArray[i] = halfWidthMatch[i];
+                }
+            }
+
+            // 認識に失敗した文字を列挙する
+            var failed = new List<string>();
+            for( int i = 0; i < resultArray.Length; i++ ) {
+                if( resultArray[i] == "" ) {
+                    var evenIndex = (i - 1) / 2;
+                    if( 0 <= evenIndex && evenFullWidthMatch[evenIndex] == "" ) {
+                        var key = keys[evenIndex * 2] + keys[evenIndex * 2 + 1];
+                        if( key != FullWidthEmpty ) {
+                            failed.Add( key );
+                            continue;
+                        }
+                    }
+                    var oddIndex = i / 2 - 1;
+                    if( 0 <= oddIndex && oddFullWidthMatch[oddIndex] == "" ) {
+                        var key = keys[oddIndex * 2 + 1] + keys[oddIndex * 2 + 2];
+                        if( key != FullWidthEmpty ) {
+                            failed.Add( key );
+                            continue;
+                        }
+                    }
+                    if( keys[i] != HalfWidthEmpty ) {
+                        failed.Add( keys[i] );
+                    }
+                }
+            }
+            foreach( var failedKey in failed ) {
+                WriteLog( failedKey );
+            }
+            if( 0 < failed.Count ) {
+                throw new ApplicationException( "該当する文字が見つからなかった" );
+            }
+
+            string result = "";
+            for( int i = 0; i < resultArray.Length; i++ ) {
+                result += resultArray[i];
+            }
+            return result.TrimEnd( ' ', '　' );
+        }
+        /*
+        public static string _Find( Bitmap image, bool isFuzzy, bool ignoreWhiteSpace ) {
             if( map == null || dupulicatedKeys == null ) {
                 Initialize();
             }
@@ -105,15 +215,21 @@ namespace com.github.kbinani.feztradebot {
                         result += new string( c, 1 );
                         searchKey = "";
                     } else if( searchKey == FullWidthEmpty ) {
-                        break;
+                        if( ignoreWhiteSpace ) {
+                            break;
+                        } else {
+                            result += "  ";
+                            searchKey = "";
+                        }
                     } else {
-                        throw new ApplicationException( "該当する文字が見つからなかった" );
+                        WriteLog( searchKey );
+                        throw new ApplicationException( "該当する文字が見つからなかった: searchKey=" + searchKey );
                     }
                 }
             }
 
             return result;
-        }
+        }*/
 
         /// <summary>
         /// 画像の指定された位置のビットマップを文字列に変換する．
@@ -162,8 +278,16 @@ namespace com.github.kbinani.feztradebot {
             return encoder;
         }
 
-        private static char GetCharByKey( string key, bool isFuzzy ) {
+        private static char GetCharByKey( string key, bool isFuzzy, bool ignoreWhiteSpace ) {
             var result = '\0';
+            if( !ignoreWhiteSpace ) {
+                if( key == HalfWidthEmpty ) {
+                    return ' ';
+                }
+                if( key == FullWidthEmpty ) {
+                    return '　';
+                }
+            }
             if( map.ContainsKey( key ) ) {
                 result = map[key];
             }
@@ -173,6 +297,42 @@ namespace com.github.kbinani.feztradebot {
                 }
             }
             return result;
+        }
+
+        private static void WriteLog( string searchKey ){
+            string directory = Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ), "text_finder" );
+            if( !Directory.Exists( directory ) ) {
+                Directory.CreateDirectory( directory );
+            }
+            string imagePath = Path.Combine( directory, searchKey + ".png" );
+            if( File.Exists( imagePath ) ) {
+                return;
+            }
+
+            var byteCount = searchKey.Length / 2;
+            bool[] bits = new bool[byteCount * 8];
+            for( int byteIndex = 0; byteIndex < byteCount; byteIndex++ ) {
+                var hexString = searchKey.Substring( byteIndex * 2, 2 );
+                byte b = Convert.ToByte( hexString, 16 );
+                for( int bitIndex = 0; bitIndex < 8; bitIndex++ ) {
+                    int i = byteIndex * 8 + bitIndex;
+                    byte mask = (byte)((0x80 >> bitIndex) & 0xFF);
+                    bits[i] = (b & mask) == mask;
+                }
+            }
+
+            const int height = 12;
+            var width = bits.Length / height;
+            var image = new Bitmap( width, height, PixelFormat.Format24bppRgb );
+            for( int x = 0; x < width; x++ ) {
+                for( int y = 0; y < height; y++ ) {
+                    int bitIndex = x * height + y;
+                    var c = bits[bitIndex] ? Color.Black : Color.White;
+                    image.SetPixel( x, y, c );
+                }
+            }
+
+            image.Save( imagePath, ImageFormat.Png );
         }
     }
 }

@@ -533,6 +533,38 @@ namespace com.github.kbinani.feztradebot {
         }
 
         /// <summary>
+        /// チャットログ欄の左上にあるスクロールバーの「△」ボタンの領域を取得する
+        /// 引数には、チャットログの表示量を指定する。チャットログの表示量が増えると、「△」ボタンは上に移動する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public Rectangle GetChatLogScrollUpButtonGeometry( int chatLogLines ) {
+            // 1366*768のとき、
+            // 20行表示のとき、△ボタンの左上: x=0, y=420=Height-348
+            // 30行表示のとき、△ボタンの左上: x=0, y=260=Height-508
+            int left = 0;
+            int top = this.Height - (16 * chatLogLines + 28);
+            int width = 16;
+            int height = 16;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
+        /// チャットログの1行分の領域を取得する
+        /// </summary>
+        /// <param name="lineIndex">上から何番目の行か。0から始まる</param>
+        /// <param name="maxLines">チャットログが何行分表示する設定になっているか</param>
+        /// <returns></returns>
+        public Rectangle GetChatLogLineGeometry( int lineIndex, int maxLines ) {
+            var scrollUpButtonGeometry = GetChatLogScrollUpButtonGeometry( maxLines );
+            int left = 16;
+            int top = scrollUpButtonGeometry.Top + lineIndex * 16;
+            int width = 52 * 6;
+            int height = 12;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
         /// ゲームウィンドウ全体の画像を取得する
         /// </summary>
         /// <returns></returns>

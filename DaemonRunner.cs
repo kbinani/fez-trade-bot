@@ -25,6 +25,7 @@ namespace com.github.kbinani.feztradebot {
             int sleepSeconds = 1;
             int heartBeatIntervalSeconds = 600;
             int sleepCounter = 1;
+            ChatLogStream logStream = null;
 
             while( true ) {
                 GC.Collect();
@@ -62,7 +63,7 @@ namespace com.github.kbinani.feztradebot {
                             Console.WriteLine( "FEZの画面が見つからなかった" );
                             continue;
                         }
-                        window = CreateWindow( handle, out playerName );
+                        window = CreateWindow( handle, out playerName, out logStream );
                     } catch( ApplicationException e ) {
                         Console.WriteLine( e.Message );
                         continue;
@@ -77,8 +78,13 @@ namespace com.github.kbinani.feztradebot {
                 Bitmap screenShot = null;
                 try {
                     screenShot = window.CaptureWindow();
+                    logStream.PushScreenShot( screenShot );
                     if( window.HasTradeIcon( screenShot ) ) {
                         ProcessTradeNotify( window, screenShot, playerName );
+                    }
+                    while( logStream.HasNext() ) {
+                        var line = logStream.Next();
+                        Irc.SendMessage( "\x03" + ChatLogLine.GetIrcColorByType( line.Type ) + line.Line + "\x03" );
                     }
                 } catch( ApplicationException e ) {
                     Console.WriteLine( e.Message );
@@ -115,12 +121,19 @@ namespace com.github.kbinani.feztradebot {
         /// FEZWindow のインスタンスを作成する
         /// </summary>
         /// <returns></returns>
-        private FEZWindow CreateWindow( IntPtr handle, out string playerName ) {
+        private FEZWindow CreateWindow( IntPtr handle, out string playerName, out ChatLogStream logStream ) {
             var result = new FEZWindow( handle );
 
-            var task = new GetNameTask( result );
-            task.Run();
-            playerName = task.PlayerName;
+            try {
+                var task = new GetNameTask( result );
+                task.Run();
+                playerName = task.PlayerName;
+            } catch( ApplicationException e ) {
+                Console.WriteLine( "GetNameTaskの例外: " + e.Message );
+                playerName = "";
+            }
+
+            logStream = new ChatLogStream( result );
 
             return result;
         }
