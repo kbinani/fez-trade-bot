@@ -28,6 +28,7 @@ namespace com.github.kbinani.feztradebot {
             t.Start();
             t.Join();
 
+            Irc.Stop();
             Console.WriteLine( "hit any key to exit" );
             stopRequied = true;
         }

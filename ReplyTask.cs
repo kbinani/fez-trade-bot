@@ -68,6 +68,14 @@ namespace com.github.kbinani.feztradebot {
                 };
                 string adminMessage = GetFormattedTellMessage( lines, playerName, settings.AdminPC );
                 SendMessage( adminMessage );
+                string message = "";
+                foreach( var line in lines ){
+                    if( message != "" ){
+                        message += ", ";
+                    }
+                    message += line;
+                }
+                Irc.SendMessage( message );
                 Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
             }
         }

@@ -22,6 +22,9 @@ namespace com.github.kbinani.feztradebot {
         public void Run() {
             FEZWindow window = null;
             string playerName = "";
+            int sleepSeconds = 1;
+            int heartBeatIntervalSeconds = 600;
+            int sleepCounter = 1;
 
             while( true ) {
                 GC.Collect();
@@ -64,6 +67,11 @@ namespace com.github.kbinani.feztradebot {
                         Console.WriteLine( e.Message );
                         continue;
                     }
+                }
+                sleepCounter--;
+                if( sleepCounter == 0 ) {
+                    Irc.SendNotice( "heart beat message, time: " + DateTime.Now + ", window: " + (window == null ? "DEAD" : "ALIVE") );
+                    sleepCounter = heartBeatIntervalSeconds / sleepSeconds;
                 }
 
                 Bitmap screenShot = null;

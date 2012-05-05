@@ -18,6 +18,8 @@ namespace com.github.kbinani.feztradebot {
         }
 
         public void Run() {
+            window.Activate();
+            Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
             window.Click( window.GetStatusButtonPosition() );
             Thread.Sleep( TimeSpan.FromSeconds( 4 ) );
 
