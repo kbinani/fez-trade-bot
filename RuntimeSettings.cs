@@ -12,6 +12,10 @@ namespace com.github.kbinani.feztradebot {
         private List<string> tellMessageSucceeded = new List<string>();
         private List<string> tellMessageWeiredItemEntried = new List<string>();
         private string adminPC = "";
+        private string ircHost = "";
+        private int ircPort = 6667;
+        private string ircPassword = "";
+        private string ircChannelName = "#feztradebot";
         private Random random = new Random();
 
         public RuntimeSettings( string[] args ) {
@@ -53,6 +57,22 @@ namespace com.github.kbinani.feztradebot {
                             }
                             case "adminPC": {
                                 adminPC = value;
+                                break;
+                            }
+                            case "irc.host": {
+                                ircHost = value;
+                                break;
+                            }
+                            case "irc.port": {
+                                ircPort = int.Parse( value );
+                                break;
+                            }
+                            case "irc.password": {
+                                ircPassword = value;
+                                break;
+                            }
+                            case "irc.channelName": {
+                                ircChannelName = value;
                                 break;
                             }
                         }
@@ -106,6 +126,30 @@ namespace com.github.kbinani.feztradebot {
         public string AdminPC {
             get {
                 return adminPC;
+            }
+        }
+
+        public string IrcHost {
+            get {
+                return ircHost;
+            }
+        }
+
+        public int IrcPort {
+            get {
+                return ircPort;
+            }
+        }
+
+        public string IrcPassword {
+            get {
+                return ircPassword;
+            }
+        }
+
+        public string IrcChannelName {
+            get {
+                return ircChannelName;
             }
         }
 

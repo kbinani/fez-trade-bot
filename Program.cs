@@ -4,6 +4,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Meebey.SmartIrc4net;
 
 namespace com.github.kbinani.feztradebot {
     class Program {
@@ -13,8 +14,10 @@ namespace com.github.kbinani.feztradebot {
 
         [STAThreadAttribute]
         static void Main( string[] args ) {
-            TextFinder.Initialize();
             RuntimeSettings settings = new RuntimeSettings( args );
+
+            TextFinder.Initialize();
+            Irc.Start( settings );
 
             var keyListener = new Thread( new ThreadStart( ReceiveKeyPress ) );
             keyListener.Start();

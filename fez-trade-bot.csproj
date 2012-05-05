@@ -46,6 +46,7 @@
     <Compile Include="FEZWindow.cs" />
     <Compile Include="GetNameTask.cs" />
     <Compile Include="ImageComparator.cs" />
+    <Compile Include="Irc.cs" />
     <Compile Include="LoggingTask.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +60,29 @@
     </Compile>
     <Compile Include="RuntimeSettings.cs" />
     <Compile Include="ShiftJISCharacterEnumerator.cs" />
+    <Compile Include="SmartIrc4net\Consts.cs" />
+    <Compile Include="SmartIrc4net\EventArgs.cs" />
+    <Compile Include="SmartIrc4net\Exceptions.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\BanInfo.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\Channel.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\ChannelInfo.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\ChannelUser.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\Delegates.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\EventArgs.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\IrcClient.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\IrcMessageData.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\IrcUser.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\NonRfcChannel.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\NonRfcChannelUser.cs" />
+    <Compile Include="SmartIrc4net\IrcClient\WhoInfo.cs" />
+    <Compile Include="SmartIrc4net\IrcCommands\IrcCommands.cs" />
+    <Compile Include="SmartIrc4net\IrcCommands\Rfc2812.cs" />
+    <Compile Include="SmartIrc4net\IrcConnection\Delegates.cs" />
+    <Compile Include="SmartIrc4net\IrcConnection\EventArgs.cs" />
+    <Compile Include="SmartIrc4net\IrcConnection\IrcConnection.cs" />
+    <Compile Include="SmartIrc4net\IrcConnection\IrcProperties.cs" />
+    <Compile Include="SmartIrc4net\IrcConnection\IrcTcpClient.cs" />
+    <Compile Include="SmartIrc4net\Logger.cs" />
     <Compile Include="SortInventoryTask.cs" />
     <Compile Include="TextFinder.cs" />
     <Compile Include="TradeResult.cs" />
