@@ -19,7 +19,7 @@ namespace com.github.kbinani.feztradebot {
 
         public void Run() {
             window.Click( window.GetStatusButtonPosition() );
-            Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            Thread.Sleep( TimeSpan.FromSeconds( 4 ) );
 
             var playerNameRawImage = window.CaptureWindow( window.GetStatusDialogPlayerNameGeometry() );
             var playerNameImage = GetPlayerNameImage( playerNameRawImage );
