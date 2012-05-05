@@ -72,12 +72,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="beast_blood.png" />
-    <Content Include="chronicle_notify_message.png" />
-    <Content Include="icon_mask.png" />
-    <Content Include="login.png" />
-    <Content Include="trade_error_dialog.png" />
-    <Content Include="trade_window.png" />
+    <Content Include="Resources\beast_blood.png" />
+    <Content Include="Resources\chronicle_notify_message.png" />
+    <Content Include="Resources\icon_mask.png" />
+    <Content Include="Resources\login.png" />
+    <Content Include="Resources\trade_error_dialog.png" />
+    <Content Include="Resources\trade_window.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fez-trade-bot.conf.tmpl" />
