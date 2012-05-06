@@ -14,14 +14,17 @@ namespace FEZTradeBot {
                 characters.Add( (char)b, 1 );
                 yield return (char)b;
             }
-            for( byte b = 0xA1; b <= 0xDF; b++ ) {
-                characters.Add( (char)b, 1 );
-                yield return (char)b;
-            }
 
-            // 0x81～0x9F
             var encoding = Encoding.GetEncoding( "Shift_JIS" );
             byte[] buffer = new byte[2];
+            // 半角
+            for( byte b = 0xA1; b <= 0xDF; b++ ) {
+                buffer[0] = b;
+                var c = encoding.GetChars( buffer, 0, 1 )[0];
+                characters.Add( c, 1 );
+                yield return c;
+            }
+            // 0x81～0x9F
             for( byte first = 0x81; first <= 0x9F; first++ ) {
                 buffer[0] = first;
                 for( byte second = 0x40; second <= 0x7E; second++ ) {
