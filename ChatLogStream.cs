@@ -115,7 +115,7 @@ namespace FEZTradeBot {
                 var lineImage = (Bitmap)screenShot.Clone( lineGeometry, screenShot.PixelFormat );
 
                 var lineType = DetectLineType( lineImage );
-                var filteredLineImage = CreateFilteredImage( lineImage, ChatLogLine.GetLetterColorByType( lineType ) );
+                var filteredLineImage = TextFinder.CreateFilteredImage( lineImage, ChatLogLine.GetLetterColorByType( lineType ) );
                 var lineString = "";
                 try {
                     lineString = TextFinder.Find( filteredLineImage, true, false );
@@ -139,28 +139,6 @@ namespace FEZTradeBot {
             } else {
                 return result;
             }
-        }
-
-        /// <summary>
-        /// 画像の指定された色と合致するピクセルを黒に、それ以外のピクセルを白に変換した画像を作成する
-        /// </summary>
-        /// <param name="lineImage"></param>
-        /// <param name="color"></param>
-        /// <returns></returns>
-        private Bitmap CreateFilteredImage( Bitmap lineImage, Color color ) {
-            color = Color.FromArgb( 255, color );
-            var result = (Bitmap)lineImage.Clone();
-            for( int y = 0; y < lineImage.Height; y++ ) {
-                for( int x = 0; x < lineImage.Width; x++ ) {
-                    var c = Color.FromArgb( 255, lineImage.GetPixel( x, y ) );
-                    if( c == color ) {
-                        result.SetPixel( x, y, Color.FromArgb( 255, Color.Black ) );
-                    } else {
-                        result.SetPixel( x, y, Color.FromArgb( 255, Color.White ) );
-                    }
-                }
-            }
-            return result;
         }
 
         /// <summary>

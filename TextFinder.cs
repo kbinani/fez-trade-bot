@@ -175,6 +175,28 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// 画像の指定された色と合致するピクセルを黒に、それ以外のピクセルを白に変換した画像を作成する
+        /// </summary>
+        /// <param name="lineImage"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static Bitmap CreateFilteredImage( Bitmap image, Color color ) {
+            color = Color.FromArgb( 255, color );
+            var result = (Bitmap)image.Clone();
+            for( int y = 0; y < image.Height; y++ ) {
+                for( int x = 0; x < image.Width; x++ ) {
+                    var c = Color.FromArgb( 255, image.GetPixel( x, y ) );
+                    if( c == color ) {
+                        result.SetPixel( x, y, Color.FromArgb( 255, Color.Black ) );
+                    } else {
+                        result.SetPixel( x, y, Color.FromArgb( 255, Color.White ) );
+                    }
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 画像の指定された位置のビットマップを文字列に変換する．
         /// 長さ72のビット列 { (x,0), (x,1), ... , (x,11), (x+1,0), (x+1,1), ... , (x+5,10), (x+5,11) } を
         /// 16進数の文字列に変換している
