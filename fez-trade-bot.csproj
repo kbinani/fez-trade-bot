@@ -39,21 +39,12 @@
     <Compile Include="ApplicationException.cs" />
     <Compile Include="ChatLogStream.cs" />
     <Compile Include="ChronicleNotifyCloser.cs" />
-    <Compile Include="ClientLaunchTask.cs" />
     <Compile Include="DaemonRunner.cs" />
-    <Compile Include="DoTradeTask.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="FEZWindow.cs" />
-    <Compile Include="GetNameTask.cs" />
     <Compile Include="ImageComparator.cs" />
     <Compile Include="Irc.cs" />
-    <Compile Include="LoggingTask.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReplyTask.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -84,7 +75,12 @@
     <Compile Include="SmartIrc4net\IrcConnection\IrcProperties.cs" />
     <Compile Include="SmartIrc4net\IrcConnection\IrcTcpClient.cs" />
     <Compile Include="SmartIrc4net\Logger.cs" />
-    <Compile Include="SortInventoryTask.cs" />
+    <Compile Include="Tasks\ClientLaunchTask.cs" />
+    <Compile Include="Tasks\DoTradeTask.cs" />
+    <Compile Include="Tasks\GetNameTask.cs" />
+    <Compile Include="Tasks\LoggingTask.cs" />
+    <Compile Include="Tasks\ReplyTask.cs" />
+    <Compile Include="Tasks\SortInventoryTask.cs" />
     <Compile Include="TextFinder.cs" />
     <Compile Include="TradeResult.cs" />
     <Compile Include="TradeWindowFinalizer.cs" />
