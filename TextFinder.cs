@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.IO;
 
 namespace FEZTradeBot {
-    static class TextFinder {
+    public static class TextFinder {
         private const int CHARACTER_WIDTH = 6;
         private const int CHARACTER_HEIGHT = 12;
         private static readonly string FullWidthEmpty = new string( '0', 36 );
@@ -99,35 +99,20 @@ namespace FEZTradeBot {
             string[] oddFullWidthMatch = new string[(textCount - 1) / 2];
             for( int i = 0; i < halfWidthMatch.Length; i++ ) {
                 var key = keys[i];
-                var c = GetCharByKey( key, isFuzzy, ignoreWhiteSpace );
-                if( c == '\0' ) {
-                    halfWidthMatch[i] = "";
-                } else {
-                    halfWidthMatch[i] = new string( c, 1 );
-                }
+                halfWidthMatch[i] = GetCharByKey( key, isFuzzy, ignoreWhiteSpace );
             }
             for( int i = 0; i < evenFullWidthMatch.Length; i++ ) {
                 var key = keys[i * 2] + keys[i * 2 + 1];
-                var c = GetCharByKey( key, isFuzzy, ignoreWhiteSpace );
-                if( c == '\0' ) {
-                    evenFullWidthMatch[i] = "";
-                } else {
-                    evenFullWidthMatch[i] = new string( c, 1 );
-                }
+                evenFullWidthMatch[i] = GetCharByKey( key, isFuzzy, ignoreWhiteSpace );
             }
             for( int i = 0; i < oddFullWidthMatch.Length; i++ ) {
                 var key = keys[i * 2 + 1] + keys[i * 2 + 2];
-                var c = GetCharByKey( key, isFuzzy, ignoreWhiteSpace );
-                if( c == '\0' ) {
-                    oddFullWidthMatch[i] = "";
-                } else {
-                    oddFullWidthMatch[i] = new string( c, 1 );
-                }
+                oddFullWidthMatch[i] = GetCharByKey( key, isFuzzy, ignoreWhiteSpace );
             }
 
             string[] resultArray = new string[textCount];
             for( int i = 0; i < oddFullWidthMatch.Length; i++ ) {
-                if( oddFullWidthMatch[i] != "" ) {
+                if( oddFullWidthMatch[i] != "" && oddFullWidthMatch[i] != "  " ) {
                     resultArray[i * 2 + 1] = oddFullWidthMatch[i];
                     halfWidthMatch[i * 2 + 1] = "";
                     halfWidthMatch[i * 2 + 2] = "";
@@ -188,48 +173,6 @@ namespace FEZTradeBot {
             }
             return result.TrimEnd( ' ', '　' );
         }
-        /*
-        public static string _Find( Bitmap image, bool isFuzzy, bool ignoreWhiteSpace ) {
-            if( map == null || dupulicatedKeys == null ) {
-                Initialize();
-            }
-
-            string result = "";
-            int textCount = image.Width / CHARACTER_WIDTH;
-            string searchKey = "";
-            for( int i = 0; i < textCount; i++ ) {
-                int xoffset = CHARACTER_WIDTH * i;
-                string key = GetKey( image, xoffset );
-
-                if( searchKey == "" ) {
-                    var c = GetCharByKey( key, isFuzzy );
-                    if( c == '\0' ) {
-                        searchKey = key;
-                    } else {
-                        result += new string( c, 1 );
-                    }
-                } else {
-                    searchKey += key;
-                    var c = GetCharByKey( searchKey, isFuzzy );
-                    if( c != '\0' ) {
-                        result += new string( c, 1 );
-                        searchKey = "";
-                    } else if( searchKey == FullWidthEmpty ) {
-                        if( ignoreWhiteSpace ) {
-                            break;
-                        } else {
-                            result += "  ";
-                            searchKey = "";
-                        }
-                    } else {
-                        WriteLog( searchKey );
-                        throw new ApplicationException( "該当する文字が見つからなかった: searchKey=" + searchKey );
-                    }
-                }
-            }
-
-            return result;
-        }*/
 
         /// <summary>
         /// 画像の指定された位置のビットマップを文字列に変換する．
@@ -278,22 +221,22 @@ namespace FEZTradeBot {
             return encoder;
         }
 
-        private static char GetCharByKey( string key, bool isFuzzy, bool ignoreWhiteSpace ) {
-            var result = '\0';
+        private static string GetCharByKey( string key, bool isFuzzy, bool ignoreWhiteSpace ) {
+            var result = "";
             if( !ignoreWhiteSpace ) {
                 if( key == HalfWidthEmpty ) {
-                    return ' ';
+                    return " ";
                 }
                 if( key == FullWidthEmpty ) {
-                    return '　';
+                    return "  ";
                 }
             }
             if( map.ContainsKey( key ) ) {
-                result = map[key];
+                result = new string( map[key], 1 );
             }
-            if( result == '\0' && isFuzzy ) {
+            if( result == "" && isFuzzy ) {
                 if( dupulicatedKeys.ContainsKey( key ) ) {
-                    result = dupulicatedKeys[key];
+                    result = new string( dupulicatedKeys[key], 1 );
                 }
             }
             return result;
