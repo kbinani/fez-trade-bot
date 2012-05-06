@@ -647,6 +647,21 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// チャットログウィンドウの「+」「-」ボタンの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetChatLogOpenButtonGeometry() {
+            // 1366*768のとき、
+            // 左上: x=2, y=742
+            // 右下: x=14, y=754
+            const int left = 2;
+            int top = this.Height - (768 - 742);
+            const int width = 14 - 2;
+            const int height = 754 - 742;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
         /// ゲームウィンドウ全体の画像を取得する
         /// </summary>
         /// <returns></returns>
@@ -780,6 +795,38 @@ namespace FEZTradeBot {
         /// </summary>
         public void Activate() {
             WindowsAPI.SetForegroundWindow( this.Handle );
+        }
+
+        /// <summary>
+        /// チャットログが最大化されていたら、閉じる
+        /// </summary>
+        public void CloseChatDialog() {
+            var chatlogOpenCloseButtonGeometry = GetChatLogOpenButtonGeometry();
+            var chatlogOpenCloseButtonImage = CaptureWindow( chatlogOpenCloseButtonGeometry );
+            if( ImageComparator.Compare( chatlogOpenCloseButtonImage, Resource.chat_log_minus_button ) &&
+                !ImageComparator.Compare( chatlogOpenCloseButtonImage, Resource.chat_log_plus_button )
+            ) {
+                int x = chatlogOpenCloseButtonGeometry.Left + chatlogOpenCloseButtonGeometry.Width / 2;
+                int y = chatlogOpenCloseButtonGeometry.Top + chatlogOpenCloseButtonGeometry.Height / 2;
+                Click( new Point( x, y ) );
+                Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+            }
+        }
+
+        /// <summary>
+        /// チャットログが最小化されていたら、開く
+        /// </summary>
+        public void OpenChatDialog() {
+            var chatlogOpenCloseButtonGeometry = GetChatLogOpenButtonGeometry();
+            var chatlogOpenCloseButtonImage = CaptureWindow( chatlogOpenCloseButtonGeometry );
+            if( !ImageComparator.Compare( chatlogOpenCloseButtonImage, Resource.chat_log_minus_button ) &&
+                ImageComparator.Compare( chatlogOpenCloseButtonImage, Resource.chat_log_plus_button )
+            ) {
+                int x = chatlogOpenCloseButtonGeometry.Left + chatlogOpenCloseButtonGeometry.Width / 2;
+                int y = chatlogOpenCloseButtonGeometry.Top + chatlogOpenCloseButtonGeometry.Height / 2;
+                Click( new Point( x, y ) );
+                Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+            }
         }
     }
 }

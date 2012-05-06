@@ -72,7 +72,7 @@ namespace FEZTradeBot {
                 // 「閉じる」ボタンが見つからなくなるまで押し続ける
                 try {
                     while( true ) {
-                        var position = FindCloseButton( window );
+                        var position = FindButton( window, Resource.close_button );
                         window.Click( position );
                     }
                 } catch( ApplicationException e ) { }
@@ -101,10 +101,54 @@ namespace FEZTradeBot {
 
             // エイケルナル大陸をクリック
             // 初心者云々のダイアログが表示されている可能性があるので、2回クリックする
+            var cecedriaContinentPosition = Point.Empty;
+            while( true ) {
+                try {
+                    cecedriaContinentPosition = FindButton( window, Resource.cecedria_continent );
+                    break;
+                } catch( ApplicationException e ) {
+                    Console.WriteLine( "本土大陸の位置を検出できなかった" );
+                }
+
+                // チャット欄が最大化されていて、大陸名がグレーアウトしている可能性がある
+                window.CloseChatDialog();
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            }
 
             // アズルウッド首都をクリック
+            var cecedriaCapitalPosition = Point.Empty;
+            while( true ) {
+                try {
+                    cecedriaCapitalPosition = FindButton( window, Resource.cecedria_capital );
+                    break;
+                } catch( ApplicationException e ) {
+                    Console.WriteLine( "首都の位置を検出できなかった" );
+                }
+                window.Click( cecedriaContinentPosition );
+                Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            }
 
             // フィールドインボタンをクリック
+            var fieldInPosition = Point.Empty;
+            while( true ) {
+                try {
+                    fieldInPosition = FindButton( window, Resource.field_in_button );
+                    break;
+                } catch( ApplicationException e ) {
+                    Console.WriteLine( "フィールドインボタンを検出できなかった" );
+                }
+                window.Click( cecedriaCapitalPosition );
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            }
+
+            window.OpenChatDialog();
+            window.Click( fieldInPosition );
+            Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+
+            // 掲示板横まで移動する
+            //TODO: 未実装
         }
 
         /// <summary>
@@ -120,19 +164,18 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
-        /// 閉じるボタン
+        /// ボタンの位置を探す
         /// </summary>
         /// <returns></returns>
-        private Point FindCloseButton( FEZWindow window ) {
+        private Point FindButton( FEZWindow window, Bitmap buttonImage ) {
             var screenImage = window.CaptureWindow();
             var screenWidth = screenImage.Width;
             var screenHeight = screenImage.Height;
             var screen = GetColorArray( screenImage );
 
-            var maskImage = Resource.close_button;
-            int maskWidth = maskImage.Width;
-            int maskHeight = maskImage.Height;
-            var mask = GetColorArray( maskImage );
+            int maskWidth = buttonImage.Width;
+            int maskHeight = buttonImage.Height;
+            var mask = GetColorArray( buttonImage );
             var maskTransparentColor = mask[0, 0];
 
             for( int offsetY = 0; offsetY < screenHeight - maskHeight; offsetY++ ) {

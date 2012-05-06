@@ -67,9 +67,37 @@ namespace FEZTradeBot {
             }
         }
         
+        internal static System.Drawing.Bitmap cecedria_capital {
+            get {
+                object obj = ResourceManager.GetObject("cecedria_capital", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap cecedria_continent {
+            get {
+                object obj = ResourceManager.GetObject("cecedria_continent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap character_select_dialog {
             get {
                 object obj = ResourceManager.GetObject("character_select_dialog", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap chat_log_minus_button {
+            get {
+                object obj = ResourceManager.GetObject("chat_log_minus_button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap chat_log_plus_button {
+            get {
+                object obj = ResourceManager.GetObject("chat_log_plus_button", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -91,6 +119,13 @@ namespace FEZTradeBot {
         internal static System.Drawing.Bitmap close_button {
             get {
                 object obj = ResourceManager.GetObject("close_button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap field_in_button {
+            get {
+                object obj = ResourceManager.GetObject("field_in_button", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
