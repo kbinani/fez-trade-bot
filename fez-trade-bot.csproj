@@ -77,7 +77,6 @@
     <Compile Include="SmartIrc4net\Logger.cs" />
     <Compile Include="Tasks\ClientLaunchTask.cs" />
     <Compile Include="Tasks\DoTradeTask.cs" />
-    <Compile Include="Tasks\GetNameTask.cs" />
     <Compile Include="Tasks\LoggingTask.cs" />
     <Compile Include="Tasks\ReplyTask.cs" />
     <Compile Include="Tasks\SortInventoryTask.cs" />

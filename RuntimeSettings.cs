@@ -8,6 +8,7 @@ namespace FEZTradeBot {
         private string fezLauncher = "";
         private string loginId = "";
         private string loginPassword = "";
+        private string loginCharacterName = "";
         private List<string> tellMessageInventoryNoSpace = new List<string>();
         private List<string> tellMessageSucceeded = new List<string>();
         private List<string> tellMessageWeiredItemEntried = new List<string>();
@@ -41,6 +42,10 @@ namespace FEZTradeBot {
                             }
                             case "loginPassword": {
                                 loginPassword = value;
+                                break;
+                            }
+                            case "loginCharacterName": {
+                                loginCharacterName = value;
                                 break;
                             }
                             case "tellMessage.inventoryNoSpace": {
@@ -102,6 +107,12 @@ namespace FEZTradeBot {
         public string LoginPassword {
             get {
                 return loginPassword;
+            }
+        }
+
+        public string LoginCharacterName {
+            get {
+                return loginCharacterName;
             }
         }
 

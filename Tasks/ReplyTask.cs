@@ -13,17 +13,15 @@ namespace FEZTradeBot {
         private FEZWindow window;
         private TradeResult tradeResult;
         private RuntimeSettings settings;
-        private string playerName;
         /// <summary>
         /// チャットウィンドウが、半角で最大何文字分表示されるか
         /// </summary>
         private const int CHAT_LINE_WIDTH = 52;
 
-        public ReplyTask( FEZWindow window, TradeResult tradeResult, RuntimeSettings settings, string playerName ) {
+        public ReplyTask( FEZWindow window, TradeResult tradeResult, RuntimeSettings settings ) {
             this.window = window;
             this.tradeResult = tradeResult;
             this.settings = settings;
-            this.playerName = playerName;
         }
 
         public void Run() {
@@ -66,7 +64,7 @@ namespace FEZTradeBot {
                     "status: " + tradeResult.Status,
                     "mode: " + mode
                 };
-                string adminMessage = GetFormattedTellMessage( lines, playerName, settings.AdminPC );
+                string adminMessage = GetFormattedTellMessage( lines, settings.LoginCharacterName, settings.AdminPC );
                 SendMessage( adminMessage );
                 string message = "";
                 foreach( var line in lines ){

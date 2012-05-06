@@ -21,7 +21,6 @@ namespace FEZTradeBot {
 
         public void Run() {
             FEZWindow window = null;
-            string playerName = "";
             int sleepSeconds = 1;
             int heartBeatIntervalSeconds = 600;
             int sleepCounter = 1;
@@ -64,7 +63,7 @@ namespace FEZTradeBot {
                             clientLaunchTask.Run();
                             continue;
                         }
-                        window = CreateWindow( handle, out playerName, out logStream );
+                        window = CreateWindow( handle, out logStream );
                     } catch( ApplicationException e ) {
                         Console.WriteLine( e.Message );
                         continue;
@@ -81,7 +80,7 @@ namespace FEZTradeBot {
                     screenShot = window.CaptureWindow();
                     logStream.PushScreenShot( screenShot );
                     if( window.HasTradeIcon( screenShot ) ) {
-                        ProcessTradeNotify( window, screenShot, playerName );
+                        ProcessTradeNotify( window, screenShot );
                     }
                     while( logStream.HasNext() ) {
                         var line = logStream.Next();
@@ -98,14 +97,14 @@ namespace FEZTradeBot {
         /// <summary>
         /// トレード枠が来た時の処理を行う
         /// </summary>
-        private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot, string playerName ) {
+        private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot ) {
             // トレードを行う
             TradeResult result = null;
             using( var doTradeTask = new DoTradeTask( window ) ) {
                 result = doTradeTask.Run();
             }
 
-            var replyTask = new ReplyTask( window, result, settings, playerName );
+            var replyTask = new ReplyTask( window, result, settings );
             replyTask.Run();
 
             if( result.Status == TradeResult.StatusType.SUCCEEDED ) {
@@ -122,17 +121,8 @@ namespace FEZTradeBot {
         /// FEZWindow のインスタンスを作成する
         /// </summary>
         /// <returns></returns>
-        private FEZWindow CreateWindow( IntPtr handle, out string playerName, out ChatLogStream logStream ) {
+        private FEZWindow CreateWindow( IntPtr handle, out ChatLogStream logStream ) {
             var result = new FEZWindow( handle );
-
-            try {
-                var task = new GetNameTask( result );
-                task.Run();
-                playerName = task.PlayerName;
-            } catch( ApplicationException e ) {
-                Console.WriteLine( "GetNameTaskの例外: " + e.Message );
-                playerName = "";
-            }
 
             logStream = new ChatLogStream( result );
 
