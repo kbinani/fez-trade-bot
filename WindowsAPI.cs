@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     class WindowsAPI {
         public const int SRCCOPY = 13369376;
         public const uint LEFTDOWN = 0x00000002;

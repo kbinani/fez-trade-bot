@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Drawing;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     /// <summary>
     /// クロニクルの任務破棄ダイアログを閉じるタスク
     /// </summary>

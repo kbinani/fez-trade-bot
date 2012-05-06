@@ -3,7 +3,7 @@ using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     /// <summary>
     /// 自分のキャラクタ名を取得するタスク
     /// </summary>

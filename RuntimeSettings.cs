@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     class RuntimeSettings {
         private string logDirectory = "";
         private string fezLauncher = "";

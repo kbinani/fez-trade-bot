@@ -2,7 +2,7 @@
 using System.Threading;
 using Meebey.SmartIrc4net;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     static class Irc {
         private static RuntimeSettings settings;
         private static Thread thread;

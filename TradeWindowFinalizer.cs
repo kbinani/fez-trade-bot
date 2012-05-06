@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Drawing;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     /// <summary>
     /// トレードウィンドウで，アイテムをエントリーした後ウィンドウを閉じるまでの処理を行う
     /// </summary>

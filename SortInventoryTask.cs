@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     /// <summary>
     /// インベントリの中身をソートするタスク
     /// </summary>

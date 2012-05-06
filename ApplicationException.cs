@@ -1,6 +1,6 @@
 using System;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     class ApplicationException : Exception {
         public ApplicationException( string message )
             : base( message ) {

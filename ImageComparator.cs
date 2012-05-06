@@ -4,7 +4,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     class ImageComparator {
         public static bool Compare( Bitmap image, Bitmap template ) {
             return Compare( image, template, 5 );

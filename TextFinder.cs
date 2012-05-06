@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     static class TextFinder {
         private const int CHARACTER_WIDTH = 6;
         private const int CHARACTER_HEIGHT = 12;

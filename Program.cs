@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Meebey.SmartIrc4net;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     class Program {
         static Queue<string> commands = new Queue<string>();
         static string buffer = "";

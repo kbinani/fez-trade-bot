@@ -4,7 +4,7 @@ using System.Threading;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     /// <summary>
     /// トレードを実行するタスク
     /// </summary>

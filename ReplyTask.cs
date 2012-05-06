@@ -5,7 +5,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     /// <summary>
     /// トレード相手に個人チャット(/tell)を送るタスク
     /// </summary>

@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Collections.Generic;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     /// <summary>
     /// ゲーム画面からチャットログを読み取り、読み取った結果を1行ずつ返す
     /// </summary>

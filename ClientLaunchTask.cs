@@ -4,7 +4,7 @@ using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace com.github.kbinani.feztradebot {
+namespace FEZTradeBot {
     class ClientLaunchTask : IDisposable {
         private RuntimeSettings settings;
         private bool stopRequested = false;
