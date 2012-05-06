@@ -507,6 +507,49 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// キャラクタ選択ダイアログの、「キャラクター決定」ボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetCharacterSelectButtonPosition() {
+            // キャラクタ選択ダイアログに対して、
+            // 左上: x=34, y=176
+            // 右下: x=174, y=192
+            var dialogGeometry = GetCharacterSelectDialogGeometry();
+            int x = dialogGeometry.Left + (34 + 174) / 2;
+            int y = dialogGeometry.Top + (176 + 192) / 2;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// キャラクタ選択画面にて、「キャラクター決定」ボタンを押した後に出るダイアログの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetCharacterSelectConfirmDialogGeometry() {
+            // 1366*768のとき、
+            // 左上: x=523, y=350
+            // 右下: x=843, y=430
+            const int width = 843 - 523;
+            const int height = 430 - 350;
+            int left = this.Width / 2 - width / 2;
+            int top = this.Height / 2 - height / 2 + 6;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
+        /// キャラクタ選択画面にて、「キャラクター決定」ボタンを押した後に出るダイアログの、OKボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetCharacterSelectConfirmDialogOKButtonPosition() {
+            // ダイアログに対して
+            // 左上: x=10, y=48
+            // 右下: x=150, y=64
+            var dialogGeometry = GetCharacterSelectConfirmDialogGeometry();
+            int x = dialogGeometry.Left + (10 + 150) / 2;
+            int y = dialogGeometry.Top + (48 + 64) / 2;
+            return new Point( x, y );
+        }
+
+        /// <summary>
         /// 部隊リストダイアログの領域を取得する
         /// </summary>
         /// <returns></returns>

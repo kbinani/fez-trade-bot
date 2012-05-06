@@ -94,7 +94,17 @@ namespace FEZTradeBot {
             }
 
             // ログインボタンを押す
-            //TODO: 未実装
+            window.Click( window.GetCharacterSelectButtonPosition() );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+            window.Click( window.GetCharacterSelectConfirmDialogOKButtonPosition() );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+
+            // エイケルナル大陸をクリック
+            // 初心者云々のダイアログが表示されている可能性があるので、2回クリックする
+
+            // アズルウッド首都をクリック
+
+            // フィールドインボタンをクリック
         }
 
         /// <summary>
