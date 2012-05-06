@@ -43,7 +43,7 @@ namespace FEZTradeBot {
                 window.Click( new Point( x, y ) );
             }
 
-            // ログインID&PASS入力
+            // ログインID入力
             //TODO: 大文字・が来た時の処理
             //TODO: 既に入っているログインIDを消去する処理
             //TODO: ログインIDを保存する，のオプションのチェックを外した状態にする
@@ -52,11 +52,92 @@ namespace FEZTradeBot {
                 WindowsAPI.keybd_event( (byte)c, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( (byte)c, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+
+            // ログインPASS入力
             window.Click( window.GetLoginDialogPasswordPosition() );
             foreach( char c in settings.LoginPassword.ToUpper().ToCharArray() ) {
                 WindowsAPI.keybd_event( (byte)c, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( (byte)c, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+
+            // ログインボタンを押す
+            window.Click( window.GetLoginDialogLoginButtonPosition() );
+
+            // キャラクタ選択ダイアログが表示されるまで待つ
+            var characterSelectDialog = window.GetCharacterSelectDialogGeometry();
+            while( !ImageComparator.Compare( window.CaptureWindow( characterSelectDialog ), Resource.character_select_dialog ) ) {
+                // ログインボタン押し下げ後、何らかのお知らせダイアログが表示されることがあるので、
+                // 「閉じる」ボタンが見つからなくなるまで押し続ける
+                try {
+                    while( true ) {
+                        var position = FindCloseButton( window );
+                        window.Click( position );
+                    }
+                } catch( ApplicationException e ) { }
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            }
+
+            // 指定したキャラクタ名がダイアログに表示されるまで、別キャラクタを表示させる
+        }
+
+        /// <summary>
+        /// 閉じるボタン
+        /// </summary>
+        /// <returns></returns>
+        private Point FindCloseButton( FEZWindow window ) {
+            var screenImage = window.CaptureWindow();
+            var screenWidth = screenImage.Width;
+            var screenHeight = screenImage.Height;
+            var screen = GetColorArray( screenImage );
+
+            var maskImage = Resource.close_button;
+            int maskWidth = maskImage.Width;
+            int maskHeight = maskImage.Height;
+            var mask = GetColorArray( maskImage );
+            var maskTransparentColor = mask[0, 0];
+
+            for( int offsetY = 0; offsetY < screenHeight - maskHeight; offsetY++ ) {
+                for( int offsetX = 0; offsetX < screenWidth - maskWidth; offsetX++ ) {
+                    bool match = true;
+                    for( int y = 0; y < maskHeight; y++ ) {
+                        for( int x = 0; x < maskWidth; x++ ) {
+                            var maskColor = mask[x, y];
+                            if( maskColor == maskTransparentColor ) {
+                                continue;
+                            }
+                            var screenColor = screen[x + offsetX, y + offsetY];
+                            if( maskColor != screenColor ) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if( !match ) {
+                            break;
+                        }
+                    }
+
+                    if( match ) {
+                        int x = offsetX + maskWidth / 2;
+                        int y = offsetY + maskHeight / 2;
+                        return new Point( x, y );
+                    }
+                }
+            }
+            throw new ApplicationException( "閉じるボタンを見つけられなかった" );
+        }
+
+        private static Color[,] GetColorArray( Bitmap image ) {
+            int width = image.Width;
+            int height = image.Height;
+            var result = new Color[width, height];
+            for( int y = 0; y < height; y++ ) {
+                for( int x = 0; x < width; x++ ) {
+                    result[x, y] = Color.FromArgb( 255, image.GetPixel( x, y ) );
+                }
+            }
+            return result;
         }
 
         /// <summary>

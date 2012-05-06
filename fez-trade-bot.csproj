@@ -94,8 +94,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\beast_blood.png" />
+    <Content Include="Resources\character_select_dialog.png" />
     <Content Include="Resources\chat_log_scroll_up_button.png" />
     <Content Include="Resources\chronicle_notify_message.png" />
+    <Content Include="Resources\close_button.png" />
     <Content Include="Resources\icon_mask.png" />
     <Content Include="Resources\login.png" />
     <Content Include="Resources\trade_error_dialog.png" />

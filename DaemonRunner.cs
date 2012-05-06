@@ -60,7 +60,8 @@ namespace FEZTradeBot {
                     try {
                         IntPtr handle = FEZWindow.GetClientWindow();
                         if( handle == IntPtr.Zero ) {
-                            Console.WriteLine( "FEZの画面が見つからなかった" );
+                            var clientLaunchTask = new ClientLaunchTask( settings );
+                            clientLaunchTask.Run();
                             continue;
                         }
                         window = CreateWindow( handle, out playerName, out logStream );

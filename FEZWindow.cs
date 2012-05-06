@@ -455,6 +455,20 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// ログインダイアログの、「ログイン」ボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetLoginDialogLoginButtonPosition() {
+            var loginDialogGeometry = GetLoginDialogGeometry();
+            // ログインダイアログに対して、
+            // 左上: x=36, y=108
+            // 右下: x=108, y=124
+            int x = loginDialogGeometry.Left + (36 + 108) / 2;
+            int y = loginDialogGeometry.Top + (108 + 124) / 2;
+            return new Point( x, y );
+        }
+
+        /// <summary>
         /// キャラクタ選択ダイアログの、キャラクタ情報を表示しているダイアログの領域を取得する
         /// </summary>
         /// <returns></returns>
