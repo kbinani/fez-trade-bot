@@ -80,6 +80,33 @@ namespace FEZTradeBot {
             }
 
             // 指定したキャラクタ名がダイアログに表示されるまで、別キャラクタを表示させる
+            try {
+                while( true ) {
+                    var characterName = GetCharacterName( window );
+                    if( characterName == settings.LoginCharacterName ) {
+                        break;
+                    }
+                    window.Click( window.GetCharacterSelectNextRightPosition() );
+                    Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                }
+            } catch( ApplicationException e ) {
+                Console.WriteLine( "ClientLaunchTaskの例外: " + e.Message );
+            }
+
+            // ログインボタンを押す
+            //TODO: 未実装
+        }
+
+        /// <summary>
+        /// キャラクタ選択ダイアログから、キャラクタ名を取得する
+        /// </summary>
+        /// <param name="window"></param>
+        /// <returns></returns>
+        private string GetCharacterName( FEZWindow window ) {
+            var characterNameGeometry = window.GetCharacterSelectDialogNameGeometry();
+            var characterNameRawImage = window.CaptureWindow( characterNameGeometry );
+            var characterNameImage = TextFinder.CreateFilteredImage( characterNameRawImage, Color.Black );
+            return TextFinder.Find( characterNameImage );
         }
 
         /// <summary>

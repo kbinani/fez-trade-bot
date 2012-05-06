@@ -482,6 +482,31 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// キャラクタ選択ダイアログの、キャラクタ名を表示している領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetCharacterSelectDialogNameGeometry() {
+            // キャラクタ選択ダイアログに対して、
+            // 左上: x=72, y=34
+            var dialog = GetCharacterSelectDialogGeometry();
+            int left = dialog.Left + 72;
+            int top = dialog.Top + 34;
+            int width = 6 * 16;
+            int height = 12;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
+        /// キャラクタ選択ダイアログの、右側に表示されているキャラクタを選択するためにクリックするべき位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetCharacterSelectNextRightPosition() {
+            int x = this.Width / 2 + 162;
+            int y = this.Height / 2;
+            return new Point( x, y );
+        }
+
+        /// <summary>
         /// 部隊リストダイアログの領域を取得する
         /// </summary>
         /// <returns></returns>
