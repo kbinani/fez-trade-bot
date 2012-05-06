@@ -19,6 +19,63 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// 画像imageの内部に、templateと一致する部分を検索し、その左上の座標を返す。
+        /// 見つからなかった場合、例外を投げる
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        public static Point Find( Bitmap image, Bitmap template ) {
+            var screenWidth = image.Width;
+            var screenHeight = image.Height;
+            var screen = GetColorArray( image );
+
+            int maskWidth = template.Width;
+            int maskHeight = template.Height;
+            var mask = GetColorArray( template );
+            var maskTransparentColor = mask[0, 0];
+
+            for( int offsetY = 0; offsetY < screenHeight - maskHeight; offsetY++ ) {
+                for( int offsetX = 0; offsetX < screenWidth - maskWidth; offsetX++ ) {
+                    bool match = true;
+                    for( int y = 0; y < maskHeight; y++ ) {
+                        for( int x = 0; x < maskWidth; x++ ) {
+                            var maskColor = mask[x, y];
+                            if( maskColor == maskTransparentColor ) {
+                                continue;
+                            }
+                            var screenColor = screen[x + offsetX, y + offsetY];
+                            if( maskColor != screenColor ) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if( !match ) {
+                            break;
+                        }
+                    }
+
+                    if( match ) {
+                        return new Point( offsetX, offsetY );
+                    }
+                }
+            }
+            throw new ApplicationException( "一致する部分を見つけられなかった" );
+        }
+
+        private static Color[,] GetColorArray( Bitmap image ) {
+            int width = image.Width;
+            int height = image.Height;
+            var result = new Color[width, height];
+            for( int y = 0; y < height; y++ ) {
+                for( int x = 0; x < width; x++ ) {
+                    result[x, y] = Color.FromArgb( 255, image.GetPixel( x, y ) );
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 画像を比較する．
         /// </summary>
         /// <param name="image">ゲーム画面からキャプチャした何らかの画像</param>

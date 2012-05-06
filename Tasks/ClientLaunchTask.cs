@@ -72,7 +72,7 @@ namespace FEZTradeBot {
                 // 「閉じる」ボタンが見つからなくなるまで押し続ける
                 try {
                     while( true ) {
-                        var position = FindButton( window, Resource.close_button );
+                        var position = FindButton( window.CaptureWindow(), Resource.close_button );
                         window.Click( position );
                     }
                 } catch( ApplicationException e ) { }
@@ -104,7 +104,7 @@ namespace FEZTradeBot {
             var cecedriaContinentPosition = Point.Empty;
             while( true ) {
                 try {
-                    cecedriaContinentPosition = FindButton( window, Resource.cecedria_continent );
+                    cecedriaContinentPosition = FindButton( window.CaptureWindow(), Resource.cecedria_continent );
                     break;
                 } catch( ApplicationException e ) {
                     Console.WriteLine( "本土大陸の位置を検出できなかった" );
@@ -119,7 +119,7 @@ namespace FEZTradeBot {
             var cecedriaCapitalPosition = Point.Empty;
             while( true ) {
                 try {
-                    cecedriaCapitalPosition = FindButton( window, Resource.cecedria_capital );
+                    cecedriaCapitalPosition = FindButton( window.CaptureWindow(), Resource.cecedria_capital );
                     break;
                 } catch( ApplicationException e ) {
                     Console.WriteLine( "首都の位置を検出できなかった" );
@@ -133,7 +133,7 @@ namespace FEZTradeBot {
             var fieldInPosition = Point.Empty;
             while( true ) {
                 try {
-                    fieldInPosition = FindButton( window, Resource.field_in_button );
+                    fieldInPosition = FindButton( window.CaptureWindow(), Resource.field_in_button );
                     break;
                 } catch( ApplicationException e ) {
                     Console.WriteLine( "フィールドインボタンを検出できなかった" );
@@ -151,6 +151,13 @@ namespace FEZTradeBot {
             //TODO: 未実装
         }
 
+        private Point FindButton( Bitmap screenShot, Bitmap buttonMaskImage ) {
+            var point = ImageComparator.Find( screenShot, buttonMaskImage );
+            int x = point.X + buttonMaskImage.Width / 2;
+            int y = point.Y + buttonMaskImage.Height / 2;
+            return new Point( x, y );
+        }
+
         /// <summary>
         /// キャラクタ選択ダイアログから、キャラクタ名を取得する
         /// </summary>
@@ -161,63 +168,6 @@ namespace FEZTradeBot {
             var characterNameRawImage = window.CaptureWindow( characterNameGeometry );
             var characterNameImage = TextFinder.CreateFilteredImage( characterNameRawImage, Color.Black );
             return TextFinder.Find( characterNameImage );
-        }
-
-        /// <summary>
-        /// ボタンの位置を探す
-        /// </summary>
-        /// <returns></returns>
-        private Point FindButton( FEZWindow window, Bitmap buttonImage ) {
-            var screenImage = window.CaptureWindow();
-            var screenWidth = screenImage.Width;
-            var screenHeight = screenImage.Height;
-            var screen = GetColorArray( screenImage );
-
-            int maskWidth = buttonImage.Width;
-            int maskHeight = buttonImage.Height;
-            var mask = GetColorArray( buttonImage );
-            var maskTransparentColor = mask[0, 0];
-
-            for( int offsetY = 0; offsetY < screenHeight - maskHeight; offsetY++ ) {
-                for( int offsetX = 0; offsetX < screenWidth - maskWidth; offsetX++ ) {
-                    bool match = true;
-                    for( int y = 0; y < maskHeight; y++ ) {
-                        for( int x = 0; x < maskWidth; x++ ) {
-                            var maskColor = mask[x, y];
-                            if( maskColor == maskTransparentColor ) {
-                                continue;
-                            }
-                            var screenColor = screen[x + offsetX, y + offsetY];
-                            if( maskColor != screenColor ) {
-                                match = false;
-                                break;
-                            }
-                        }
-                        if( !match ) {
-                            break;
-                        }
-                    }
-
-                    if( match ) {
-                        int x = offsetX + maskWidth / 2;
-                        int y = offsetY + maskHeight / 2;
-                        return new Point( x, y );
-                    }
-                }
-            }
-            throw new ApplicationException( "閉じるボタンを見つけられなかった" );
-        }
-
-        private static Color[,] GetColorArray( Bitmap image ) {
-            int width = image.Width;
-            int height = image.Height;
-            var result = new Color[width, height];
-            for( int y = 0; y < height; y++ ) {
-                for( int x = 0; x < width; x++ ) {
-                    result[x, y] = Color.FromArgb( 255, image.GetPixel( x, y ) );
-                }
-            }
-            return result;
         }
 
         /// <summary>
