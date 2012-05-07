@@ -101,6 +101,10 @@ namespace FEZTradeBot {
         [DllImport( "user32.dll", SetLastError = true )]
         public static extern bool PostMessage( IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam );
 
+        [DllImport( "user32.dll" )]
+        [return: MarshalAs( UnmanagedType.Bool )]
+        public static extern bool IsWindowEnabled( IntPtr hWnd );
+        
         [StructLayout( LayoutKind.Sequential )]
         public struct RECT {
             public int left;

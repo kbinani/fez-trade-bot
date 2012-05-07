@@ -189,7 +189,18 @@ namespace FEZTradeBot {
             }
 
             // ランチャーの「START」ボタンを押す
-            IntPtr startButton = WindowsAPI.FindWindowEx( updater, IntPtr.Zero, "BUTTON", "START" );
+            // STARTボタンが出現するまで待機
+            IntPtr startButton = IntPtr.Zero;
+            while( startButton == IntPtr.Zero ) {
+                startButton = WindowsAPI.FindWindowEx( updater, IntPtr.Zero, "BUTTON", "START" );
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            }
+
+            // STARTボタンがENABLE状態になるまで待機
+            while( !WindowsAPI.IsWindowEnabled( startButton ) ) {
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            }
+
             WindowsAPI.RECT startButtonGeometry = new WindowsAPI.RECT();
             WindowsAPI.GetWindowRect( startButton, ref startButtonGeometry );
             var x = (startButtonGeometry.left + startButtonGeometry.right) / 2;
