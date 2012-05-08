@@ -144,6 +144,13 @@ namespace FEZTradeBot {
             }
         }
         
+        internal static System.Drawing.Bitmap roy_message_header {
+            get {
+                object obj = ResourceManager.GetObject("roy_message_header", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap trade_error_dialog {
             get {
                 object obj = ResourceManager.GetObject("trade_error_dialog", resourceCulture);

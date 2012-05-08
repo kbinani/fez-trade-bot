@@ -22,7 +22,7 @@ namespace FEZTradeBot {
         private IntPtr windowHandle;
         private int _width;
         private int _height;
-        private ChronicleNotifyCloser closer = null;
+        private MessageDialogCloser closer = null;
 
         /// <summary>
         /// FEZのゲーム画面のウィンドウハンドルを指定し，初期化する
@@ -36,7 +36,7 @@ namespace FEZTradeBot {
             this._width = geometry.right - geometry.left;
             this._height = geometry.bottom - geometry.top;
 
-            this.closer = new ChronicleNotifyCloser( this );
+            this.closer = new MessageDialogCloser( this );
             Thread thread = new Thread( new ThreadStart( this.closer.Run ) );
             thread.Start();
         }
@@ -62,6 +62,16 @@ namespace FEZTradeBot {
         /// <returns></returns>
         public static IntPtr GetLauncherWindow() {
             return WindowsAPI.FindWindow( "#32770", "Fantasy Earth Zero" );
+        }
+
+        /// <summary>
+        /// 首都にフィールドインした際、たまに表示されるロイのメッセージウィンドウの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetRoyMessageGeometry() {
+            // 左上: x=32, y=32
+            // 右下: x=303, y=127
+            return new Rectangle( 32, 32, 303 - 32, 127 - 32 );
         }
 
         /// <summary>
