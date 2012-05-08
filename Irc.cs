@@ -4,11 +4,17 @@ using Meebey.SmartIrc4net;
 
 namespace FEZTradeBot {
     static class Irc {
+        public const string NICK = "bot";
+
         private static RuntimeSettings settings;
         private static Thread thread;
         private static IrcClient irc;
-        private const string NICK = "bot";
         private static bool stopRequested = false;
+
+        /// <summary>
+        /// irc のメッセージが届いた際に呼ばれる
+        /// </summary>
+        public static event IrcEventHandler OnRawMessage;
 
         public static void Start( RuntimeSettings settings ) {
             Irc.settings = settings;
@@ -47,6 +53,7 @@ namespace FEZTradeBot {
                 irc.Encoding = System.Text.Encoding.UTF8;
                 irc.SendDelay = 200;
                 irc.ActiveChannelSyncing = true;
+                irc.OnRawMessage += new IrcEventHandler( irc_OnRawMessage );
                 irc.Connect( settings.IrcHost, settings.IrcPort );
                 irc.Login( NICK, NICK, 0, NICK, settings.IrcPassword );
                 irc.RfcJoin( settings.IrcChannelName );
@@ -57,6 +64,12 @@ namespace FEZTradeBot {
                 if( !stopRequested ) {
                     Thread.Sleep( TimeSpan.FromSeconds( 10 ) );
                 }
+            }
+        }
+
+        static void irc_OnRawMessage( object sender, IrcEventArgs e ) {
+            if( OnRawMessage != null ) {
+                OnRawMessage( sender, e );
             }
         }
     }

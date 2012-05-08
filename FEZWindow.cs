@@ -846,21 +846,36 @@ namespace FEZTradeBot {
         /// <param name="message"></param>
         public void SendMessage( string message ) {
             // チャット入力欄を有効化する．
+            Activate();
             WindowsAPI.SendMessage( this.Handle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_RETURN, 0 );
             WindowsAPI.SendMessage( this.Handle, WindowsAPI.WM_KEYUP, WindowsAPI.VK_RETURN, 0 );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+
             for( int i = 0; i < 6; i++ ){
                 WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
 
-            Clipboard.SetText( message );
+            Thread thread = new Thread( new ParameterizedThreadStart( CallClipboardSetText ) );
+            thread.SetApartmentState( ApartmentState.STA );
+            thread.Start( message );
+            thread.Join();
+
             WindowsAPI.keybd_event( WindowsAPI.VK_CONTROL, 0, 0, UIntPtr.Zero );
             WindowsAPI.keybd_event( (byte)'V', 0, 0, UIntPtr.Zero );
             WindowsAPI.keybd_event( WindowsAPI.VK_CONTROL, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             WindowsAPI.keybd_event( (byte)'V', 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
 
             WindowsAPI.keybd_event( WindowsAPI.VK_RETURN, 0, 0, UIntPtr.Zero );
             WindowsAPI.keybd_event( WindowsAPI.VK_RETURN, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+        }
+
+        private void CallClipboardSetText( object argument ) {
+            var message = (string)argument;
+            Clipboard.SetText( message );
         }
     }
 }
