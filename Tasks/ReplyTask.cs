@@ -65,7 +65,7 @@ namespace FEZTradeBot {
                     "mode: " + mode
                 };
                 string adminMessage = GetFormattedTellMessage( lines, settings.LoginCharacterName, settings.AdminPC );
-                SendMessage( adminMessage );
+                window.SendMessage( adminMessage );
                 string message = "";
                 foreach( var line in lines ){
                     if( message != "" ){
@@ -115,37 +115,8 @@ namespace FEZTradeBot {
             }
 
             string message = "/tell " + customerName + " " + statusMessage;
-            SendMessage( message );
+            window.SendMessage( message );
             Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
-        }
-
-        /// <summary>
-        /// チャットメッセージを送信する．
-        /// </summary>
-        /// <param name="message"></param>
-        private void SendMessage( string message ) {
-            EnableChatTextbox();
-
-            Clipboard.SetText( message );
-            WindowsAPI.keybd_event( WindowsAPI.VK_CONTROL, 0, 0, UIntPtr.Zero );
-            WindowsAPI.keybd_event( (byte)'V', 0, 0, UIntPtr.Zero );
-            WindowsAPI.keybd_event( WindowsAPI.VK_CONTROL, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
-            WindowsAPI.keybd_event( (byte)'V', 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
-
-            WindowsAPI.keybd_event( WindowsAPI.VK_RETURN, 0, 0, UIntPtr.Zero );
-            WindowsAPI.keybd_event( WindowsAPI.VK_RETURN, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
-        }
-
-        /// <summary>
-        /// チャット入力欄を有効化する．
-        /// </summary>
-        private void EnableChatTextbox() {
-            WindowsAPI.SendMessage( window.Handle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_RETURN, 0 );
-            WindowsAPI.SendMessage( window.Handle, WindowsAPI.WM_KEYUP, WindowsAPI.VK_RETURN, 0 );
-            for( int i = 0; i < 6; i++ ){
-                WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, 0, UIntPtr.Zero );
-                WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
-            }
         }
 
         /// <summary>
