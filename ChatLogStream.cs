@@ -109,7 +109,7 @@ namespace FEZTradeBot {
             }
 
             // チャットの各行について処理する
-            var result = new ChatLogLine[chatLogLines];
+            var result = new List<ChatLogLine>();
             for( int lineIndex = 0; lineIndex < chatLogLines; lineIndex++ ) {
                 var lineGeometry = window.GetChatLogLineGeometry( lineIndex, chatLogLines );
                 var lineImage = (Bitmap)screenShot.Clone( lineGeometry, screenShot.PixelFormat );
@@ -119,26 +119,15 @@ namespace FEZTradeBot {
                 var lineString = "";
                 try {
                     lineString = TextFinder.Find( filteredLineImage, true, false );
+                    if( lineString != "" ) {
+                        result.Add( new ChatLogLine( lineString, lineType ) );
+                    }
                 } catch( ApplicationException e ) {
                     Console.WriteLine( typeof( ChatLogStream ).Name + "の例外: " + e.Message );
                 }
-
-                result[lineIndex] = new ChatLogLine( lineString, lineType );
             }
 
-            // 発言種類が判定できているにもかかわらず、空行が来ている場合は、
-            // チャットウィンドウが自動スクロールする最中のスクリーンショットだった場合
-            var emptyLineCount = 0;
-            foreach( var line in result ) {
-                if( line.Type != ChatLogLine.LineType.UNKNOWN && line.Line == "" ) {
-                    emptyLineCount++;
-                }
-            }
-            if( result.Length / 2 <= emptyLineCount ) {
-                throw new ApplicationException( "チャットウィンドウの自動スクロールにより、文字を読み取れなかった" );
-            } else {
-                return result;
-            }
+            return result.ToArray();
         }
 
         /// <summary>
@@ -148,21 +137,35 @@ namespace FEZTradeBot {
         /// <returns></returns>
         private ChatLogLine.LineType DetectLineType( Bitmap lineImage ) {
             var letterColors = new Dictionary<Color, ChatLogLine.LineType>();
+
             foreach( object typeObject in Enum.GetValues( typeof( ChatLogLine.LineType ) ) ) {
                 var type = (ChatLogLine.LineType)typeObject;
+                if( type == ChatLogLine.LineType.UNKNOWN ) {
+                    continue;
+                }
                 var color = ChatLogLine.GetLetterColorByType( type );
                 letterColors.Add( color, type );
             }
 
+            var draft = ChatLogLine.LineType.UNKNOWN;
             for( int y = 0; y < lineImage.Height; y++ ) {
                 for( int x = 0; x < lineImage.Width; x++ ) {
                     var c = Color.FromArgb( 255, lineImage.GetPixel( x, y ) );
-                    if( letterColors.ContainsKey( c ) ) {
-                        return letterColors[c];
+                    ChatLogLine.LineType type;
+                    if( letterColors.TryGetValue( c, out type ) ) {
+                        if( draft == ChatLogLine.LineType.UNKNOWN ) {
+                            draft = type;
+                        } else if( draft != type ) {
+                            throw new ApplicationException( "複数の発言種類の文字が、同一行に存在する" );
+                        }
                     }
                 }
             }
-            return ChatLogLine.LineType.UNKNOWN;
+            if( draft == ChatLogLine.LineType.UNKNOWN ) {
+                throw new ApplicationException( "発言種類を判定できなかった" );
+            } else {
+                return draft;
+            }
         }
     }
 
