@@ -49,17 +49,21 @@ namespace FEZTradeBot {
 
         private static void Run() {
             while( !stopRequested ) {
-                irc = new IrcClient();
-                irc.Encoding = System.Text.Encoding.UTF8;
-                irc.SendDelay = 200;
-                irc.ActiveChannelSyncing = true;
-                irc.OnRawMessage += new IrcEventHandler( irc_OnRawMessage );
-                irc.Connect( settings.IrcHost, settings.IrcPort );
-                irc.Login( NICK, NICK, 0, NICK, settings.IrcPassword );
-                irc.RfcJoin( settings.IrcChannelName );
-                irc.Listen();
-                if( irc.IsConnected ) {
-                    irc.Disconnect();
+                try {
+                    irc = new IrcClient();
+                    irc.Encoding = System.Text.Encoding.UTF8;
+                    irc.SendDelay = 200;
+                    irc.ActiveChannelSyncing = true;
+                    irc.OnRawMessage += new IrcEventHandler( irc_OnRawMessage );
+                    irc.Connect( settings.IrcHost, settings.IrcPort );
+                    irc.Login( NICK, NICK, 0, NICK, settings.IrcPassword );
+                    irc.RfcJoin( settings.IrcChannelName );
+                    irc.Listen();
+                    if( irc.IsConnected ) {
+                        irc.Disconnect();
+                    }
+                } catch( Exception e ) {
+                    Console.WriteLine( e.Message );
                 }
                 if( !stopRequested ) {
                     Thread.Sleep( TimeSpan.FromSeconds( 10 ) );
