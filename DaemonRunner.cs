@@ -19,6 +19,7 @@ namespace FEZTradeBot {
         public DaemonRunner( RuntimeSettings settings ) {
             this.settings = settings;
             this.status = Status.RUNNING;
+            Irc.OnRawMessage += new IrcEventHandler( Irc_OnRawMessage );
         }
 
         public void Run() {
@@ -65,7 +66,6 @@ namespace FEZTradeBot {
                             continue;
                         }
                         window = CreateWindow( handle, out logStream );
-                        Irc.OnRawMessage += new IrcEventHandler( Irc_OnRawMessage );
                     } catch( ApplicationException e ) {
                         Console.WriteLine( e.Message );
                         continue;
@@ -141,10 +141,7 @@ namespace FEZTradeBot {
                     switch( command ) {
                         case ":sendmessage": {
                             var argument = message.Substring( command.Length ).Trim();
-                            if( argument.StartsWith( "/" ) ) {
-                                {//TODO:
-                                    Console.WriteLine( "argument=" + argument );
-                                }
+                            if( argument.StartsWith( "/" ) && window != null ) {
                                 window.SendMessage( argument );
                             }
                             break;
