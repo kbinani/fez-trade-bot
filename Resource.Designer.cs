@@ -144,6 +144,27 @@ namespace FEZTradeBot {
             }
         }
         
+        internal static System.Drawing.Bitmap logout_confirm_dialog {
+            get {
+                object obj = ResourceManager.GetObject("logout_confirm_dialog", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap map_move_handle {
+            get {
+                object obj = ResourceManager.GetObject("map_move_handle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap network_error_dialog {
+            get {
+                object obj = ResourceManager.GetObject("network_error_dialog", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap roy_message_header {
             get {
                 object obj = ResourceManager.GetObject("roy_message_header", resourceCulture);

@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace FEZTradeBot {
     /// <summary>
@@ -22,6 +24,7 @@ namespace FEZTradeBot {
                     try {
                         CheckChronicleNotifyDialog();
                         CheckRoyMessageDialog();
+                        CheckNetworkErrorDialog();
                     } catch( ApplicationException e ) {
                         Console.WriteLine( e.Message );
                         break;
@@ -32,6 +35,46 @@ namespace FEZTradeBot {
 
         public void StopAsync() {
             this.stopRequested = true;
+        }
+
+        /// <summary>
+        /// ネットワークエラーのダイアログをチェックする
+        /// </summary>
+        private void CheckNetworkErrorDialog() {
+            var dialogGeometry = window.GetNetworkErrorDialogGeoemtry();
+            var dialogImage = window.CaptureWindow( dialogGeometry );
+            if( ImageComparator.Compare( dialogImage, Resource.network_error_dialog ) ) {
+                // エラーダイアログのOKボタンを押す
+                var position = window.GetNetworkErrorDialogOKButtonPosition();
+                window.Click( position );
+                Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+
+                // 確認ダイアログが出るまで、exitボタンを押し続ける
+                var exitButtonGeometry = window.GetLoginExitButtonGeometry();
+                int x = exitButtonGeometry.Left + exitButtonGeometry.Width / 2;
+                int y = exitButtonGeometry.Top + exitButtonGeometry.Height / 2;
+                var exitButtonPosition = new Point( x, y );
+                var confirmDialogGeometry = window.GetLogoutDialogGeometry();
+                while( true ) {
+                    var confirmDialogImage = window.CaptureWindow( confirmDialogGeometry );
+                    if( ImageComparator.Compare( confirmDialogImage, Resource.logout_confirm_dialog, 0 ) ) {
+                        break;
+                    }
+                    window.Click( exitButtonPosition );
+                    Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                }
+
+                // ゲームクライアントが消えるまで、確認ダイアログのOKボタンを押し続ける
+                var okButtonPosition = window.GetLogoutDialogOKButtonPosition();
+                while( true ) {
+                    var handle = FEZWindow.GetClientWindow();
+                    if( handle == IntPtr.Zero ) {
+                        break;
+                    }
+                    window.Click( okButtonPosition );
+                    Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                }
+            }
         }
 
         /// <summary>

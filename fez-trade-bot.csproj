@@ -104,6 +104,8 @@
     <Content Include="Resources\field_in_button.png" />
     <Content Include="Resources\icon_mask.png" />
     <Content Include="Resources\login.png" />
+    <Content Include="Resources\logout_confirm_dialog.png" />
+    <Content Include="Resources\network_error_dialog.png" />
     <Content Include="Resources\roy_message_header.png" />
     <Content Include="Resources\trade_error_dialog.png" />
     <Content Include="Resources\trade_window.png" />

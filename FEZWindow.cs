@@ -76,6 +76,40 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// ネットワークエラーを通知するダイアログの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetNetworkErrorDialogGeoemtry() {
+            // 800*600のとき、
+            // 左上: x=240, y=260
+            // 右下: x=560, y=356
+
+            // 1366*768のとき、
+            // 左上: x=523, y=344
+            // 右下: x=843, y=440
+            const int width = 560 - 240;
+            const int height = 356 - 260;
+            int left = this.Width / 2 - width / 2;
+            const int OFFSET = 8;
+            int top = this.Height / 2 - height / 2 + OFFSET;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
+        /// ネットワークエラーを通知するダイアログの、OKボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetNetworkErrorDialogOKButtonPosition() {
+            // ダイアログに対して、
+            // 左上: x=90, y=64
+            // 右下: x=230, y=80
+            var dialog = GetNetworkErrorDialogGeoemtry();
+            int x = dialog.Left + (90 + 230) / 2;
+            int y = dialog.Top + (64 + 80) / 2;
+            return new Point( x, y );
+        }
+
+        /// <summary>
         /// アイコン領域の画像の中に，トレード要請を表すアイコンが表示されているかどうかを取得する
         /// </summary>
         /// <returns></returns>
@@ -476,6 +510,34 @@ namespace FEZTradeBot {
             // 右下: x=108, y=124
             int x = loginDialogGeometry.Left + (36 + 108) / 2;
             int y = loginDialogGeometry.Top + (108 + 124) / 2;
+            return new Point( x, y );
+        }
+
+        /// <summary>
+        /// ログイン画面のExitボタンを押した後の確認ダイアログの領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetLogoutDialogGeometry() {
+            // 1366*768のとき
+            // 左上: x=523, y=344
+            // 右下: x=843, y=424
+            const int width = 320;
+            const int height = 80;
+            int left = this.Width / 2 - width / 2;
+            int top = this.Height / 2 - height / 2;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
+        /// ログイン画面のExitボタンを押した後の確認ダイアログのOKボタンの位置を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetLogoutDialogOKButtonPosition() {
+            var geometry = GetLogoutDialogGeometry();
+            // 左上: x=10, y=48
+            // 右下: x=150, y=64
+            int x = geometry.Left + (10 + 150) / 2;
+            int y = geometry.Top + (48 + 64) / 2;
             return new Point( x, y );
         }
 
