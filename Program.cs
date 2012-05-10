@@ -12,7 +12,6 @@ namespace FEZTradeBot {
         static string buffer = "";
         static bool stopRequied = false;
 
-        [STAThreadAttribute]
         static void Main( string[] args ) {
             RuntimeSettings settings = new RuntimeSettings( args );
 
@@ -24,7 +23,6 @@ namespace FEZTradeBot {
 
             var runner = new DaemonRunner( settings );
             var t = new Thread( new ThreadStart( runner.Run ) );
-            t.SetApartmentState( ApartmentState.STA );
             t.Start();
             t.Join();
 
