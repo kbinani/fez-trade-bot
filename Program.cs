@@ -41,6 +41,12 @@ namespace FEZTradeBot {
             }
         }
 
+        public static void PushCommand( string command ) {
+            lock( commands ) {
+                commands.Enqueue( command );
+            }
+        }
+
         static void ReceiveKeyPress() {
             while( !stopRequied ) {
                 ConsoleKeyInfo info = Console.ReadKey( false );

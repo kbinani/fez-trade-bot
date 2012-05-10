@@ -146,6 +146,10 @@ namespace FEZTradeBot {
                             }
                             break;
                         }
+                        case ":capture": {
+                            Program.PushCommand( "capture" );
+                            break;
+                        }
                     }
                 }
             }
