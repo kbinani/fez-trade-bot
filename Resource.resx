@@ -121,12 +121,6 @@
   <data name="beast_blood" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\beast_blood.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="cecedria_capital" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\cecedria_capital.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="cecedria_continent" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\cecedria_continent.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="character_select_dialog" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\character_select_dialog.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -157,8 +151,11 @@
   <data name="logout_confirm_dialog" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\logout_confirm_dialog.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="map_move_handle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\map_move_handle.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="map_akelnar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\map_akelnar.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="map_capital_azelwood" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\map_capital_azelwood.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="network_error_dialog" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\network_error_dialog.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

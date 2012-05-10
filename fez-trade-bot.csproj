@@ -93,8 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\beast_blood.png" />
-    <Content Include="Resources\cecedria_capital.png" />
-    <Content Include="Resources\cecedria_continent.png" />
     <Content Include="Resources\character_select_dialog.png" />
     <Content Include="Resources\chat_log_minus_button.png" />
     <Content Include="Resources\chat_log_plus_button.png" />
@@ -105,6 +103,8 @@
     <Content Include="Resources\icon_mask.png" />
     <Content Include="Resources\login.png" />
     <Content Include="Resources\logout_confirm_dialog.png" />
+    <Content Include="Resources\map_akelnar.png" />
+    <Content Include="Resources\map_capital_azelwood.png" />
     <Content Include="Resources\network_error_dialog.png" />
     <Content Include="Resources\roy_message_header.png" />
     <Content Include="Resources\trade_error_dialog.png" />

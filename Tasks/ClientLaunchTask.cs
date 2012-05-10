@@ -104,7 +104,7 @@ namespace FEZTradeBot {
             var cecedriaContinentPosition = Point.Empty;
             while( true ) {
                 try {
-                    cecedriaContinentPosition = FindButton( window.CaptureWindow(), Resource.cecedria_continent );
+                    cecedriaContinentPosition = FindButton( window.CaptureWindow(), Resource.map_akelnar );
                     break;
                 } catch( ApplicationException e ) {
                     Console.WriteLine( "本土大陸の位置を検出できなかった" );
@@ -119,7 +119,7 @@ namespace FEZTradeBot {
             var cecedriaCapitalPosition = Point.Empty;
             while( true ) {
                 try {
-                    cecedriaCapitalPosition = FindButton( window.CaptureWindow(), Resource.cecedria_capital );
+                    cecedriaCapitalPosition = FindButton( window.CaptureWindow(), Resource.map_capital_azelwood );
                     break;
                 } catch( ApplicationException e ) {
                     Console.WriteLine( "首都の位置を検出できなかった" );
