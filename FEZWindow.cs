@@ -70,9 +70,9 @@ namespace FEZTradeBot {
         /// </summary>
         /// <returns></returns>
         public Rectangle GetRoyMessageGeometry() {
-            // 左上: x=32, y=32
+            // 左上: x=33, y=33
             // 右下: x=303, y=127
-            return new Rectangle( 32, 32, 303 - 32, 127 - 32 );
+            return new Rectangle( 33, 33, 303 - 33, 127 - 33 );
         }
 
         /// <summary>
