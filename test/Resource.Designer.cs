@@ -60,6 +60,20 @@ namespace FEZTradeBotTest {
             }
         }
         
+        internal static System.Drawing.Bitmap ImageComparator_Image {
+            get {
+                object obj = ResourceManager.GetObject("ImageComparator_Image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ImageComparator_Template_Gray128 {
+            get {
+                object obj = ResourceManager.GetObject("ImageComparator_Template_Gray128", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap TextFinder_全角文字 {
             get {
                 object obj = ResourceManager.GetObject("TextFinder_全角文字", resourceCulture);

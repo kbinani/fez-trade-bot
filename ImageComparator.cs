@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace FEZTradeBot {
-    class ImageComparator {
+    public class ImageComparator {
         public static bool Compare( Bitmap image, Bitmap template ) {
             return Compare( image, template, 5 );
         }
@@ -46,6 +46,56 @@ namespace FEZTradeBot {
                             }
                             var screenColor = screen[x + offsetX, y + offsetY];
                             if( maskColor != screenColor ) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if( !match ) {
+                            break;
+                        }
+                    }
+
+                    if( match ) {
+                        return new Point( offsetX, offsetY );
+                    }
+                }
+            }
+            throw new ApplicationException( "一致する部分を見つけられなかった" );
+        }
+
+        /// <summary>
+        /// 画像imageの内部に、templateと一致する部分を検索し、その左上の座標を返す。
+        /// RGBの値それぞれが、templateよりtoleranceずれていた場合でも、そのピクセルはtemplateと同一とみなす
+        /// 見つからなかった場合、例外を投げる
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="template"></param>
+        /// <param name="tolerance"></param>
+        /// <returns></returns>
+        public static Point FindWithTolerance( Bitmap image, Bitmap template, int tolerance ) {
+            var screenWidth = image.Width;
+            var screenHeight = image.Height;
+            var screen = GetColorArray( image );
+
+            int maskWidth = template.Width;
+            int maskHeight = template.Height;
+            var mask = GetColorArray( template );
+            var maskTransparentColor = mask[0, 0];
+
+            for( int offsetY = 0; offsetY < screenHeight - maskHeight; offsetY++ ) {
+                for( int offsetX = 0; offsetX < screenWidth - maskWidth; offsetX++ ) {
+                    bool match = true;
+                    for( int y = 0; y < maskHeight; y++ ) {
+                        for( int x = 0; x < maskWidth; x++ ) {
+                            var maskColor = mask[x, y];
+                            if( maskColor == maskTransparentColor ) {
+                                continue;
+                            }
+                            var screenColor = screen[x + offsetX, y + offsetY];
+                            if( Math.Abs( maskColor.R - screenColor.R ) > tolerance ||
+                                Math.Abs( maskColor.G - screenColor.G ) > tolerance ||
+                                Math.Abs( maskColor.B - screenColor.B ) > tolerance )
+                            {
                                 match = false;
                                 break;
                             }

@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageComparatorTest.cs" />
     <Compile Include="Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -73,11 +74,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Fixtures\ImageComparator\ImageComparator_Image.png" />
+    <Content Include="Fixtures\ImageComparator\ImageComparator_Template_Gray128.png" />
     <Content Include="Fixtures\TextFinder\TextFinder-全角文字.png" />
     <Content Include="Fixtures\TextFinder\TextFinder-全角文字の左半分が空白の場合.png" />
     <Content Include="Fixtures\TextFinder\TextFinder-半角カナ.png" />
     <Content Include="Fixtures\TextFinder\TextFinder-半角英数.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
