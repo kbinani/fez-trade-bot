@@ -83,35 +83,50 @@ namespace FEZTradeBot {
             var mask = GetColorArray( template );
             var maskTransparentColor = mask[0, 0];
 
-            for( int offsetY = 0; offsetY < screenHeight - maskHeight; offsetY++ ) {
-                for( int offsetX = 0; offsetX < screenWidth - maskWidth; offsetX++ ) {
-                    bool match = true;
-                    for( int y = 0; y < maskHeight; y++ ) {
-                        for( int x = 0; x < maskWidth; x++ ) {
-                            var maskColor = mask[x, y];
-                            if( maskColor == maskTransparentColor ) {
-                                continue;
-                            }
-                            var screenColor = screen[x + offsetX, y + offsetY];
-                            if( Math.Abs( maskColor.R - screenColor.R ) > tolerance ||
-                                Math.Abs( maskColor.G - screenColor.G ) > tolerance ||
-                                Math.Abs( maskColor.B - screenColor.B ) > tolerance )
-                            {
-                                match = false;
-                                break;
-                            }
-                        }
-                        if( !match ) {
-                            break;
-                        }
+            int maxX = screenWidth - maskWidth;
+            int maxY = screenHeight - maskHeight;
+            var result = Point.Empty;
+            try {
+                Parallel.ForEach( PixelEnumerator.GetEnumerable( maxX, maxY ), pixel => {
+                    if( CompareWithToleranceAt( screen, pixel.X, pixel.Y, mask, tolerance, maskTransparentColor ) ) {
+                        result = pixel;
+                        throw new ApplicationException( "一致する箇所が見つかった" );
                     }
+                } );
+            } catch( AggregateException e ) {
+                return result;
+            }
+            throw new ApplicationException( "一致する部分を見つけられなかった" );
+        }
 
-                    if( match ) {
-                        return new Point( offsetX, offsetY );
+        /// <summary>
+        /// screenの(offsetX, offsetY)の位置に、画像maskがあるかどうかを調べる。ただし、ピクセルのRGB値の差がtolerance以下であれば、そのピクセルは同じとみなす
+        /// </summary>
+        /// <param name="screen"></param>
+        /// <param name="offsetX"></param>
+        /// <param name="offsetY"></param>
+        /// <param name="mask"></param>
+        /// <param name="tolerance"></param>
+        /// <param name="maskTransparentColor"></param>
+        /// <returns></returns>
+        private static bool CompareWithToleranceAt( Color[,] screen, int offsetX, int offsetY, Color[,] mask, int tolerance, Color maskTransparentColor ) {
+            int maskWidth = mask.GetUpperBound( 0 ) + 1;
+            int maskHeight = mask.GetUpperBound( 1 ) + 1;
+            for( int y = 0; y < maskHeight; y++ ) {
+                for( int x = 0; x < maskWidth; x++ ) {
+                    var maskColor = mask[x, y];
+                    if( maskColor == maskTransparentColor ) {
+                        continue;
+                    }
+                    var screenColor = screen[x + offsetX, y + offsetY];
+                    if( Math.Abs( maskColor.R - screenColor.R ) > tolerance ||
+                        Math.Abs( maskColor.G - screenColor.G ) > tolerance ||
+                        Math.Abs( maskColor.B - screenColor.B ) > tolerance ) {
+                        return false;
                     }
                 }
             }
-            throw new ApplicationException( "一致する部分を見つけられなかった" );
+            return true;
         }
 
         private static Color[,] GetColorArray( Bitmap image ) {
