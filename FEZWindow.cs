@@ -66,13 +66,26 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// マップの上に表示されているマップ操作部の位置座標から、マップ表示領域を取得する
+        /// </summary>
+        /// <param name="mapHeaderPosition"></param>
+        /// <returns></returns>
+        public static Rectangle GetMapGeometry( Point mapHeaderPosition ) {
+            int left = mapHeaderPosition.X - 8;
+            int top = mapHeaderPosition.Y + 19;
+            const int width = 256;
+            const int height = 256;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
         /// 首都にフィールドインした際、たまに表示されるロイのメッセージウィンドウの領域を取得する
         /// </summary>
         /// <returns></returns>
         public Rectangle GetRoyMessageGeometry() {
-            // 左上: x=32, y=32
+            // 左上: x=33, y=33
             // 右下: x=303, y=127
-            return new Rectangle( 32, 32, 303 - 32, 127 - 32 );
+            return new Rectangle( 33, 33, 303 - 33, 127 - 33 );
         }
 
         /// <summary>
