@@ -17,11 +17,26 @@ namespace FEZTradeBot {
             var handle = StartClient();
             using( var window = new FEZWindow( handle ) ) {
                 Login( window );
+                Move( window );
             }
+
         }
 
         public void Dispose() {
             stopRequested = true;
+        }
+
+        /// <summary>
+        /// 放置位置まで移動する
+        /// </summary>
+        private void Move( FEZWindow window ) {
+            // 現在の実装では、掲示板横に移動する
+            var screenShot = window.CaptureWindow();
+            var mapHeaderPosition = ImageComparator.Find( screenShot, Resource.map_move_handle );
+            var detector = new CurrentPositionDetector( mapHeaderPosition );
+
+            //TODO: 未実装
+            PointF position = detector.Detect( screenShot );
         }
 
         /// <summary>
@@ -146,9 +161,6 @@ namespace FEZTradeBot {
             window.OpenChatDialog();
             window.Click( fieldInPosition );
             Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
-
-            // 掲示板横まで移動する
-            //TODO: 未実装
         }
 
         private Point FindButton( Bitmap screenShot, Bitmap buttonMaskImage ) {

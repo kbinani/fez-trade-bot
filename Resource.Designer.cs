@@ -144,9 +144,23 @@ namespace FEZTradeBot {
             }
         }
         
+        internal static System.Drawing.Bitmap map_azelwood_marker_a {
+            get {
+                object obj = ResourceManager.GetObject("map_azelwood_marker_a", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap map_capital_azelwood {
             get {
                 object obj = ResourceManager.GetObject("map_capital_azelwood", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap map_move_handle {
+            get {
+                object obj = ResourceManager.GetObject("map_move_handle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

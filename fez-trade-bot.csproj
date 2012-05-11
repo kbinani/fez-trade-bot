@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ApplicationException.cs" />
     <Compile Include="ChatLogStream.cs" />
+    <Compile Include="CurrentPositionDetector.cs" />
     <Compile Include="DaemonRunner.cs" />
     <Compile Include="FEZWindow.cs" />
     <Compile Include="ImageComparator.cs" />
@@ -109,7 +110,9 @@
     <Content Include="Resources\login.png" />
     <Content Include="Resources\logout_confirm_dialog.png" />
     <Content Include="Resources\map_akelnar.png" />
+    <Content Include="Resources\map_azelwood_marker_a.png" />
     <Content Include="Resources\map_capital_azelwood.png" />
+    <Content Include="Resources\map_move_handle.png" />
     <Content Include="Resources\network_error_dialog.png" />
     <Content Include="Resources\roy_message_header.png" />
     <Content Include="Resources\trade_error_dialog.png" />
