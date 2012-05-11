@@ -67,6 +67,13 @@ namespace FEZTradeBotTest {
             }
         }
         
+        internal static System.Drawing.Bitmap ImageComparator_Template {
+            get {
+                object obj = ResourceManager.GetObject("ImageComparator_Template", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ImageComparator_Template_Gray128 {
             get {
                 object obj = ResourceManager.GetObject("ImageComparator_Template_Gray128", resourceCulture);

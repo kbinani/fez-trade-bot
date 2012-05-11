@@ -44,5 +44,20 @@ namespace FEZTradeBotTest {
             Assert.True( ImageComparatorStub.CompareStrict( image, template ) );
             Assert.False( ImageComparatorStub.CompareStrict( imageWithDiff, template ) );
         }
+
+        [TestCase]
+        public static void Find() {
+            var actual = ImageComparator.Find( Resource.ImageComparator_Image, Resource.ImageComparator_Template );
+            Assert.AreEqual( new Point( 9, 10 ), actual );
+
+            try {
+                ImageComparator.Find( Resource.ImageComparator_Image, Resource.ImageComparator_Template_Gray128 );
+                Assert.Fail( "例外となるはずだったのに" );
+            } catch( FEZTradeBot.ApplicationException e ) {
+                Assert.AreEqual( "一致する部分を見つけられなかった", e.Message );
+            } catch {
+                Assert.Fail( "想定してない例外" );
+            }
+        }
     }
 }
