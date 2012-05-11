@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace FEZTradeBot {
     public class ImageComparator {
@@ -170,7 +171,7 @@ namespace FEZTradeBot {
         /// <param name="image"></param>
         /// <param name="template"></param>
         /// <returns></returns>
-        private static bool CompareStrict( Bitmap image, Bitmap template ) {
+        protected static bool CompareStrict( Bitmap image, Bitmap template ) {
             Color maskColor = template.GetPixel( 0, 0 );
 
             for( int y = 0; y < template.Height; y++ ) {
