@@ -29,11 +29,11 @@ namespace FEZTradeBot {
         /// <summary>
         /// 放置位置まで移動する
         /// </summary>
-        private void Move( FEZWindow window ) {
+        public void Move( FEZWindow window ) {
             // 現在の実装では、掲示板横に移動する
             var screenShot = window.CaptureWindow();
             var mapHeaderPosition = ImageComparator.Find( screenShot, Resource.map_move_handle );
-            var detector = new CurrentPositionDetector( mapHeaderPosition );
+            var detector = new CurrentPositionDetector();
 
             //TODO: 未実装
             PointF position = detector.Detect( screenShot );
