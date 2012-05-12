@@ -33,7 +33,8 @@ namespace FEZTradeBot {
             // 現在の実装では、掲示板横に移動する
             var screenShot = window.CaptureWindow();
             var mapHeaderPosition = ImageComparator.Find( screenShot, Resource.map_move_handle );
-            var detector = new CurrentPositionDetector();
+            var mapImageGeometry = FEZWindow.GetMapGeometry( mapHeaderPosition );
+            var detector = new CurrentPositionDetector( mapImageGeometry );
 
             //TODO: 未実装
             PointF position = detector.Detect( screenShot );
