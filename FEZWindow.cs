@@ -922,6 +922,7 @@ namespace FEZTradeBot {
         public void SendMessage( string message ) {
             // チャット入力欄を有効化する．
             Activate();
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
             WindowsAPI.SendMessage( this.Handle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_RETURN, 0 );
             WindowsAPI.SendMessage( this.Handle, WindowsAPI.WM_KEYUP, WindowsAPI.VK_RETURN, 0 );
             Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
