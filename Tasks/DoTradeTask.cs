@@ -83,7 +83,14 @@ namespace FEZTradeBot {
                             return new TradeResult( TradeResult.StatusType.CANCELLED_BY_CUSTOMER, initialTradeWindow, "" );
                         } else {
                             // トレードが成功
-                            return new TradeResult( TradeResult.StatusType.SUCCEEDED, lastScreenShot, "" );
+                            var customerNameGeometry = window.GetTradeWindowCustomerNameGeometry();
+                            var customerNameImage = lastScreenShot.Clone( customerNameGeometry, lastScreenShot.PixelFormat );
+                            var message = "";
+                            try {
+                                message = TextFinder.Find( customerNameImage );
+                            } catch( ApplicationException e ) {
+                            }
+                            return new TradeResult( TradeResult.StatusType.SUCCEEDED, lastScreenShot, message );
                         }
                     }
                 }
