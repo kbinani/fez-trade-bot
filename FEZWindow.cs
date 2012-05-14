@@ -213,17 +213,19 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
-        /// トレードウィンドウにて，トレードを完了させるための「完了」ボタンの位置を取得する
+        /// トレードウィンドウにて，トレードを完了させるための「完了」ボタンの領域を取得する
         /// </summary>
         /// <returns></returns>
-        public Point GetTradeWindowOkButtonPosition() {
+        public Rectangle GetTradeWindowOkButtonGeometry() {
+            // トレードウィンドウに対して、
+            // 左上: x=298, y=328
+            // 右下: x=362, y=344
             var tradeWindowGeometry = GetTradeWindowGeometry();
-            // ゲーム画面に対して，
-            // トレードウィンドウ右下: x=729, y=568
-            // 完了ボタン中央: x=625, y=536
-            int x = tradeWindowGeometry.Right - 104;
-            int y = tradeWindowGeometry.Bottom - 32;
-            return new Point( x, y );
+            const int width = 362 - 298;
+            const int height = 344 - 328;
+            int left = tradeWindowGeometry.Left + 298;
+            int top = tradeWindowGeometry.Top + 328;
+            return new Rectangle( left, top, width, height );
         }
 
         /// <summary>

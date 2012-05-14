@@ -22,35 +22,54 @@ namespace FEZTradeBot {
             this.emptyItemSlot = emptyItemSlot;
         }
 
-        /// <summary>
-        /// トレード画面を閉じる処理を行う
-        /// </summary>
-        /// <returns></returns>
-        public void Run() {
-            var okButtonGeometry = window.GetTradeWindowOkButtonPosition();
+        public void Run(){
             var tradeWindowGeometry = window.GetTradeWindowGeometry();
-            while( true ) {
-                Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
 
-                // トレードウィンドウが消えるまで，決定ボタンを押し続ける
-                var captured = window.CaptureWindow();
-                var tradeWindow = (Bitmap)captured.Clone( tradeWindowGeometry, captured.PixelFormat );
-                if( !ImageComparator.Compare( tradeWindow, Resource.trade_window ) ) {
+            // 「決定」ボタンがENABLE状態になるまで待機
+            var screenShot = window.CaptureWindow();
+            var okButtonGeometry = window.GetTradeWindowOkButtonGeometry();
+            var okButtonFound = false;
+            while( HasTradeWindow( screenShot ) ){
+                Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
+                var okButtonImage = screenShot.Clone( okButtonGeometry, screenShot.PixelFormat );
+                if( ImageComparator.Compare( okButtonImage, Resource.trade_ok_active ) ) {
+                    okButtonFound = true;
                     break;
                 }
-                this.screenShot = captured;
-
-                // トレード相手が変なアイテム渡してきてないか確認する
-                foreach( var geometry in window.GetTradeCustomerEntriedItemGeometryEnumerator() ) {
-                    var itemSlot = (Bitmap)captured.Clone( geometry, captured.PixelFormat );
-                    if( !ImageComparator.Compare( itemSlot, emptyItemSlot ) && !ImageComparator.Compare( itemSlot, Resource.beast_blood ) ) {
-                        weiredItemEntried = true;
-                        return;
-                    }
-                }
-
-                window.Click( okButtonGeometry );
+                screenShot = window.CaptureWindow();
             }
+            if( !okButtonFound ) {
+                return;
+            }
+
+            // トレード相手が変なアイテム渡してきてないか確認する
+            foreach( var geometry in window.GetTradeCustomerEntriedItemGeometryEnumerator() ) {
+                var itemSlot = (Bitmap)screenShot.Clone( geometry, screenShot.PixelFormat );
+                if( !ImageComparator.Compare( itemSlot, emptyItemSlot ) && !ImageComparator.Compare( itemSlot, Resource.beast_blood ) ) {
+                    weiredItemEntried = true;
+                    return;
+                }
+            }
+
+            // 「決定」ボタンを押す
+            int x = okButtonGeometry.Left + okButtonGeometry.Width / 2;
+            int y = okButtonGeometry.Top + okButtonGeometry.Height / 2;
+            window.Click( new Point( x, y ) );
+
+            // トレードウィンドウが消えるまで待つ
+            while( HasTradeWindow( screenShot ) ) {
+                Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
+                screenShot = window.CaptureWindow();
+            }
+        }
+
+        /// <summary>
+        /// トレードウィンドウが表示されているかどうかを判定する
+        /// </summary>
+        private bool HasTradeWindow( Bitmap screenShot ){
+            var tradeWindowGeometry = window.GetTradeWindowGeometry();
+            var tradeWindow = (Bitmap)screenShot.Clone( tradeWindowGeometry, screenShot.PixelFormat );
+            return ImageComparator.Compare( tradeWindow, Resource.trade_window );
         }
 
         /// <summary>
