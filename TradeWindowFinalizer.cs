@@ -26,17 +26,17 @@ namespace FEZTradeBot {
             var tradeWindowGeometry = window.GetTradeWindowGeometry();
 
             // 「決定」ボタンがENABLE状態になるまで待機
-            var screenShot = window.CaptureWindow();
+            var captured = window.CaptureWindow();
             var okButtonGeometry = window.GetTradeWindowOkButtonGeometry();
             var okButtonFound = false;
-            while( HasTradeWindow( screenShot ) ){
+            while( HasTradeWindow( captured ) ){
                 Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
-                var okButtonImage = screenShot.Clone( okButtonGeometry, screenShot.PixelFormat );
+                var okButtonImage = captured.Clone( okButtonGeometry, captured.PixelFormat );
                 if( ImageComparator.Compare( okButtonImage, Resource.trade_ok_active ) ) {
                     okButtonFound = true;
                     break;
                 }
-                screenShot = window.CaptureWindow();
+                captured = window.CaptureWindow();
             }
             if( !okButtonFound ) {
                 return;
@@ -44,23 +44,23 @@ namespace FEZTradeBot {
 
             // トレード相手が変なアイテム渡してきてないか確認する
             foreach( var geometry in window.GetTradeCustomerEntriedItemGeometryEnumerator() ) {
-                var itemSlot = (Bitmap)screenShot.Clone( geometry, screenShot.PixelFormat );
+                var itemSlot = (Bitmap)captured.Clone( geometry, captured.PixelFormat );
                 if( !ImageComparator.Compare( itemSlot, emptyItemSlot ) && !ImageComparator.Compare( itemSlot, Resource.beast_blood ) ) {
                     weiredItemEntried = true;
+                    screenShot = captured;
                     return;
                 }
             }
 
             // 「決定」ボタンを押す
-            this.screenShot = screenShot;
+            screenShot = captured;
             int x = okButtonGeometry.Left + okButtonGeometry.Width / 2;
             int y = okButtonGeometry.Top + okButtonGeometry.Height / 2;
             window.Click( new Point( x, y ) );
 
             // トレードウィンドウが消えるまで待つ
-            while( HasTradeWindow( screenShot ) ) {
+            while( HasTradeWindow( window.CaptureWindow() ) ) {
                 Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
-                screenShot = window.CaptureWindow();
             }
         }
 

@@ -42,20 +42,22 @@ namespace FEZTradeBot {
         /// <param name="customerNameImage"></param>
         private void SendLogMessage( Bitmap customerNameImage ) {
             var customerName = "";
-            try {
-                customerName = TextFinder.FuzzyFind( customerNameImage );
-            } catch( ApplicationException e ) {
-                WriteLog( customerNameImage );
-                Console.WriteLine( e.Message );
-                return;
-            }
-
             var mode = "STRICT";
-            try {
-                TextFinder.Find( customerNameImage );
-            } catch( ApplicationException e ) {
-                WriteLog( customerNameImage );
-                mode = "FUZZY";
+            if( customerNameImage != null ) {
+                try {
+                    customerName = TextFinder.FuzzyFind( customerNameImage );
+                } catch( ApplicationException e ) {
+                    WriteLog( customerNameImage );
+                    Console.WriteLine( e.Message );
+                    return;
+                }
+
+                try {
+                    TextFinder.Find( customerNameImage );
+                } catch( ApplicationException e ) {
+                    WriteLog( customerNameImage );
+                    mode = "FUZZY";
+                }
             }
 
             if( settings.AdminPC != "" ) {
@@ -83,6 +85,10 @@ namespace FEZTradeBot {
         /// </summary>
         /// <param name="customerNameImage"></param>
         private void SendThanksMessage( Bitmap customerNameImage ) {
+            if( customerNameImage == null ) {
+                return;
+            }
+
             string customerName = "";
             try {
                 customerName = TextFinder.Find( customerNameImage );
@@ -126,6 +132,9 @@ namespace FEZTradeBot {
         /// <param name="screenShot"></param>
         /// <returns></returns>
         private Bitmap GetCustomerNameImage( Bitmap screenShot ) {
+            if( screenShot == null ) {
+                return null;
+            }
             var customerNameGeometry = window.GetTradeWindowCustomerNameGeometry();
             var result = screenShot.Clone(
                 customerNameGeometry,
