@@ -186,6 +186,13 @@ namespace FEZTradeBot {
             }
         }
         
+        internal static System.Drawing.Bitmap trade_ok_active {
+            get {
+                object obj = ResourceManager.GetObject("trade_ok_active", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap trade_window {
             get {
                 object obj = ResourceManager.GetObject("trade_window", resourceCulture);

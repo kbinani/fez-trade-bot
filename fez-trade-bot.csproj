@@ -117,6 +117,7 @@
     <Content Include="Resources\network_error_dialog.png" />
     <Content Include="Resources\roy_message_header.png" />
     <Content Include="Resources\trade_error_dialog.png" />
+    <Content Include="Resources\trade_ok_active.png" />
     <Content Include="Resources\trade_window.png" />
   </ItemGroup>
   <ItemGroup>
