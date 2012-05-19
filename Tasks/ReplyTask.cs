@@ -31,17 +31,17 @@ namespace FEZTradeBot {
             GetCustomerName( customerNameImage, out strictCustomerName, out fuzzyCustomerName );
             var isStrict = strictCustomerName != "";
 
-            if( strictCustomerName != "" || fuzzyCustomerName != "" ) {
-                var customerName = (strictCustomerName != "") ? strictCustomerName : fuzzyCustomerName;
-                SendLogMessage( customerName, isStrict );
-            }
-
             if( (tradeResult.Status == TradeResult.StatusType.INVENTRY_NO_SPACE ||
                 tradeResult.Status == TradeResult.StatusType.SUCCEEDED ||
                 tradeResult.Status == TradeResult.StatusType.WEIRED_ITEM_ENTRIED) &&
                 isStrict
             ) {
                 SendThanksMessage( strictCustomerName );
+            }
+
+            if( strictCustomerName != "" || fuzzyCustomerName != "" ) {
+                var customerName = (strictCustomerName != "") ? strictCustomerName : fuzzyCustomerName;
+                SendLogMessage( customerName, isStrict );
             }
         }
 
