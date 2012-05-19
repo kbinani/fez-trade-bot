@@ -165,10 +165,20 @@ namespace FEZTradeBot {
             var image = (Bitmap)customerNameImage.Clone();
             using( var g = Graphics.FromImage( image ) ) {
                 g.FillRectangle( new SolidBrush( Color.FromArgb( 255, Color.White ) ), 0, 0, image.Width, image.Height );
-                g.DrawString(
-                    strictCustomerName, TextFinder.GetFont(), new SolidBrush( Color.FromArgb( 255, Color.Black ) ),
-                    TextFinder.DRAW_OFFSET_X, TextFinder.DRAW_OFFSET_Y
-                );
+                int letterIndex = 0;
+                foreach( var character in strictCustomerName.ToCharArray() ) {
+                    int x = TextFinder.DRAW_OFFSET_X + letterIndex * TextFinder.CHARACTER_WIDTH;
+                    int y = TextFinder.DRAW_OFFSET_Y;
+                    g.DrawString(
+                        new string( character, 1 ), TextFinder.GetFont(), new SolidBrush( Color.FromArgb( 255, Color.Black ) ),
+                        x, y
+                    );
+                    if( TextFinder.IsHalfWidthCharacter( character ) ) {
+                        letterIndex += 1;
+                    } else {
+                        letterIndex += 2;
+                    }
+                }
             }
             image.SetPixel( 0, 0, Color.FromArgb( 255, Color.White ) );
             if( !ImageComparator.Compare( customerNameImage, image, 0 ) ) {

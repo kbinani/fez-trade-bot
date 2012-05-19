@@ -18,8 +18,8 @@ namespace FEZTradeBot {
         /// </summary>
         public const int DRAW_OFFSET_Y = 0;
 
-        private const int CHARACTER_WIDTH = 6;
-        private const int CHARACTER_HEIGHT = 12;
+        public const int CHARACTER_WIDTH = 6;
+        public const int CHARACTER_HEIGHT = 12;
         private static readonly string FullWidthEmpty = new string( '0', 36 );
         private static readonly string HalfWidthEmpty = new string( '0', 18 );
 
