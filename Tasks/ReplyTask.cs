@@ -26,45 +26,36 @@ namespace FEZTradeBot {
 
         public void Run() {
             var customerNameImage = GetCustomerNameImage( tradeResult.ScreenShot );
-            SendLogMessage( customerNameImage );
+            string strictCustomerName;
+            string fuzzyCustomerName;
+            GetCustomerName( customerNameImage, out strictCustomerName, out fuzzyCustomerName );
+            var isStrict = strictCustomerName != "";
 
-            if( tradeResult.Status == TradeResult.StatusType.INVENTRY_NO_SPACE ||
+            if( strictCustomerName != "" || fuzzyCustomerName != "" ) {
+                var customerName = (strictCustomerName != "") ? strictCustomerName : fuzzyCustomerName;
+                SendLogMessage( customerName, isStrict );
+            }
+
+            if( (tradeResult.Status == TradeResult.StatusType.INVENTRY_NO_SPACE ||
                 tradeResult.Status == TradeResult.StatusType.SUCCEEDED ||
-                tradeResult.Status == TradeResult.StatusType.WEIRED_ITEM_ENTRIED
+                tradeResult.Status == TradeResult.StatusType.WEIRED_ITEM_ENTRIED) &&
+                isStrict
             ) {
-                SendThanksMessage( customerNameImage );
+                SendThanksMessage( strictCustomerName );
             }
         }
 
         /// <summary>
         /// 来店ログを自キャラに送信
         /// </summary>
-        /// <param name="customerNameImage"></param>
-        private void SendLogMessage( Bitmap customerNameImage ) {
-            var customerName = "";
-            var mode = "STRICT";
-            if( customerNameImage != null ) {
-                try {
-                    customerName = TextFinder.FuzzyFind( customerNameImage );
-                } catch( ApplicationException e ) {
-                    WriteLog( customerNameImage );
-                    Console.WriteLine( e.Message );
-                    return;
-                }
-
-                try {
-                    TextFinder.Find( customerNameImage );
-                } catch( ApplicationException e ) {
-                    WriteLog( customerNameImage );
-                    mode = "FUZZY";
-                }
-            }
-
+        /// <param name="customerName"></param>
+        /// <param name="isStrict"
+        private void SendLogMessage( string customerName, bool isStrict ) {
             if( settings.AdminPC != "" ) {
                 string[] lines = new string[] {
                     customerName + " さんが来店",
                     "status: " + tradeResult.Status,
-                    "mode: " + mode
+                    "mode: " + (isStrict ? "STRICT" : "FUZZY")
                 };
                 string adminMessage = GetFormattedTellMessage( lines, settings.LoginCharacterName, settings.AdminPC );
                 window.SendMessage( adminMessage );
@@ -83,19 +74,8 @@ namespace FEZTradeBot {
         /// <summary>
         /// 取引相手にメッセージを送る
         /// </summary>
-        /// <param name="customerNameImage"></param>
-        private void SendThanksMessage( Bitmap customerNameImage ) {
-            if( customerNameImage == null ) {
-                return;
-            }
-
-            string customerName = "";
-            try {
-                customerName = TextFinder.Find( customerNameImage );
-            } catch( ApplicationException e ) {
-                Console.WriteLine( e.Message );
-                return;
-            }
+        /// <param name="customerName"></param>
+        private void SendThanksMessage( string customerName ) {
             if( settings.AdminPC != "" && settings.AdminPC == customerName ) {
                 // 自分自身なので個人チャットしなくてよい
                 return;
@@ -166,6 +146,41 @@ namespace FEZTradeBot {
             }
             string filePath = Path.Combine( directory, Path.GetRandomFileName() + ".png" );
             customerNameImage.Save( filePath, ImageFormat.Png );
+        }
+
+        private void GetCustomerName( Bitmap customerNameImage, out string strictCustomerName, out string fuzzyCustomerName ) {
+            strictCustomerName = "";
+            fuzzyCustomerName = "";
+
+            try {
+                strictCustomerName = TextFinder.Find( customerNameImage );
+            } catch( ApplicationException e ) {
+            }
+
+            // 検出結果を描画し、同じになってるか確認する
+            var image = (Bitmap)customerNameImage.Clone();
+            using( var g = Graphics.FromImage( image ) ) {
+                g.FillRectangle( new SolidBrush( Color.FromArgb( 255, Color.White ) ), 0, 0, image.Width, image.Height );
+                g.DrawString(
+                    strictCustomerName, TextFinder.GetFont(), new SolidBrush( Color.FromArgb( 255, Color.Black ) ),
+                    TextFinder.DRAW_OFFSET_X, TextFinder.DRAW_OFFSET_Y
+                );
+            }
+            image.SetPixel( 0, 0, Color.FromArgb( 255, Color.White ) );
+            if( !ImageComparator.Compare( customerNameImage, image, 0 ) ) {
+                WriteLog( customerNameImage );
+            }
+
+            if( strictCustomerName == "" ) {
+                try {
+                    fuzzyCustomerName = TextFinder.FuzzyFind( customerNameImage );
+                } catch( ApplicationException e ) {
+                }
+            }
+
+            if( strictCustomerName == "" && fuzzyCustomerName == "" ) {
+                WriteLog( customerNameImage );
+            }
         }
 
         /// <summary>

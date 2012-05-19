@@ -8,6 +8,16 @@ using System.IO;
 
 namespace FEZTradeBot {
     public static class TextFinder {
+        /// <summary>
+        /// 描画する際のx方向のオフセット
+        /// </summary>
+        public const int DRAW_OFFSET_X = -2;
+
+        /// <summary>
+        /// 描画する際のy方向のオフセット
+        /// </summary>
+        public const int DRAW_OFFSET_Y = 0;
+
         private const int CHARACTER_WIDTH = 6;
         private const int CHARACTER_HEIGHT = 12;
         private static readonly string FullWidthEmpty = new string( '0', 36 );
@@ -16,6 +26,7 @@ namespace FEZTradeBot {
         private static Dictionary<string, char> map;
         private static System.Text.Encoder encoder;
         private static Dictionary<string, char> dupulicatedKeys;
+        private static Font font;
 
         /// <summary>
         /// 画像から文字を探す。画像の高さは12ピクセルである必要がある。描かれている文字は座標(0,0)から始まり、
@@ -37,14 +48,14 @@ namespace FEZTradeBot {
 
             var image = new Bitmap( 12, 12, PixelFormat.Format24bppRgb );
             using( var g = Graphics.FromImage( image ) ) {
-                var font = new Font( "ＭＳ ゴシック", 9 );
+                var font = GetFont();
                 foreach( var c in ShiftJISCharacterEnumerator.GetEnumerator() ) {
                     var isHalfWidth = IsHalfWidthCharacter( c );
                     g.FillRectangle( Brushes.White, 0, 0, 12, 12 );
                     if( isHalfWidth ) {
-                        g.DrawString( new string( c, 1 ), font, Brushes.Black, -2, 0 );
+                        g.DrawString( new string( c, 1 ), font, Brushes.Black, DRAW_OFFSET_X, DRAW_OFFSET_Y );
                     } else {
-                        g.DrawString( new string( c, 1 ), font, Brushes.Black, -2, 0 );
+                        g.DrawString( new string( c, 1 ), font, Brushes.Black, DRAW_OFFSET_X, DRAW_OFFSET_Y );
                     }
 
                     string key = GetKey( image, 0 );
@@ -234,6 +245,13 @@ namespace FEZTradeBot {
         /// <returns></returns>
         public static bool IsHalfWidthCharacter( char c ) {
             return GetEncoder().GetByteCount( new char[] { c }, 0, 1, true ) == 1;
+        }
+
+        public static Font GetFont() {
+            if( font == null ) {
+                font = new Font( "ＭＳ ゴシック", 9 );
+            }
+            return font;
         }
 
         private static System.Text.Encoder GetEncoder() {
