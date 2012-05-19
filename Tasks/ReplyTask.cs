@@ -139,13 +139,17 @@ namespace FEZTradeBot {
         /// 文字列の判定に失敗したものをログに残す
         /// </summary>
         /// <param name="customerNameImage"></param>
-        private void WriteLog( Bitmap customerNameImage ) {
+        private void WriteLog( Bitmap customerNameImage, Bitmap detectedResult = null ) {
             var directory = Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ), "reply_task" );
             if( !Directory.Exists( directory ) ) {
                 Directory.CreateDirectory( directory );
             }
-            string filePath = Path.Combine( directory, Path.GetRandomFileName() + ".png" );
-            customerNameImage.Save( filePath, ImageFormat.Png );
+
+            string fileName = Path.GetRandomFileName();
+            customerNameImage.Save( Path.Combine( directory, fileName + ".source.png" ), ImageFormat.Png );
+            if( detectedResult != null ) {
+                detectedResult.Save( Path.Combine( directory, fileName + ".detected.png" ), ImageFormat.Png );
+            }
         }
 
         private void GetCustomerName( Bitmap customerNameImage, out string strictCustomerName, out string fuzzyCustomerName ) {
@@ -168,7 +172,7 @@ namespace FEZTradeBot {
             }
             image.SetPixel( 0, 0, Color.FromArgb( 255, Color.White ) );
             if( !ImageComparator.Compare( customerNameImage, image, 0 ) ) {
-                WriteLog( customerNameImage );
+                WriteLog( customerNameImage, image );
             }
 
             if( strictCustomerName == "" ) {
