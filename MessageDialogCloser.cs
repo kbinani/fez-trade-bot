@@ -19,7 +19,7 @@ namespace FEZTradeBot {
 
         public void Run() {
             while( !this.stopRequested ) {
-                Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
                 lock( window ) {
                     try {
                         CheckChronicleNotifyDialog();
@@ -35,6 +35,11 @@ namespace FEZTradeBot {
 
         public void StopAsync() {
             this.stopRequested = true;
+        }
+
+        private void CheckClientException() {
+            // title="FEzero_Client.exe"
+            // button="送信しない(&D)"
         }
 
         /// <summary>
