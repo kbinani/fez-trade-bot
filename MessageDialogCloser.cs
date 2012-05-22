@@ -19,7 +19,7 @@ namespace FEZTradeBot {
 
         public void Run() {
             while( !this.stopRequested ) {
-                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                Thread.Sleep( TimeSpan.FromSeconds( 10 ) );
                 lock( window ) {
                     try {
                         CheckChronicleNotifyDialog();
