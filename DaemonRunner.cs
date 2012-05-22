@@ -27,7 +27,6 @@ namespace FEZTradeBot {
             int heartBeatIntervalSeconds = 600;
             int sleepCounter = 1;
             ChatLogStream logStream = null;
-            MapCaptureTask mapCaptureTask = null;
 
             while( true ) {
                 GC.Collect();
@@ -45,8 +44,6 @@ namespace FEZTradeBot {
                     this.status = Status.RUNNING;
                 } else if ( command == "capture" ) {
                     window.CaptureWindow().Save( "capture_" + DateTime.Now.ToString( "yyyy-MM-dd" + "_" + @"HH\h" + @"mm\m" + @"ss.ff\s" ) + ".png", ImageFormat.Png );
-                } else if( command == "reset-mapcapture" ) {
-                    mapCaptureTask.Reset();
                 } else if( command == "help" ) {
                     Console.WriteLine( "available commands:" );
                     Console.WriteLine( "    capture  take a screen shot" );
@@ -70,7 +67,7 @@ namespace FEZTradeBot {
                             clientLaunchTask.Run();
                             continue;
                         }
-                        window = CreateWindow( handle, out logStream, out mapCaptureTask );
+                        window = CreateWindow( handle, out logStream );
                     } catch( ApplicationException e ) {
                         Console.WriteLine( e.Message );
                         continue;
@@ -93,7 +90,6 @@ namespace FEZTradeBot {
                         var line = logStream.Next();
                         Irc.SendMessage( "\x03" + ChatLogLine.GetIrcColorByType( line.Type ) + line.Line + "\x03" );
                     }
-                    mapCaptureTask.Run( screenShot );
                 } catch( ApplicationException e ) {
                     Console.WriteLine( e.Message );
                     window.Dispose();
@@ -131,15 +127,10 @@ namespace FEZTradeBot {
         /// FEZWindow のインスタンスを作成する
         /// </summary>
         /// <returns></returns>
-        private FEZWindow CreateWindow( IntPtr handle, out ChatLogStream logStream, out MapCaptureTask mapCaptureTask ) {
+        private FEZWindow CreateWindow( IntPtr handle, out ChatLogStream logStream ) {
             var result = new FEZWindow( handle );
 
             logStream = new ChatLogStream( result );
-
-            var firstScreenShot = result.CaptureWindow();
-            var mapHeaderPosition = ImageComparator.Find( firstScreenShot, Resource.map_move_handle );
-            var mapGeometry = FEZWindow.GetMapGeometry( mapHeaderPosition );
-            mapCaptureTask = new MapCaptureTask( mapGeometry );
 
             return result;
         }

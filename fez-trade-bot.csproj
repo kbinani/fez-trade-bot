@@ -90,7 +90,6 @@
     <Compile Include="Tasks\ClientLaunchTask.cs" />
     <Compile Include="Tasks\DoTradeTask.cs" />
     <Compile Include="Tasks\LoggingTask.cs" />
-    <Compile Include="Tasks\MapCaptureTask.cs" />
     <Compile Include="Tasks\ReplyTask.cs" />
     <Compile Include="Tasks\SortInventoryTask.cs" />
     <Compile Include="TextFinder.cs" />
