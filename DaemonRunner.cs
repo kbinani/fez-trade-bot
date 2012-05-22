@@ -115,6 +115,8 @@ namespace FEZTradeBot {
             var replyTask = new ReplyTask( window, result, settings );
             replyTask.Run();
 
+            TradeLog.Insert( result.Message, result.Time, result.Status );
+
             if( result.Status == TradeResult.StatusType.SUCCEEDED ) {
                 var sortInventoryTask = new SortInventoryTask( window );
                 sortInventoryTask.Run();

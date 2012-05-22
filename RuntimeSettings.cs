@@ -19,6 +19,9 @@ namespace FEZTradeBot {
         private string ircPassword = "";
         private string ircChannelName = "#feztradebot";
         private Random random = new Random();
+        private string sqlHost = "localhost";
+        private string sqlUser = "";
+        private string sqlPassword = "";
 
         public RuntimeSettings( string[] args ) {
             using( StreamReader reader = new StreamReader( "fez-trade-bot.conf" ) ) {
@@ -126,6 +129,24 @@ namespace FEZTradeBot {
         public string IrcChannelName {
             get {
                 return ircChannelName;
+            }
+        }
+
+        public string SqlHost {
+            get {
+                return sqlHost;
+            }
+        }
+
+        public string SqlUser {
+            get {
+                return sqlUser;
+            }
+        }
+
+        public string SqlPassword {
+            get {
+                return sqlPassword;
             }
         }
 

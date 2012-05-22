@@ -17,6 +17,7 @@ namespace FEZTradeBot {
 
             TextFinder.Initialize();
             Irc.Start( settings );
+            TradeLog.Init( settings );
 
             var keyListener = new Thread( new ThreadStart( ReceiveKeyPress ) );
             keyListener.Start();
