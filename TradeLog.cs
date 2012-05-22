@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using MySql.Data.MySqlClient;
 
 namespace FEZTradeBot {
@@ -6,9 +7,11 @@ namespace FEZTradeBot {
         const string DATABASE = "fez-trade-bot";
         private static RuntimeSettings settings;
         private static MySqlConnection connection;
+        private static Encoding encoding;
 
         public static void Init( RuntimeSettings settings ) {
             TradeLog.settings = settings;
+            encoding = new UTF8Encoding( false );
 
             var config = string.Format(
                 "server={0};user id={1}; password={2}; database=" + DATABASE + "; pooling=false",
@@ -19,11 +22,13 @@ namespace FEZTradeBot {
             var command = new MySqlCommand( @"
 CREATE TABLE IF NOT EXISTS `trade_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(24) NOT NULL,
+  `name` varchar(128) NOT NULL,
   `time` datetime NOT NULL,
   `status` varchar(40) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_name_time` (`name`,`time`)
+  KEY `idx_name` (`name`),
+  KEY `idx_time` (`time`),
+  KEY `idx_status` (`status`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8", connection );
             command.ExecuteNonQuery();
         }
@@ -31,7 +36,8 @@ CREATE TABLE IF NOT EXISTS `trade_log` (
         public static void Insert( string name, DateTime time, TradeResult.StatusType status ) {
             var sql = "insert into trade_log ( name, time, status ) values( @name, @time, @status )";
             var command = new MySqlCommand( sql, connection );
-            command.Parameters.AddWithValue( "name", name );
+            var base64Name = GetBase64Name( name );
+            command.Parameters.AddWithValue( "name", base64Name );
             command.Parameters.AddWithValue( "time", time );
             command.Parameters.AddWithValue( "status", status.ToString() );
             command.ExecuteNonQuery();
@@ -40,7 +46,8 @@ CREATE TABLE IF NOT EXISTS `trade_log` (
         public static DateTime GetLastTradeTime( string name ) {
             var sql = "select time from trade_log where name = @name and status = @status order by time desc";
             var command = new MySqlCommand( sql, connection );
-            command.Parameters.AddWithValue( "name", name );
+            var base64Name = GetBase64Name( name );
+            command.Parameters.AddWithValue( "name", base64Name );
             command.Parameters.AddWithValue( "status", TradeResult.StatusType.SUCCEEDED.ToString() );
             var reader = command.ExecuteReader();
             if( reader.Read() ) {
@@ -48,6 +55,11 @@ CREATE TABLE IF NOT EXISTS `trade_log` (
             } else {
                 return new DateTime( 1900, 1, 1 );
             }
+        }
+
+        private static string GetBase64Name( string name ) {
+            var bytes = encoding.GetBytes( name );
+            return Convert.ToBase64String( bytes );
         }
     }
 }

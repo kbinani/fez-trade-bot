@@ -36,7 +36,7 @@ namespace FEZTradeBot {
                 string line = "";
                 line += "\"" + timestampString + "\",";
                 line += "\"" + tradeResult.Status + "\",";
-                line += "\"" + tradeResult.Message + "\"";
+                line += "\"\"";
                 writer.WriteLine( line );
             }
         }

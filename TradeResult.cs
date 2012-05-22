@@ -31,18 +31,21 @@ namespace FEZTradeBot {
             /// トレード相手によるキャンセル処理
             /// </summary>
             CANCELLED_BY_CUSTOMER,
+
+            /// <summary>
+            /// 売り切れ
+            /// </summary>
+            SOLD_OUT,
         }
 
         private StatusType status;
         private DateTime time;
         private Bitmap screenShot;
-        private string message;
 
-        public TradeResult( StatusType status, Bitmap screenShot, string message ) {
+        public TradeResult( StatusType status, Bitmap screenShot ) {
             this.status = status;
             this.time = DateTime.Now;
             this.screenShot = screenShot;
-            this.message = message;
         }
 
         public StatusType Status {
@@ -60,12 +63,6 @@ namespace FEZTradeBot {
         public Bitmap ScreenShot {
             get {
                 return screenShot;
-            }
-        }
-
-        public string Message {
-            get {
-                return message;
             }
         }
     }

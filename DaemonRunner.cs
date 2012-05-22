@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.IO;
 using Meebey.SmartIrc4net;
+using System.Windows.Forms;
 
 namespace FEZTradeBot {
     class DaemonRunner {
@@ -84,7 +85,7 @@ namespace FEZTradeBot {
                     screenShot = window.CaptureWindow();
                     logStream.PushScreenShot( screenShot );
                     if( window.HasTradeIcon( screenShot ) ) {
-                        ProcessTradeNotify( window, screenShot );
+                        ProcessTradeNotify( window );
                     }
                     while( logStream.HasNext() ) {
                         var line = logStream.Next();
@@ -101,17 +102,23 @@ namespace FEZTradeBot {
         /// <summary>
         /// トレード枠が来た時の処理を行う
         /// </summary>
-        private void ProcessTradeNotify( FEZWindow window, Bitmap screenShot ) {
+        private void ProcessTradeNotify( FEZWindow window ) {
             // トレードを行う
             TradeResult result = null;
             using( var doTradeTask = new DoTradeTask( window ) ) {
                 result = doTradeTask.Run();
             }
 
-            var replyTask = new ReplyTask( window, result, settings );
+            // 取引相手の名前を検出
+            var customerNameImage = GetCustomerNameImage( result.ScreenShot );
+            string strictCustomerName;
+            string fuzzyCustomerName;
+            GetCustomerName( customerNameImage, out strictCustomerName, out fuzzyCustomerName );
+
+            var replyTask = new ReplyTask( window, result, settings, strictCustomerName, fuzzyCustomerName );
             replyTask.Run();
 
-            TradeLog.Insert( result.Message, result.Time, result.Status );
+            TradeLog.Insert( strictCustomerName, result.Time, result.Status );
 
             if( result.Status == TradeResult.StatusType.SUCCEEDED ) {
                 var sortInventoryTask = new SortInventoryTask( window );
@@ -156,6 +163,100 @@ namespace FEZTradeBot {
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// ゲーム画面全体のスクリーンショットから，トレードウィンドウに表示されたトレード相手の名前部分の画像を取得する
+        /// 黒いピクセルのみ取り出す
+        /// </summary>
+        /// <param name="screenShot"></param>
+        /// <returns></returns>
+        private Bitmap GetCustomerNameImage( Bitmap screenShot ) {
+            if( screenShot == null ) {
+                return null;
+            }
+            var customerNameGeometry =
+                FEZWindow.GetTradeWindowCustomerNameGeometryByWindowGeometry(
+                    new Rectangle( 0, 0, screenShot.Width, screenShot.Height ) );
+            var result = screenShot.Clone(
+                customerNameGeometry,
+                screenShot.PixelFormat );
+
+            var letterColor = Color.FromArgb( 255, 0, 0, 0 );
+            for( int y = 0; y < result.Height; y++ ) {
+                for( int x = 0; x < result.Width; x++ ) {
+                    Color color = Color.FromArgb( 255, result.GetPixel( x, y ) );
+                    if( color == letterColor ) {
+                        result.SetPixel( x, y, letterColor );
+                    } else {
+                        result.SetPixel( x, y, Color.White );
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private void GetCustomerName( Bitmap customerNameImage, out string strictCustomerName, out string fuzzyCustomerName ) {
+            strictCustomerName = "";
+            fuzzyCustomerName = "";
+
+            try {
+                strictCustomerName = TextFinder.Find( customerNameImage );
+            } catch( ApplicationException e ) {
+            }
+
+            // 検出結果を描画し、同じになってるか確認する
+            var image = (Bitmap)customerNameImage.Clone();
+            using( var g = Graphics.FromImage( image ) ) {
+                g.FillRectangle( new SolidBrush( Color.FromArgb( 255, Color.White ) ), 0, 0, image.Width, image.Height );
+                int letterIndex = 0;
+                foreach( var character in strictCustomerName.ToCharArray() ) {
+                    int x = TextFinder.DRAW_OFFSET_X + letterIndex * TextFinder.CHARACTER_WIDTH;
+                    int y = TextFinder.DRAW_OFFSET_Y;
+                    g.DrawString(
+                        new string( character, 1 ), TextFinder.GetFont(), new SolidBrush( Color.FromArgb( 255, Color.Black ) ),
+                        x, y
+                    );
+                    if( TextFinder.IsHalfWidthCharacter( character ) ) {
+                        letterIndex += 1;
+                    } else {
+                        letterIndex += 2;
+                    }
+                }
+            }
+            image.SetPixel( 0, 0, Color.FromArgb( 255, Color.White ) );
+            if( !ImageComparator.Compare( customerNameImage, image, 0 ) ) {
+                WriteLog( customerNameImage, image );
+            }
+
+            if( strictCustomerName == "" ) {
+                try {
+                    fuzzyCustomerName = TextFinder.FuzzyFind( customerNameImage );
+                } catch( ApplicationException e ) {
+                }
+            }
+
+            if( strictCustomerName == "" && fuzzyCustomerName == "" ) {
+                WriteLog( customerNameImage );
+            }
+        }
+
+        /// <summary>
+        /// 文字列の判定に失敗したものをログに残す
+        /// </summary>
+        /// <param name="customerNameImage"></param>
+        private void WriteLog( Bitmap customerNameImage, Bitmap detectedResult = null ) {
+            var directory = Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ), "reply_task" );
+            if( !Directory.Exists( directory ) ) {
+                Directory.CreateDirectory( directory );
+            }
+
+            string fileName = Path.GetRandomFileName();
+            customerNameImage.Save( Path.Combine( directory, fileName + ".source.png" ), ImageFormat.Png );
+            if( detectedResult != null ) {
+                detectedResult.Save( Path.Combine( directory, fileName + ".detected.png" ), ImageFormat.Png );
             }
         }
     }

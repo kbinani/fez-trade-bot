@@ -28,12 +28,14 @@ namespace FEZTradeBot {
                 position = FindTradeItem( Resource.beast_blood );
             } catch( ApplicationException e ) {
             }
+            if( position == Point.Empty ) {
+                CloseTradeWindow();
+                return new TradeResult( TradeResult.StatusType.SOLD_OUT, initialTradeWindow );
+            }
 
             try {
                 // アイテムをダブルクリック
-                if( position != Point.Empty ) {
-                    window.DoubleClick( position );
-                }
+                window.DoubleClick( position );
 
                 // エントリーボタンを押す
                 var entryButtonPosition = window.GetTradeWindowEntryButtonPosition();
@@ -48,7 +50,7 @@ namespace FEZTradeBot {
                     Bitmap screenShot = window.CaptureWindow();
                     Thread.Sleep( 200 );
                     CloseTradeWindow();
-                    return new TradeResult( TradeResult.StatusType.INVENTRY_NO_SPACE, screenShot, "" );
+                    return new TradeResult( TradeResult.StatusType.INVENTRY_NO_SPACE, screenShot );
                 } else {
                     // トレードウィンドウを閉じ，トレードを終了する
                     var tradeWindowFinalizer = new TradeWinowFinalizer( window, emptyItemSlot );
@@ -72,32 +74,25 @@ namespace FEZTradeBot {
                         // キャンセルボタンを押してトレードを中断する
                         thread.Abort();
                         CloseTradeWindow();
-                        return new TradeResult( TradeResult.StatusType.FAILED, lastScreenShot, "" );
+                        return new TradeResult( TradeResult.StatusType.FAILED, lastScreenShot );
                     } else if( weiredItemEntried ) {
                         CloseTradeWindow();
-                        return new TradeResult( TradeResult.StatusType.WEIRED_ITEM_ENTRIED, lastScreenShot, "" );
+                        return new TradeResult( TradeResult.StatusType.WEIRED_ITEM_ENTRIED, lastScreenShot );
                     } else {
                         if( tradeWindowFinalizer.LastScreenShot == null ) {
                             // こちらが決定ボタンを押す直前のスクリーンショットが取れなかった
                             // つまり，相手がキャンセルボタンを押したためトレードウィンドウが閉じられた
-                            return new TradeResult( TradeResult.StatusType.CANCELLED_BY_CUSTOMER, initialTradeWindow, "" );
+                            return new TradeResult( TradeResult.StatusType.CANCELLED_BY_CUSTOMER, initialTradeWindow );
                         } else {
                             // トレードが成功
-                            var customerNameGeometry = window.GetTradeWindowCustomerNameGeometry();
-                            var customerNameImage = lastScreenShot.Clone( customerNameGeometry, lastScreenShot.PixelFormat );
-                            var message = "";
-                            try {
-                                message = TextFinder.Find( customerNameImage );
-                            } catch( ApplicationException e ) {
-                            }
-                            return new TradeResult( TradeResult.StatusType.SUCCEEDED, lastScreenShot, message );
+                            return new TradeResult( TradeResult.StatusType.SUCCEEDED, lastScreenShot );
                         }
                     }
                 }
             } catch( ApplicationException e ) {
                 var screenShot = window.CaptureWindow();
                 CloseTradeWindow();
-                return new TradeResult( TradeResult.StatusType.FAILED, screenShot, e.Message );
+                return new TradeResult( TradeResult.StatusType.FAILED, screenShot );
             }
         }
 

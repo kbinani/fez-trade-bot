@@ -166,11 +166,20 @@ namespace FEZTradeBot {
         /// <param name="screenShot"></param>
         /// <returns></returns>
         public Rectangle GetTradeWindowGeometry() {
+            return GetTradeWindowGeometry( new Rectangle( 0, 0, this.Width, this.Height ) );
+        }
+
+        /// <summary>
+        /// トレードウィンドウの領域を取得する
+        /// </summary>
+        /// <param name="screenShot"></param>
+        /// <returns></returns>
+        public static Rectangle GetTradeWindowGeometry( Rectangle windowGeometry ) {
             const int TRADE_WINDOW_WIDTH = 434;
-            int x = this.Width / 2 - TRADE_WINDOW_WIDTH / 2;
+            int x = windowGeometry.Width / 2 - TRADE_WINDOW_WIDTH / 2;
 
             const int TRADE_WINDOW_HEIGHT = 368;
-            int y = this.Height / 2 - TRADE_WINDOW_HEIGHT / 2;
+            int y = windowGeometry.Height / 2 - TRADE_WINDOW_HEIGHT / 2;
 
             return new Rectangle( x, y, TRADE_WINDOW_WIDTH, TRADE_WINDOW_HEIGHT );
         }
@@ -234,6 +243,18 @@ namespace FEZTradeBot {
         /// <returns></returns>
         public Rectangle GetTradeWindowCustomerNameGeometry() {
             var tradeWindowGeometry = GetTradeWindowGeometry();
+            // トレードウィンドウに対して
+            // 左上: x=318, y=40
+            // 右下: x=419, y=55
+            int left = tradeWindowGeometry.Left + 318 + 8;
+            int top = tradeWindowGeometry.Top + 40 + 2;
+            const int width = TRADE_WINDOW_CUSTOMER_GEOMETRY_WIDTH;
+            const int height = TRADE_WINDOW_CUSTOMER_GEOMETRY_HEIGHT;
+            return new Rectangle( left, top, width, height );
+        }
+
+        public static Rectangle GetTradeWindowCustomerNameGeometryByWindowGeometry( Rectangle windowGeometry ) {
+            var tradeWindowGeometry = GetTradeWindowGeometry( windowGeometry );
             // トレードウィンドウに対して
             // 左上: x=318, y=40
             // 右下: x=419, y=55
