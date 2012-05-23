@@ -22,7 +22,7 @@ namespace FEZTradeBot {
             var command = new MySqlCommand( @"
 CREATE TABLE IF NOT EXISTS `trade_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) NOT NULL,
+  `name` varchar(32) NOT NULL,
   `time` datetime NOT NULL,
   `status` varchar(40) NOT NULL,
   PRIMARY KEY (`id`),
@@ -36,18 +36,16 @@ CREATE TABLE IF NOT EXISTS `trade_log` (
         public static void Insert( string name, DateTime time, TradeResult.StatusType status ) {
             var sql = "insert into trade_log ( name, time, status ) values( @name, @time, @status )";
             var command = new MySqlCommand( sql, connection );
-            var base64Name = GetBase64Name( name );
-            command.Parameters.AddWithValue( "name", base64Name );
+            command.Parameters.AddWithValue( "name", name );
             command.Parameters.AddWithValue( "time", time );
             command.Parameters.AddWithValue( "status", status.ToString() );
             command.ExecuteNonQuery();
         }
 
         public static DateTime GetLastTradeTime( string name ) {
-            var sql = "select time from trade_log where name = @name and status = @status order by time desc";
+            var sql = "select time from trade_log where name = @name and status = @status order by time desc limit 1";
             var command = new MySqlCommand( sql, connection );
-            var base64Name = GetBase64Name( name );
-            command.Parameters.AddWithValue( "name", base64Name );
+            command.Parameters.AddWithValue( "name", name );
             command.Parameters.AddWithValue( "status", TradeResult.StatusType.SUCCEEDED.ToString() );
             var reader = command.ExecuteReader();
             if( reader.Read() ) {
@@ -55,11 +53,6 @@ CREATE TABLE IF NOT EXISTS `trade_log` (
             } else {
                 return new DateTime( 1900, 1, 1 );
             }
-        }
-
-        private static string GetBase64Name( string name ) {
-            var bytes = encoding.GetBytes( name );
-            return Convert.ToBase64String( bytes );
         }
     }
 }
