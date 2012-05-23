@@ -52,8 +52,6 @@ namespace FEZTradeBot {
                     Console.WriteLine( "    pause    pause monitoring game window" );
                     Console.WriteLine( "    quit     terminate this program" );
                     Console.WriteLine( "    resume   resume monitoring game window" );
-                    Console.WriteLine( "    reset-mapcapture" );
-                    Console.WriteLine( "             マップ画像の不透明な部分を抽出する処理をやり直す" );
                 }
 
                 Thread.Sleep( 1000 );
