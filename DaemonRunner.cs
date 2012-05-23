@@ -226,10 +226,7 @@ namespace FEZTradeBot {
                     }
                 }
             }
-            image.SetPixel( 0, 0, Color.FromArgb( 255, Color.White ) );
-            if( !ImageComparator.Compare( customerNameImage, image, 0 ) ) {
-                WriteLog( customerNameImage, image );
-            }
+            WriteLog( customerNameImage, image );
 
             if( strictCustomerName == "" ) {
                 try {
@@ -253,7 +250,7 @@ namespace FEZTradeBot {
                 Directory.CreateDirectory( directory );
             }
 
-            string fileName = Path.GetRandomFileName();
+            string fileName = DateTime.Now.ToFileTime().ToString();
             customerNameImage.Save( Path.Combine( directory, fileName + ".source.png" ), ImageFormat.Png );
             if( detectedResult != null ) {
                 detectedResult.Save( Path.Combine( directory, fileName + ".detected.png" ), ImageFormat.Png );
