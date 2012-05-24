@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
 namespace FEZTradeBot {
@@ -61,6 +62,29 @@ CREATE TABLE IF NOT EXISTS `trade_log` (
                 }
             }
             return new DateTime( 1900, 1, 1 );
+        }
+
+        /// <summary>
+        /// 指定した日の取引情報を取得する
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="day"></param>
+        /// <returns></returns>
+        public static Dictionary<string, int> GetStatistics( int year, int month, int day ) {
+            var result = new Dictionary<string, int>();
+            var sql = "select name, count(name) as count from trade_log where name <> '' and status = 'SUCCEEDED' and date_format(time, '%Y-%m-%d' ) = @targetDay group by name order by count desc, name asc;";
+            using( var connection = CreateConnection() ){
+                var command = new MySqlCommand( sql, connection );
+                command.Parameters.AddWithValue( "targetDay", year + "-" + month.ToString( "D2" ) + "-" + day.ToString( "D2" ) );
+                var reader = command.ExecuteReader();
+                while( reader.Read() ) {
+                    var name = reader.GetString( "name" );
+                    var count = reader.GetInt32( "count" );
+                    result.Add( name, count );
+                }
+            }
+            return result;
         }
 
         private static MySqlConnection CreateConnection() {

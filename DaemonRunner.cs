@@ -159,6 +159,17 @@ namespace FEZTradeBot {
                             Program.PushCommand( "capture" );
                             break;
                         }
+                        case ":stats": {
+                            var now = DateTime.Now;
+                            var stats = TradeLog.GetStatistics( now.Year, now.Month, now.Day );
+                            Irc.SendNotice( "-------------------------------------" );
+                            foreach( var name in stats.Keys ) {
+                                var count = stats[name];
+                                Irc.SendNotice( name + " : " + count );
+                            }
+                            Irc.SendNotice( "-------------------------------------" );
+                            break;
+                        }
                     }
                 }
             }
