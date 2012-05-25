@@ -14,7 +14,7 @@ namespace FEZTradeBot {
             encoding = new UTF8Encoding( false );
 
             using( var connection = CreateConnection() ) {
-                var command = new MySqlCommand( @"
+                var createTradeLogTable = new MySqlCommand( @"
 CREATE TABLE IF NOT EXISTS `trade_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
@@ -25,7 +25,16 @@ CREATE TABLE IF NOT EXISTS `trade_log` (
   KEY `idx_time` (`time`),
   KEY `idx_status` (`status`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8", connection );
-                command.ExecuteNonQuery();
+                createTradeLogTable.ExecuteNonQuery();
+
+                var createTradeStatsExcludeUsersTable = new MySqlCommand( @"
+CREATE TABLE IF NOT EXISTS `trade_stats_exclude_users` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;", connection );
+                createTradeStatsExcludeUsersTable.ExecuteNonQuery();
             }
         }
 
@@ -73,7 +82,28 @@ CREATE TABLE IF NOT EXISTS `trade_log` (
         /// <returns></returns>
         public static Dictionary<string, int> GetStatistics( int year, int month, int day ) {
             var result = new Dictionary<string, int>();
-            var sql = "select name, count(name) as count from trade_log where name <> '' and status = 'SUCCEEDED' and date_format(time, '%Y-%m-%d' ) = @targetDay group by name order by count desc, name asc;";
+            var sql = @"
+                select
+                    name,
+                    count(name) as count
+                from
+                    trade_log
+                where
+                    name <> ''
+                and status = 'SUCCEEDED'
+                and date_format (time, '%Y-%m-%d') = @targetDay
+                and name <> all
+                    (
+                        select
+                            name
+                        from
+                            trade_stats_exclude_users
+                    )
+                group by
+                    name
+                order by
+                    count desc,
+                    name asc;";
             using( var connection = CreateConnection() ){
                 var command = new MySqlCommand( sql, connection );
                 command.Parameters.AddWithValue( "targetDay", year + "-" + month.ToString( "D2" ) + "-" + day.ToString( "D2" ) );
