@@ -161,8 +161,15 @@ namespace FEZTradeBot {
                         }
                         case ":stats": {
                             var now = DateTime.Now;
+                            if( 4 <= parameters.Length ) {
+                                var year = int.Parse( parameters[1] );
+                                var month = int.Parse( parameters[2] );
+                                var day = int.Parse( parameters[3] );
+                                now = new DateTime( year, month, day );
+                            }
                             var stats = TradeLog.GetStatistics( now.Year, now.Month, now.Day );
                             Irc.SendNotice( "-------------------------------------" );
+                            Irc.SendNotice( "[" + now.Year + "/" + now.Month.ToString( "D2" ) + "/" + now.Day.ToString( "D2" ) + "]" );
                             foreach( var name in stats.Keys ) {
                                 var count = stats[name];
                                 Irc.SendNotice( name + " : " + count );
