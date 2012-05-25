@@ -35,6 +35,28 @@ CREATE TABLE IF NOT EXISTS `trade_stats_exclude_users` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;", connection );
                 createTradeStatsExcludeUsersTable.ExecuteNonQuery();
+
+                var createChatLogTable = new MySqlCommand( @"
+CREATE TABLE IF NOT EXISTS `chat_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `time` datetime NOT NULL,
+  `message` varchar(128) NOT NULL,
+  `type` varchar(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_time` (`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;", connection );
+                createChatLogTable.ExecuteNonQuery();
+            }
+        }
+
+        public static void InsertChatLog( DateTime time, string message, ChatLogLine.LineType status ) {
+            var sql = "insert into chat_log ( time, message, type ) values( @time, @message, @status )";
+            using( var connection = CreateConnection() ){
+                var command = new MySqlCommand( sql, connection );
+                command.Parameters.AddWithValue( "time", time );
+                command.Parameters.AddWithValue( "message", message );
+                command.Parameters.AddWithValue( "status", status.ToString() );
+                command.ExecuteNonQuery();
             }
         }
 

@@ -88,6 +88,7 @@ namespace FEZTradeBot {
                     while( logStream.HasNext() ) {
                         var line = logStream.Next();
                         Irc.SendMessage( "\x03" + ChatLogLine.GetIrcColorByType( line.Type ) + line.Line + "\x03" );
+                        TradeLog.InsertChatLog( DateTime.Now, line.Line, line.Type );
                     }
                 } catch( ApplicationException e ) {
                     Console.WriteLine( e.Message );
