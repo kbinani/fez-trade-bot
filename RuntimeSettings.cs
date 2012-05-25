@@ -159,7 +159,7 @@ namespace FEZTradeBot {
             if( messageCandidates.Count == 0 ) {
                 return "";
             }
-            int index = random.Next( messageCandidates.Count - 1 );
+            int index = random.Next( messageCandidates.Count );
             return messageCandidates[index];
         }
 
