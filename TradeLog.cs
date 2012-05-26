@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
 namespace FEZTradeBot {
-    class TradeLog {
+    public class TradeLog {
         const string DATABASE = "fez-trade-bot";
         private static RuntimeSettings settings;
         private static Encoding encoding;

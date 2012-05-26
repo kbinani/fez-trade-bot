@@ -8,7 +8,7 @@ namespace FEZTradeBot {
     /// <summary>
     /// ゲーム画面からチャットログを読み取り、読み取った結果を1行ずつ返す
     /// </summary>
-    class ChatLogStream {
+    public class ChatLogStream {
         private FEZWindow window;
         private List<ChatLogLine> buffer;
         private int currentBufferIndex = -1;
@@ -169,7 +169,7 @@ namespace FEZTradeBot {
         }
     }
 
-    class ChatLogLine : IEquatable<ChatLogLine> {
+    public class ChatLogLine : IEquatable<ChatLogLine> {
         public enum LineType {
             /// <summary>
             /// 不明

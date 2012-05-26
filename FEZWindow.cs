@@ -9,7 +9,7 @@ namespace FEZTradeBot {
     /// <summary>
     /// FEZのゲーム画面からの情報取得処理と操作処理を行うクラス
     /// </summary>
-    class FEZWindow : IDisposable {
+    public class FEZWindow : IDisposable {
         /// <summary>
         /// トレードウィンドウの，トレード相手の名前が表示されているエリアの幅
         /// </summary>

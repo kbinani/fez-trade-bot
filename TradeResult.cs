@@ -5,7 +5,7 @@ namespace FEZTradeBot {
     /// <summary>
     /// トレードの実行結果を表現するクラス
     /// </summary>
-    class TradeResult {
+    public class TradeResult {
         public enum StatusType {
             /// <summary>
             /// 取引成功
