@@ -100,9 +100,11 @@ namespace FEZTradeBot {
             int textCount = image.Width / CHARACTER_WIDTH;
 
             string[] keys = new string[textCount];
+            string[] accepted = new string[textCount];
             for( int i = 0; i < textCount; i++ ) {
                 int xoffset = CHARACTER_WIDTH * i;
                 keys[i] = GetKey( image, xoffset );
+                accepted[i] = HalfWidthEmpty;
             }
 
             string[] halfWidthMatch = new string[textCount];
@@ -125,6 +127,8 @@ namespace FEZTradeBot {
             for( int i = 0; i < oddFullWidthMatch.Length; i++ ) {
                 if( oddFullWidthMatch[i] != "" && oddFullWidthMatch[i] != "  " ) {
                     resultArray[i * 2 + 1] = oddFullWidthMatch[i];
+                    accepted[i * 2 + 1] = keys[i * 2 + 1];
+                    accepted[i * 2 + 2] = keys[i * 2 + 2];
                     halfWidthMatch[i * 2 + 1] = "";
                     halfWidthMatch[i * 2 + 2] = "";
                     evenFullWidthMatch[i] = "";
@@ -136,6 +140,8 @@ namespace FEZTradeBot {
             for( int i = 0; i < evenFullWidthMatch.Length; i++ ) {
                 if( evenFullWidthMatch[i] != "" ) {
                     resultArray[i * 2] = evenFullWidthMatch[i];
+                    accepted[i * 2] = keys[i * 2];
+                    accepted[i * 2 + 1] = keys[i * 2 + 1];
                     halfWidthMatch[i * 2] = "";
                     halfWidthMatch[i * 2 + 1] = "";
                 }
@@ -143,38 +149,19 @@ namespace FEZTradeBot {
             for( int i = 0; i < halfWidthMatch.Length; i++ ) {
                 if( halfWidthMatch[i] != "" ) {
                     resultArray[i] = halfWidthMatch[i];
+                    accepted[i] = keys[i];
                 }
             }
 
             // 認識に失敗した文字を列挙する
-            var failed = new List<string>();
-            for( int i = 0; i < resultArray.Length; i++ ) {
-                if( resultArray[i] == "" ) {
-                    var evenIndex = (i - 1) / 2;
-                    if( 0 <= evenIndex && evenFullWidthMatch[evenIndex] == "" ) {
-                        var key = keys[evenIndex * 2] + keys[evenIndex * 2 + 1];
-                        if( key != FullWidthEmpty ) {
-                            failed.Add( key );
-                            continue;
-                        }
-                    }
-                    var oddIndex = i / 2 - 1;
-                    if( 0 <= oddIndex && oddFullWidthMatch[oddIndex] == "" ) {
-                        var key = keys[oddIndex * 2 + 1] + keys[oddIndex * 2 + 2];
-                        if( key != FullWidthEmpty ) {
-                            failed.Add( key );
-                            continue;
-                        }
-                    }
-                    if( keys[i] != HalfWidthEmpty ) {
-                        failed.Add( keys[i] );
-                    }
+            var found = false;
+            for( int i = 0; i < textCount; i++ ) {
+                if( keys[i] != accepted[i] ) {
+                    WriteLog( keys[i] );
+                    found = true;
                 }
             }
-            foreach( var failedKey in failed ) {
-                WriteLog( failedKey );
-            }
-            if( 0 < failed.Count ) {
+            if( found ) {
                 throw new ApplicationException( "該当する文字が見つからなかった" );
             }
 
