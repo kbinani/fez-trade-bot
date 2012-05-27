@@ -96,17 +96,17 @@ namespace FEZTradeBot {
             }
 
             // 指定したキャラクタ名がダイアログに表示されるまで、別キャラクタを表示させる
-            try {
-                while( true ) {
+            while( true ) {
+                try {
                     var characterName = GetCharacterName( window );
                     if( characterName == settings.LoginCharacterName ) {
                         break;
                     }
-                    window.Click( window.GetCharacterSelectNextRightPosition() );
-                    Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                } catch( ApplicationException e ) {
+                    Console.WriteLine( "ClientLaunchTaskの例外: " + e.Message );
                 }
-            } catch( ApplicationException e ) {
-                Console.WriteLine( "ClientLaunchTaskの例外: " + e.Message );
+                window.Click( window.GetCharacterSelectNextRightPosition() );
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
             }
 
             // ログインボタンを押す
