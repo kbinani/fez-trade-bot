@@ -22,6 +22,7 @@ namespace FEZTradeBot {
         private string sqlHost = "localhost";
         private string sqlUser = "";
         private string sqlPassword = "";
+        private List<string> customerNameMap = new List<string>();
 
         public RuntimeSettings( string[] args ) {
             using( StreamReader reader = new StreamReader( "fez-trade-bot.conf" ) ) {
@@ -148,6 +149,21 @@ namespace FEZTradeBot {
             get {
                 return sqlPassword;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fuzzyCustomerName"></param>
+        /// <returns></returns>
+        public string GetActualNameByFuzzyName( string fuzzyCustomerName ) {
+            foreach( var nameMap in customerNameMap ) {
+                string[] parameters = nameMap.Split( '\t' );
+                if( parameters[0] == fuzzyCustomerName ) {
+                    return parameters[1];
+                }
+            }
+            return "";
         }
 
         /// <summary>

@@ -224,6 +224,22 @@ namespace FEZTradeBot {
             } catch( ApplicationException e ) {
             }
 
+            if( strictCustomerName == "" ) {
+                try {
+                    fuzzyCustomerName = TextFinder.FuzzyFind( customerNameImage );
+                } catch( ApplicationException e ) {
+                }
+            }
+
+            // "MS ゴシック" には、違う文字が同じ形で表示されるものがある。
+            // キャラクタ名としてこれらの文字を使っている場合、正しいキャラクタ名を判定できない。たとえば、"―", "─" は同じ表示になる。
+            // この文字を使っているキャラクタ"foo―"がいたとして、もうひとつ可能なキャラクタ名"foo─"がいないことがわかっている場合、
+            // 読み替えればよい。
+            var mappedName = settings.GetActualNameByFuzzyName( fuzzyCustomerName );
+            if( mappedName != "" ) {
+                strictCustomerName = mappedName;
+            }
+
             // 検出結果を描画し、同じになってるか確認する
             var image = (Bitmap)customerNameImage.Clone();
             using( var g = Graphics.FromImage( image ) ) {
@@ -244,13 +260,6 @@ namespace FEZTradeBot {
                 }
             }
             WriteLog( customerNameImage, image );
-
-            if( strictCustomerName == "" ) {
-                try {
-                    fuzzyCustomerName = TextFinder.FuzzyFind( customerNameImage );
-                } catch( ApplicationException e ) {
-                }
-            }
 
             if( strictCustomerName == "" && fuzzyCustomerName == "" ) {
                 WriteLog( customerNameImage );
