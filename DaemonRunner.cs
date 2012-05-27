@@ -178,6 +178,27 @@ namespace FEZTradeBot {
                             Irc.SendNotice( "-------------------------------------" );
                             break;
                         }
+                        case ":weekly_stats": {
+                            var now = DateTime.Now;
+                            if( 4 <= parameters.Length ) {
+                                var year = int.Parse( parameters[1] );
+                                var month = int.Parse( parameters[2] );
+                                var day = int.Parse( parameters[3] );
+                                now = new DateTime( year, month, day );
+                            }
+                            Tuple<int, int> weekly;
+                            var stats = TradeLog.GetWeeklyStatistics( now.Year, now.Month, now.Day, out weekly );
+                            var sunday = now.AddDays( -(int)now.DayOfWeek );
+                            Irc.SendNotice( "-------------------------------------" );
+                            foreach( var day in stats.Keys ) {
+                                var dailyStats = stats[day];
+                                Irc.SendNotice( day.Month + "/" + day.Day + "; UU:" + dailyStats.Item1 + ", 配布数:" + dailyStats.Item2 );
+                            }
+                            Irc.SendNotice( "-------------------------------------" );
+                            Irc.SendNotice( "週間; UU:" + weekly.Item1 + ", 配布数:" + weekly.Item2 );
+                            Irc.SendNotice( "-------------------------------------" );
+                            break;
+                        }
                     }
                 }
             }

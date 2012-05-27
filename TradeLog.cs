@@ -96,6 +96,75 @@ CREATE TABLE IF NOT EXISTS `chat_log` (
         }
 
         /// <summary>
+        /// 指定した日が含まれる週の取引情報サマリーを取得する
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="day"></param>
+        /// <returns></returns>
+        public static Dictionary<DateTime, Tuple<int, int>> GetWeeklyStatistics( int year, int month, int day, out Tuple<int, int> weekly ) {
+            var targetDay = new DateTime( year, month, day );
+            var sunday = targetDay.AddDays( -(int)targetDay.DayOfWeek );
+
+            var result = new Dictionary<DateTime, Tuple<int, int>>();
+            foreach( var dayOfWeek in Enum.GetValues( typeof( DayOfWeek ) ) ) {
+                var target = sunday.AddDays( (int)dayOfWeek );
+                result.Add( target, GetUU( target, target ) );
+            }
+            
+            weekly = GetUU( sunday, sunday.AddDays( Enum.GetValues( typeof( DayOfWeek ) ).Length - 1 ) );
+
+            return result;
+        }
+
+        /// <summary>
+        /// 指定した期間のUUと取引数を取得する
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        private static Tuple<int, int> GetUU( DateTime start, DateTime end ) {
+            var sql = @"
+                select
+                    count(distinct name) as uu,
+                    count(name) as trade_count
+                from
+                    (
+                        select
+                            name
+                        from
+                            trade_log
+                        where
+                            name <> ''
+                        and @start <= time
+                        and time < @nextDayOfEnd
+                        and name <> all
+                            (
+                                select
+                                    name
+                                from
+                                    trade_stats_exclude_users
+                            )
+                        and status = 'SUCCEEDED'
+                    ) as foo
+                ;";
+            using( var connection = CreateConnection() ) {
+                var command = new MySqlCommand( sql, connection );
+                var nextDayOfEnd = end.AddDays( 1 );
+                command.Parameters.AddWithValue( "start", start.Year + "-" + start.Month + "-" + start.Day );
+                command.Parameters.AddWithValue( "nextDayOfEnd", nextDayOfEnd.Year + "-" + nextDayOfEnd.Month + "-" + nextDayOfEnd.Day );
+                var reader = command.ExecuteReader();
+                if( reader.Read() ) {
+                    var dailyUU = reader.GetInt32( "uu" );
+                    var dailyCount = reader.GetInt32( "trade_count" );
+                    return new Tuple<int, int>( dailyUU, dailyCount );
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// 指定した日の取引情報を取得する
         /// </summary>
         /// <param name="year"></param>
