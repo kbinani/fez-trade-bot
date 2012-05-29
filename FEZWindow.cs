@@ -66,6 +66,18 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// ゲームランチャーのエラーダイアログのハンドルを取得する
+        /// </summary>
+        /// <returns></returns>
+        public static IntPtr GetLauncherErrorWindowOKButton() {
+            var handle = WindowsAPI.FindWindow( "#32770", "警告" );
+            if( handle == IntPtr.Zero ) {
+                return IntPtr.Zero;
+            }
+            return WindowsAPI.FindWindowEx( handle, IntPtr.Zero, null, "OK" );
+        }
+
+        /// <summary>
         /// マップの上に表示されているマップ操作部の位置座標から、マップ表示領域を取得する
         /// </summary>
         /// <param name="mapHeaderPosition"></param>

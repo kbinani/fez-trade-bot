@@ -183,19 +183,32 @@ namespace FEZTradeBot {
             return TextFinder.Find( characterNameImage );
         }
 
+        private void StartUpdater() {
+            Process process = new Process();
+            process.StartInfo.FileName = settings.FezLauncher;
+            process.Start();
+        }
+
         /// <summary>
         /// ランチャーを起動し，ランチャーの「START」ボタンを押すことでクライアント本体を起動する
         /// </summary>
         private IntPtr StartClient() {
-            Process process = new Process();
-            process.StartInfo.FileName = settings.FezLauncher;
-            process.Start();
+            StartUpdater();
 
             // ランチャーを起動
             IntPtr updater = IntPtr.Zero;
             while( updater == IntPtr.Zero && stopRequested == false ) {
                 updater = FEZWindow.GetLauncherWindow();
                 Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                var errorDialogOKButton = FEZWindow.GetLauncherErrorWindowOKButton();
+                if( errorDialogOKButton != IntPtr.Zero ) {
+                    // OKボタンを押す
+                    var rect = new WindowsAPI.RECT();
+                    WindowsAPI.GetWindowRect( errorDialogOKButton, ref rect );
+                    FEZWindow.DoClick( (rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2 );
+                    StartUpdater();
+                    Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+                }
             }
             if( updater == IntPtr.Zero ) {
                 throw new ApplicationException( "クライアント・ランチャが起動できなかった" );
