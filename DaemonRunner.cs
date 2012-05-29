@@ -262,9 +262,10 @@ namespace FEZTradeBot {
             }
 
             // 検出結果を描画し、同じになってるか確認する
+            var background = Color.FromArgb( 255, Color.White );
             var image = (Bitmap)customerNameImage.Clone();
             using( var g = Graphics.FromImage( image ) ) {
-                g.FillRectangle( new SolidBrush( Color.FromArgb( 255, Color.White ) ), 0, 0, image.Width, image.Height );
+                g.FillRectangle( new SolidBrush( background ), 0, 0, image.Width, image.Height );
                 int letterIndex = 0;
                 foreach( var character in strictCustomerName.ToCharArray() ) {
                     int x = TextFinder.DRAW_OFFSET_X + letterIndex * TextFinder.CHARACTER_WIDTH;
@@ -280,7 +281,9 @@ namespace FEZTradeBot {
                     }
                 }
             }
-            WriteLog( customerNameImage, image );
+            if( !ImageComparator.CompareStrict( customerNameImage, image, background ) ) {
+                WriteLog( customerNameImage, image );
+            }
 
             if( strictCustomerName == "" && fuzzyCustomerName == "" ) {
                 WriteLog( customerNameImage );

@@ -186,15 +186,7 @@ namespace FEZTradeBot {
             }
         }
 
-        /// <summary>
-        /// 1ピクセルの差もなく，2つの画像が同じかどうかを調べる．
-        /// </summary>
-        /// <param name="image"></param>
-        /// <param name="template"></param>
-        /// <returns></returns>
-        protected static bool CompareStrict( Bitmap image, Bitmap template ) {
-            Color maskColor = template.GetPixel( 0, 0 );
-
+        public static bool CompareStrict( Bitmap image, Bitmap template, Color maskColor ) {
             for( int y = 0; y < template.Height; y++ ) {
                 for( int x = 0; x < template.Width; x++ ) {
                     Color colorOfMask = template.GetPixel( x, y );
@@ -208,6 +200,17 @@ namespace FEZTradeBot {
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 1ピクセルの差もなく，2つの画像が同じかどうかを調べる．
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        public static bool CompareStrict( Bitmap image, Bitmap template ) {
+            Color maskColor = template.GetPixel( 0, 0 );
+            return CompareStrict( image, template, maskColor );
         }
 
         /// <summary>
