@@ -61,9 +61,16 @@ namespace FEZTradeBot {
 
             // ログインID入力
             //TODO: 大文字・が来た時の処理
-            //TODO: 既に入っているログインIDを消去する処理
             //TODO: ログインIDを保存する，のオプションのチェックを外した状態にする
-            window.Click( window.GetLoginDialogIDPosition() );
+            var idInputGeometry = window.GetLoginDialogIDInputGeometry();
+            int idClickX = idInputGeometry.Right - 5;
+            int idClickY = idInputGeometry.Top + idInputGeometry.Height / 2;
+            window.Click( new Point( idClickX, idClickY ) );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
+            for( int i = 0; i < 16; i++ ) {
+                WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, 0, UIntPtr.Zero );
+                WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
+            }
             foreach( char c in settings.LoginId.ToUpper().ToCharArray() ) {
                 WindowsAPI.keybd_event( (byte)c, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( (byte)c, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );

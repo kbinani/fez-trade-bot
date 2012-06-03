@@ -520,17 +520,19 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
-        /// ログインダイアログの，ID入力欄の位置を取得する
+        /// ログインダイアログの，ID入力欄の領域を取得する
         /// </summary>
         /// <returns></returns>
-        public Point GetLoginDialogIDPosition() {
+        public Rectangle GetLoginDialogIDInputGeometry() {
             var loginDialogGeometry = GetLoginDialogGeometry();
             // ログインダイアログに対して，
             // 左上: x=112, y=32
             // 右下: x=223, y=47
-            int x = loginDialogGeometry.Left + 167;
-            int y = loginDialogGeometry.Top + 39;
-            return new Point( x, y );
+            int left = loginDialogGeometry.Left + 112;
+            int top = loginDialogGeometry.Top + 32;
+            const int width = 223 - 112;
+            const int height = 47 - 32;
+            return new Rectangle( left, top, width, height );
         }
 
         /// <summary>
