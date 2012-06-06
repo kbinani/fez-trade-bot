@@ -25,6 +25,7 @@ namespace FEZTradeBot {
                         CheckChronicleNotifyDialog();
                         CheckRoyMessageDialog();
                         CheckNetworkErrorDialog();
+                        CheckClientException();
                     } catch( ApplicationException e ) {
                         Console.WriteLine( e.Message );
                         break;
@@ -38,8 +39,18 @@ namespace FEZTradeBot {
         }
 
         private void CheckClientException() {
-            // title="FEzero_Client.exe"
-            // button="送信しない(&D)"
+            var dialogHandle = WindowsAPI.FindWindow( "#32770", "FEzero_Client.exe" );
+            if( dialogHandle == IntPtr.Zero ) {
+                return;
+            }
+            var buttonHandle = WindowsAPI.FindWindowEx( dialogHandle, IntPtr.Zero, null, "送信しない(&D)" );
+            var geometry = new WindowsAPI.RECT();
+            WindowsAPI.GetWindowRect( buttonHandle, ref geometry );
+            int x = (geometry.left + geometry.right) / 2;
+            int y = (geometry.top + geometry.bottom) / 2;
+            WindowsAPI.SetForegroundWindow( dialogHandle );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
+            FEZWindow.DoClick( x, y );
         }
 
         /// <summary>
