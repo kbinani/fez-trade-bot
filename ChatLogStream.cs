@@ -30,7 +30,6 @@ namespace FEZTradeBot {
                     MergeLogLines( lines );
                 }
             } catch( ApplicationException e ) {
-                Console.WriteLine( e.Message );
             }
         }
 
@@ -123,7 +122,6 @@ namespace FEZTradeBot {
                         result.Add( new ChatLogLine( lineString, lineType ) );
                     }
                 } catch( ApplicationException e ) {
-                    Console.WriteLine( typeof( ChatLogStream ).Name + "の例外: " + e.Message );
                 }
             }
 
