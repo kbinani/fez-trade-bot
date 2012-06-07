@@ -154,15 +154,10 @@ namespace FEZTradeBot {
             }
 
             // 認識に失敗した文字を列挙する
-            var found = false;
             for( int i = 0; i < textCount; i++ ) {
                 if( keys[i] != accepted[i] ) {
-                    WriteLog( keys[i] );
-                    found = true;
+                    throw new ApplicationException( "該当する文字が見つからなかった" );
                 }
-            }
-            if( found ) {
-                throw new ApplicationException( "該当する文字が見つからなかった" );
             }
 
             string result = "";
@@ -267,42 +262,6 @@ namespace FEZTradeBot {
                 }
             }
             return result;
-        }
-
-        private static void WriteLog( string searchKey ){
-            string directory = Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ), "text_finder" );
-            if( !Directory.Exists( directory ) ) {
-                Directory.CreateDirectory( directory );
-            }
-            string imagePath = Path.Combine( directory, searchKey + ".png" );
-            if( File.Exists( imagePath ) ) {
-                return;
-            }
-
-            var byteCount = searchKey.Length / 2;
-            bool[] bits = new bool[byteCount * 8];
-            for( int byteIndex = 0; byteIndex < byteCount; byteIndex++ ) {
-                var hexString = searchKey.Substring( byteIndex * 2, 2 );
-                byte b = Convert.ToByte( hexString, 16 );
-                for( int bitIndex = 0; bitIndex < 8; bitIndex++ ) {
-                    int i = byteIndex * 8 + bitIndex;
-                    byte mask = (byte)((0x80 >> bitIndex) & 0xFF);
-                    bits[i] = (b & mask) == mask;
-                }
-            }
-
-            const int height = 12;
-            var width = bits.Length / height;
-            var image = new Bitmap( width, height, PixelFormat.Format24bppRgb );
-            for( int x = 0; x < width; x++ ) {
-                for( int y = 0; y < height; y++ ) {
-                    int bitIndex = x * height + y;
-                    var c = bits[bitIndex] ? Color.Black : Color.White;
-                    image.SetPixel( x, y, c );
-                }
-            }
-
-            image.Save( imagePath, ImageFormat.Png );
         }
     }
 }
