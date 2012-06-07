@@ -28,7 +28,6 @@ namespace FEZTradeBot {
                         CheckClientException();
                     } catch( ApplicationException e ) {
                         Console.WriteLine( e.Message );
-                        break;
                     }
                 }
             }
