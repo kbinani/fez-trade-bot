@@ -18,9 +18,14 @@ namespace FEZTradeBot {
             // インベントリを開ける
             window.Activate();
 
+            // インベントリを開いて，ソートする
             var itemButtonPosition = window.GetItemButtonPosition();
             window.Click( itemButtonPosition );
             Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
+
+            var sortButtonPosition = window.GetInventorySortButtonPosition();
+            window.Click( sortButtonPosition );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 500 ) );
 
             // 空き個数が表示されている領域の画像を取得
             var roomImage = window.GetInventoryRoomTextArea();

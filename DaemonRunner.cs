@@ -132,11 +132,6 @@ namespace FEZTradeBot {
 
             TradeLog.Insert( strictCustomerName, result.Time, result.Status );
 
-            if( result.Status == TradeResult.StatusType.SUCCEEDED ) {
-                var sortInventoryTask = new SortInventoryTask( window );
-                sortInventoryTask.Run();
-            }
-
             // ログを出力する
             var loggingTask = new LoggingTask( result, settings );
             loggingTask.Run();

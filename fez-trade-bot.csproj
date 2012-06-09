@@ -92,7 +92,6 @@
     <Compile Include="Tasks\GetInventoryRoomTask.cs" />
     <Compile Include="Tasks\LoggingTask.cs" />
     <Compile Include="Tasks\ReplyTask.cs" />
-    <Compile Include="Tasks\SortInventoryTask.cs" />
     <Compile Include="TextFinder.cs" />
     <Compile Include="TradeLog.cs" />
     <Compile Include="TradeResult.cs" />
