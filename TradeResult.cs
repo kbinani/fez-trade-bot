@@ -52,6 +52,9 @@ namespace FEZTradeBot {
             get {
                 return status;
             }
+            set {
+                status = value;
+            }
         }
 
         public DateTime Time {

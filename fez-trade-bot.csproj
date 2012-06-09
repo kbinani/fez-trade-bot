@@ -89,6 +89,7 @@
     <Compile Include="SmartIrc4net\Logger.cs" />
     <Compile Include="Tasks\ClientLaunchTask.cs" />
     <Compile Include="Tasks\DoTradeTask.cs" />
+    <Compile Include="Tasks\GetInventoryRoomTask.cs" />
     <Compile Include="Tasks\LoggingTask.cs" />
     <Compile Include="Tasks\ReplyTask.cs" />
     <Compile Include="Tasks\SortInventoryTask.cs" />
@@ -121,6 +122,16 @@
     <Content Include="Resources\map_capital_azelwood.png" />
     <Content Include="Resources\map_move_handle.png" />
     <Content Include="Resources\network_error_dialog.png" />
+    <Content Include="Resources\number0.png" />
+    <Content Include="Resources\number1.png" />
+    <Content Include="Resources\number2.png" />
+    <Content Include="Resources\number3.png" />
+    <Content Include="Resources\number4.png" />
+    <Content Include="Resources\number5.png" />
+    <Content Include="Resources\number6.png" />
+    <Content Include="Resources\number7.png" />
+    <Content Include="Resources\number8.png" />
+    <Content Include="Resources\number9.png" />
     <Content Include="Resources\roy_message_header.png" />
     <Content Include="Resources\trade_error_dialog.png" />
     <Content Include="Resources\trade_ok_active.png" />
