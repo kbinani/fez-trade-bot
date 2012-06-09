@@ -43,7 +43,12 @@ namespace FEZTradeBot {
                             list.Add( value );
                             fieldInfo.SetValue( this, list );
                         } else if( fieldInfo.FieldType == typeof( int ) ) {
-                            fieldInfo.SetValue( this, int.Parse( value ) );
+                            int intValue;
+                            if( int.TryParse( value, out intValue ) ) {
+                                fieldInfo.SetValue( this, intValue );
+                            } else {
+                                Console.Error.WriteLine( "Warning: 整数の書式がおかしい。パラメータ名:" + fieldName + "; 値:" + value );
+                            }
                         } else if( fieldInfo.FieldType == typeof( string ) ) {
                             fieldInfo.SetValue( this, value );
                         }
@@ -159,8 +164,12 @@ namespace FEZTradeBot {
         public string GetActualNameByFuzzyName( string fuzzyCustomerName ) {
             foreach( var nameMap in customerNameMap ) {
                 string[] parameters = nameMap.Split( '\t' );
-                if( parameters[0] == fuzzyCustomerName ) {
-                    return parameters[1];
+                if( parameters.Length == 2 ) {
+                    if( parameters[0] == fuzzyCustomerName ) {
+                        return parameters[1];
+                    }
+                } else {
+                    Console.Error.WriteLine( "Warning: customerNameの設定値にparseできないものが含まれています。設定値=" + nameMap );
                 }
             }
             return "";
