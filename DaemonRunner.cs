@@ -45,6 +45,12 @@ namespace FEZTradeBot {
                     this.status = Status.RUNNING;
                 } else if ( command == "capture" ) {
                     window.CaptureWindow().Save( "capture_" + DateTime.Now.ToString( "yyyy-MM-dd" + "_" + @"HH\h" + @"mm\m" + @"ss.ff\s" ) + ".png", ImageFormat.Png );
+                } else if ( command == "item_count" ) {
+                    if( window != null ) {
+                        var task = new GetInventoryRoomTask( window );
+                        var itemCount = task.Run();
+                        Irc.SendNotice( "item_count=" + itemCount );
+                    }
                 } else if( command == "help" ) {
                     Console.WriteLine( "available commands:" );
                     Console.WriteLine( "    capture  take a screen shot" );
@@ -52,6 +58,8 @@ namespace FEZTradeBot {
                     Console.WriteLine( "    pause    pause monitoring game window" );
                     Console.WriteLine( "    quit     terminate this program" );
                     Console.WriteLine( "    resume   resume monitoring game window" );
+                    Console.WriteLine( "    item_count" );
+                    Console.WriteLine( "             get the number of items in inventory" );
                 }
 
                 Thread.Sleep( 1000 );
