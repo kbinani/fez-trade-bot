@@ -446,6 +446,22 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// インベントリの、所持数を表示している領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetInventoryRoomTextArea() {
+            var inventory = GetInventoryGeometry();
+            // インベントリウィンドウに対して
+            // 左上: x=129, y=297
+            // 右下: x=145, y=308
+            const int width = 145 - 129;
+            const int height = 308 - 297;
+            int left = inventory.Left + 129;
+            int top = inventory.Top + 297;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
         /// クロニクルの任務破棄ダイアログの領域を取得する
         /// </summary>
         /// <returns></returns>
@@ -918,6 +934,7 @@ namespace FEZTradeBot {
         /// </summary>
         public void Activate() {
             WindowsAPI.SetForegroundWindow( this.Handle );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
         }
 
         /// <summary>
@@ -959,7 +976,6 @@ namespace FEZTradeBot {
         public void SendMessage( string message ) {
             // チャット入力欄を有効化する．
             Activate();
-            Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );
             WindowsAPI.SendMessage( this.Handle, WindowsAPI.WM_KEYDOWN, WindowsAPI.VK_RETURN, 0 );
             WindowsAPI.SendMessage( this.Handle, WindowsAPI.WM_KEYUP, WindowsAPI.VK_RETURN, 0 );
             Thread.Sleep( TimeSpan.FromMilliseconds( 200 ) );

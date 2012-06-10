@@ -13,7 +13,9 @@ namespace FEZTradeBot {
             TradeLog.settings = settings;
             encoding = new UTF8Encoding( false );
 
-            using( var connection = CreateConnection() ) {
+            MySqlConnection connection = null;
+            try {
+                connection = CreateConnection();
                 var createTradeLogTable = new MySqlCommand( @"
 CREATE TABLE IF NOT EXISTS `trade_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -46,17 +48,31 @@ CREATE TABLE IF NOT EXISTS `chat_log` (
   KEY `idx_time` (`time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;", connection );
                 createChatLogTable.ExecuteNonQuery();
+            } catch( Exception e ) {
+                Console.Error.WriteLine( e.Message );
+            } finally {
+                if( connection != null ) {
+                    connection.Dispose();
+                }
             }
         }
 
         public static void InsertChatLog( DateTime time, string message, ChatLogLine.LineType status ) {
             var sql = "insert into chat_log ( time, message, type ) values( @time, @message, @status )";
-            using( var connection = CreateConnection() ){
+            MySqlConnection connection = null;
+            try {
+                connection = CreateConnection();
                 var command = new MySqlCommand( sql, connection );
                 command.Parameters.AddWithValue( "time", time );
                 command.Parameters.AddWithValue( "message", message );
                 command.Parameters.AddWithValue( "status", status.ToString() );
                 command.ExecuteNonQuery();
+            } catch( Exception e ) {
+                Console.Error.WriteLine( e.Message );
+            } finally {
+                if( connection != null ) {
+                    connection.Dispose();
+                }
             }
         }
 
@@ -83,13 +99,21 @@ CREATE TABLE IF NOT EXISTS `chat_log` (
 
         public static DateTime GetLastTradeTime( string name ) {
             var sql = "select time from trade_log where name = @name and status = @status order by time desc limit 1";
-            using( var connection = CreateConnection() ) {
+            MySqlConnection connection = null;
+            try {
+                connection = CreateConnection();
                 var command = new MySqlCommand( sql, connection );
                 command.Parameters.AddWithValue( "name", name );
                 command.Parameters.AddWithValue( "status", TradeResult.StatusType.SUCCEEDED.ToString() );
                 var reader = command.ExecuteReader();
                 if( reader.Read() ) {
                     return (DateTime)reader.GetValue( 0 );
+                }
+            } catch( Exception e ) {
+                Console.Error.WriteLine( e.Message );
+            } finally {
+                if( connection != null ) {
+                    connection.Dispose();
                 }
             }
             return new DateTime( 1900, 1, 1 );
@@ -148,7 +172,9 @@ CREATE TABLE IF NOT EXISTS `chat_log` (
                         and status = 'SUCCEEDED'
                     ) as foo
                 ;";
-            using( var connection = CreateConnection() ) {
+            MySqlConnection connection = null;
+            try {
+                connection = CreateConnection();
                 var command = new MySqlCommand( sql, connection );
                 var nextDayOfEnd = end.AddDays( 1 );
                 command.Parameters.AddWithValue( "start", start.Year + "-" + start.Month + "-" + start.Day );
@@ -158,6 +184,12 @@ CREATE TABLE IF NOT EXISTS `chat_log` (
                     var dailyUU = reader.GetInt32( "uu" );
                     var dailyCount = reader.GetInt32( "trade_count" );
                     return new Tuple<int, int>( dailyUU, dailyCount );
+                }
+            } catch( Exception e ) {
+                Console.Error.WriteLine( e.Message );
+            } finally{
+                if( connection != null ) {
+                    connection.Dispose();
                 }
             }
 
@@ -195,7 +227,9 @@ CREATE TABLE IF NOT EXISTS `chat_log` (
                 order by
                     count desc,
                     name asc;";
-            using( var connection = CreateConnection() ){
+            MySqlConnection connection = null;
+            try {
+                connection = CreateConnection();
                 var command = new MySqlCommand( sql, connection );
                 command.Parameters.AddWithValue( "targetDay", year + "-" + month.ToString( "D2" ) + "-" + day.ToString( "D2" ) );
                 var reader = command.ExecuteReader();
@@ -203,6 +237,12 @@ CREATE TABLE IF NOT EXISTS `chat_log` (
                     var name = reader.GetString( "name" );
                     var count = reader.GetInt32( "count" );
                     result.Add( name, count );
+                }
+            } catch( Exception e ) {
+                Console.Error.WriteLine( e.Message );
+            } finally {
+                if( connection != null ) {
+                    connection.Dispose();
                 }
             }
             return result;

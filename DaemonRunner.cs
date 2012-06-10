@@ -102,10 +102,23 @@ namespace FEZTradeBot {
         /// トレード枠が来た時の処理を行う
         /// </summary>
         private void ProcessTradeNotify( FEZWindow window ) {
+            // トレード前のインベントリの空き容量を検出
+            var getInventoryRoomTask = new GetInventoryRoomTask( window );
+            var inventoryRoomBefore = getInventoryRoomTask.Run();
+
             // トレードを行う
             TradeResult result = null;
             using( var doTradeTask = new DoTradeTask( window ) ) {
                 result = doTradeTask.Run();
+            }
+
+            // トレード後のインベントリの空き容量を検出
+            var inventoryRoomAfter = getInventoryRoomTask.Run();
+
+            if( inventoryRoomBefore - inventoryRoomAfter == 0 && result.Status == TradeResult.StatusType.SUCCEEDED ) {
+                // アイテム個数が減っていないのに、SUCCEEDED 扱いだった場合は
+                // 相手のキャンセルによるものと判定する
+                result.Status = TradeResult.StatusType.CANCELLED_BY_CUSTOMER;
             }
 
             // 取引相手の名前を検出
@@ -118,11 +131,6 @@ namespace FEZTradeBot {
             replyTask.Run();
 
             TradeLog.Insert( strictCustomerName, result.Time, result.Status );
-
-            if( result.Status == TradeResult.StatusType.SUCCEEDED ) {
-                var sortInventoryTask = new SortInventoryTask( window );
-                sortInventoryTask.Run();
-            }
 
             // ログを出力する
             var loggingTask = new LoggingTask( result, settings );
