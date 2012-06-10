@@ -32,7 +32,17 @@ namespace FEZTradeBot {
         public void Move( FEZWindow window ) {
             // 現在の実装では、掲示板横に移動する
             var screenShot = window.CaptureWindow();
-            var mapHeaderPosition = ImageComparator.Find( screenShot, Resource.map_move_handle );
+            Point mapHeaderPosition = Point.Empty;
+            while( !stopRequested ) {
+                try {
+                    mapHeaderPosition = ImageComparator.Find( screenShot, Resource.map_move_handle );
+                    break;
+                } catch( ApplicationException e ) {
+                    screenShot.Save( GetType() + "_Move_" + DateTime.Now.ToFileTime() + ".png", ImageFormat.Png );
+                    Console.WriteLine( "マップがどこに表示されているか見つけられなかった。リトライする。" );
+                }
+                screenShot = window.CaptureWindow();
+            }
             var mapImageGeometry = FEZWindow.GetMapGeometry( mapHeaderPosition );
             var detector = new CurrentPositionDetector( mapImageGeometry );
             
