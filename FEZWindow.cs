@@ -91,6 +91,22 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// マップ上に表示されているマップ操作部の一座標から、マップのスケールを変更するボタンの領域を取得する
+        /// </summary>
+        /// <param name="mapHeaderPosition"></param>
+        /// <returns></returns>
+        public static Rectangle GetMapScaleButtonGeometry( Point mapHeaderPosition ) {
+            // mapHeaderPosition に対して
+            // 左上: x=116, y=2
+            // 右下: x=128, y=14
+            const int width = 128 - 116;
+            const int height = 14 - 2;
+            int left = mapHeaderPosition.X + 116;
+            int top = mapHeaderPosition.Y + 2;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
         /// 首都にフィールドインした際、たまに表示されるロイのメッセージウィンドウの領域を取得する
         /// </summary>
         /// <returns></returns>

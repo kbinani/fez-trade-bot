@@ -35,9 +35,63 @@ namespace FEZTradeBot {
             var mapHeaderPosition = ImageComparator.Find( screenShot, Resource.map_move_handle );
             var mapImageGeometry = FEZWindow.GetMapGeometry( mapHeaderPosition );
             var detector = new CurrentPositionDetector( mapImageGeometry );
+            
+            // マップが「全体」モードで表示されている場合、「周囲」モードに切り替える
+            window.Activate();
+            var mapScaleButtonGeometry = FEZWindow.GetMapScaleButtonGeometry( mapHeaderPosition );
+            var mapScaleButtonImage = screenShot.Clone( mapScaleButtonGeometry, screenShot.PixelFormat );
+            if( ImageComparator.CompareStrict( mapScaleButtonImage, Resource.chat_log_plus_button ) ) {
+                int x = mapScaleButtonGeometry.Left + mapScaleButtonGeometry.Width / 2;
+                int y = mapScaleButtonGeometry.Top + mapScaleButtonGeometry.Height / 2;
+                window.Click( new Point( x, y ) );
+            }
 
-            //TODO: 未実装
-            PointF position = detector.Detect( screenShot );
+            VMultiKeyboardClient client = null;
+            try {
+                client = new VMultiKeyboardClient();
+                client.ClearKey();
+
+                // 2回左ステップ
+                InputKey( client, (byte)'Q' );
+                Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
+                InputKey( client, (byte)'Q' );
+                Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
+
+                // しばらくWキーで前進
+                while( !stopRequested ) {
+                    client.SetKey( (byte)'W' );
+                    Thread.Sleep( TimeSpan.FromSeconds( 5 ) );
+                    client.ClearKey();
+
+                    try {
+                        screenShot = window.CaptureWindow();
+                        var position = detector.Detect( screenShot );
+                        if( position.Y <= -36 ) {
+                            break;
+                        }
+                    } catch( ApplicationException e ) {
+                        Console.Error.WriteLine( "座標が検出できない。とりあえず前進し続ける" );
+                    }
+                }
+
+                // 右ステップ
+                InputKey( client, (byte)'E' );
+                Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
+
+                // 1歩後ろ
+                InputKey( client, (byte)'S' );
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+
+                // 1歩右
+                InputKey( client, (byte)'D' );
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+            } catch( Exception e ) {
+                Console.Error.WriteLine( e.Message );
+            } finally {
+                if( client != null ) {
+                    client.Dispose();
+                }
+            }
         }
 
         /// <summary>
@@ -169,6 +223,12 @@ namespace FEZTradeBot {
             window.OpenChatDialog();
             window.Click( fieldInPosition );
             Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
+        }
+
+        private void InputKey( VMultiKeyboardClient client, byte key ) {
+            client.SetKey( key );
+            Thread.Sleep( TimeSpan.FromMilliseconds( 50 ) );
+            client.ClearKey();
         }
 
         private Point FindButton( Bitmap screenShot, Bitmap buttonMaskImage ) {
