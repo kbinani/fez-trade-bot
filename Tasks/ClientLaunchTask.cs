@@ -69,8 +69,9 @@ namespace FEZTradeBot {
                 client.ClearKey();
 
                 // 2回左ステップ
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
                 InputKey( client, (byte)'Q' );
-                Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
+                Thread.Sleep( TimeSpan.FromSeconds( 10 ) );
                 InputKey( client, (byte)'Q' );
                 Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
 
