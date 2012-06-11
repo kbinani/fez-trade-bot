@@ -29,7 +29,7 @@ namespace FEZTradeBot {
         /// FEZのゲーム画面のウィンドウハンドルを指定し，初期化する
         /// </summary>
         /// <param name="handle"></param>
-        public FEZWindow( IntPtr handle ) {
+        public FEZWindow( IntPtr handle, bool useMessageDialogCloser = true ) {
             this.windowHandle = handle;
 
             var geometry = new WindowsAPI.RECT();
@@ -37,9 +37,11 @@ namespace FEZTradeBot {
             this._width = geometry.right - geometry.left;
             this._height = geometry.bottom - geometry.top;
 
-            this.closer = new MessageDialogCloser( this );
-            Thread thread = new Thread( new ThreadStart( this.closer.Run ) );
-            thread.Start();
+            if( useMessageDialogCloser ) {
+                this.closer = new MessageDialogCloser( this );
+                Thread thread = new Thread( new ThreadStart( this.closer.Run ) );
+                thread.Start();
+            }
         }
 
         public static void DoClick( int x, int y ) {
@@ -901,7 +903,9 @@ namespace FEZTradeBot {
         }
 
         public void Dispose() {
-            this.closer.StopAsync();
+            if( closer != null ) {
+                this.closer.StopAsync();
+            }
         }
 
         /// <summary>
