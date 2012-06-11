@@ -15,11 +15,18 @@ namespace FEZTradeBot {
 
         public void Run() {
             var handle = StartClient();
-            using( var window = new FEZWindow( handle ) ) {
+            FEZWindow window = null;
+            try {
+                window = new FEZWindow( handle );
                 Login( window );
                 Move( window );
+            } catch( ApplicationException e ) {
+                Console.Error.WriteLine( e.Message );
+            } finally {
+                if( window != null ) {
+                    window.Dispose();
+                }
             }
-
         }
 
         public void Dispose() {
@@ -155,13 +162,23 @@ namespace FEZTradeBot {
             // キャラクタ選択ダイアログが表示されるまで待つ
             var characterSelectDialog = window.GetCharacterSelectDialogGeometry();
             while( !ImageComparator.Compare( window.CaptureWindow( characterSelectDialog ), Resource.character_select_dialog ) ) {
+                var screenShot = window.CaptureWindow();
+
+                // メンテナンス中はログイン出来ないため、その旨メッセージダイアログが出る
+                var maintenanceLoginErrorDialogGeometry = window.GetLoginMaintenanceErrorDialogGeometry();
+                var maintenanceLoginErrorDialogImage = screenShot.Clone( maintenanceLoginErrorDialogGeometry, screenShot.PixelFormat );
+                if( ImageComparator.CompareStrict( maintenanceLoginErrorDialogImage, Resource.maintenance_login_error ) ) {
+                    const int waitMinutes = 10;
+                    Console.WriteLine( "メンテナンス中のためログインできなかった。" + waitMinutes + "分待って再試行します。" );
+                    Thread.Sleep( TimeSpan.FromMinutes( waitMinutes ) );
+                    throw new ApplicationException( GetType() + "の例外: メンテナンスのためログインできなかった。" );
+                }
+
                 // ログインボタン押し下げ後、何らかのお知らせダイアログが表示されることがあるので、
                 // 「閉じる」ボタンが見つからなくなるまで押し続ける
                 try {
-                    while( true ) {
-                        var position = FindButton( window.CaptureWindow(), Resource.close_button );
-                        window.Click( position );
-                    }
+                    var position = FindButton( screenShot, Resource.close_button );
+                    window.Click( position );
                 } catch( ApplicationException e ) { }
                 Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
             }

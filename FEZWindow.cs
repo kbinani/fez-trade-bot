@@ -596,6 +596,21 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// メンテ中のログイン時に表示される、メンテナンス中で認証できない旨のダイアログの表示領域を取得する
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle GetLoginMaintenanceErrorDialogGeometry() {
+            // ウィンドウサイズ 800x600のとき、ゲームウィンドウに対して
+            // 左上: x=240, y=260
+            // 右下: x=560, y=340
+            const int width = 560 - 240;
+            const int height = 340 - 260;
+            int left = this.Width / 2 - width / 2;
+            int top = this.Height / 2 - height / 2;
+            return new Rectangle( left, top, width, height );
+        }
+
+        /// <summary>
         /// ログイン画面のExitボタンを押した後の確認ダイアログの領域を取得する
         /// </summary>
         /// <returns></returns>

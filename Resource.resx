@@ -151,6 +151,9 @@
   <data name="logout_confirm_dialog" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\logout_confirm_dialog.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="maintenance_login_error" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\maintenance_login_error.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="map_akelnar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\map_akelnar.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

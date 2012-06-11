@@ -117,6 +117,7 @@
     <Content Include="Resources\icon_mask.png" />
     <Content Include="Resources\login.png" />
     <Content Include="Resources\logout_confirm_dialog.png" />
+    <Content Include="Resources\maintenance_login_error.png" />
     <Content Include="Resources\map_akelnar.png" />
     <Content Include="Resources\map_azelwood_marker_a.png" />
     <Content Include="Resources\map_capital_azelwood.png" />
