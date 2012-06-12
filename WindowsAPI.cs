@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace FEZTradeBot {
-    class WindowsAPI {
+    public class WindowsAPI {
         public const int SRCCOPY = 13369376;
         public const uint LEFTDOWN = 0x00000002;
         public const uint LEFTUP = 0x00000004;
@@ -22,6 +22,7 @@ namespace FEZTradeBot {
         public const byte VK_RETURN = 0xD;
         public const byte VK_CONTROL = 17;
         public const byte VK_BACK_SPACE = 8;
+        public const byte VK_END = 0x23;
         public const byte KEYEVENTF_KEYUP = 0x0002;
 
         public const uint WM_KEYDOWN = 0x0100;
