@@ -2,15 +2,21 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fez-trade-bot", "fez-trade-bot.csproj", "{A8515993-354E-4DAD-AC5F-955399A47715}"
+	ProjectSection(ProjectDependencies) = postProject
+		{34FB41E0-A2E3-44E5-8192-2EBF23207574} = {34FB41E0-A2E3-44E5-8192-2EBF23207574}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{6DF9D572-A4E6-4C22-A7E8-27443F809573}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A8515993-354E-4DAD-AC5F-955399A47715} = {A8515993-354E-4DAD-AC5F-955399A47715}
+		{34FB41E0-A2E3-44E5-8192-2EBF23207574} = {34FB41E0-A2E3-44E5-8192-2EBF23207574}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "insert-file-log-to-db-batch", "insert-file-log-to-db-batch\insert-file-log-to-db-batch.csproj", "{BDCDD1F4-714D-4743-8961-E2128B151848}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "clear_virtual_keyboard_state", "clear_virtual_keyboard_state\clear_virtual_keyboard_state.csproj", "{C8273BEB-3FE1-4128-A9C4-42DC5B788829}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "common", "common\common.csproj", "{34FB41E0-A2E3-44E5-8192-2EBF23207574}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +49,12 @@ Global
 		{C8273BEB-3FE1-4128-A9C4-42DC5B788829}.Release|Any CPU.ActiveCfg = Release|x86
 		{C8273BEB-3FE1-4128-A9C4-42DC5B788829}.Release|x86.ActiveCfg = Release|x86
 		{C8273BEB-3FE1-4128-A9C4-42DC5B788829}.Release|x86.Build.0 = Release|x86
+		{34FB41E0-A2E3-44E5-8192-2EBF23207574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34FB41E0-A2E3-44E5-8192-2EBF23207574}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34FB41E0-A2E3-44E5-8192-2EBF23207574}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{34FB41E0-A2E3-44E5-8192-2EBF23207574}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34FB41E0-A2E3-44E5-8192-2EBF23207574}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34FB41E0-A2E3-44E5-8192-2EBF23207574}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,12 +5,18 @@ using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace FEZTradeBot {
-    class ClientLaunchTask : IDisposable {
-        private RuntimeSettings settings;
+    public class ClientLaunchTask : IDisposable {
         private bool stopRequested = false;
+        private string loginId = "";
+        private string loginPassword = "";
+        private string loginCharacterName = "";
+        private string fezLauncherPath = "";
 
-        public ClientLaunchTask( RuntimeSettings settings ) {
-            this.settings = settings;
+        public ClientLaunchTask( string loginId, string loginPassword, string loginCharacterName, string fezLauncherPath ) {
+            this.loginId = loginId;
+            this.loginPassword = loginPassword;
+            this.loginCharacterName = loginCharacterName;
+            this.fezLauncherPath = fezLauncherPath;
         }
 
         public void Run() {
@@ -143,7 +149,7 @@ namespace FEZTradeBot {
                 WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
-            foreach( char c in settings.LoginId.ToUpper().ToCharArray() ) {
+            foreach( char c in loginId.ToUpper().ToCharArray() ) {
                 WindowsAPI.keybd_event( (byte)c, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( (byte)c, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
@@ -151,7 +157,7 @@ namespace FEZTradeBot {
 
             // ログインPASS入力
             window.Click( window.GetLoginDialogPasswordPosition() );
-            foreach( char c in settings.LoginPassword.ToUpper().ToCharArray() ) {
+            foreach( char c in loginPassword.ToUpper().ToCharArray() ) {
                 WindowsAPI.keybd_event( (byte)c, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( (byte)c, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
@@ -188,7 +194,7 @@ namespace FEZTradeBot {
             while( true ) {
                 try {
                     var characterName = GetCharacterName( window );
-                    if( characterName == settings.LoginCharacterName ) {
+                    if( characterName == loginCharacterName ) {
                         break;
                     }
                 } catch( ApplicationException e ) {
@@ -280,7 +286,7 @@ namespace FEZTradeBot {
 
         private void StartUpdater() {
             Process process = new Process();
-            process.StartInfo.FileName = settings.FezLauncher;
+            process.StartInfo.FileName = fezLauncherPath;
             process.Start();
         }
 

@@ -70,7 +70,7 @@ namespace FEZTradeBot {
                     try {
                         IntPtr handle = FEZWindow.GetClientWindow();
                         if( handle == IntPtr.Zero ) {
-                            var clientLaunchTask = new ClientLaunchTask( settings );
+                            var clientLaunchTask = new ClientLaunchTask( settings.LoginId, settings.LoginPassword, settings.LoginCharacterName, settings.FezLauncher );
                             clientLaunchTask.Run();
                             continue;
                         }

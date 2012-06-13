@@ -48,13 +48,8 @@
   <ItemGroup>
     <Compile Include="ApplicationException.cs" />
     <Compile Include="ChatLogStream.cs" />
-    <Compile Include="CurrentPositionDetector.cs" />
     <Compile Include="DaemonRunner.cs" />
-    <Compile Include="FEZWindow.cs" />
-    <Compile Include="ImageComparator.cs" />
     <Compile Include="Irc.cs" />
-    <Compile Include="MessageDialogCloser.cs" />
-    <Compile Include="PixelEnumerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.Designer.cs">
@@ -63,7 +58,6 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="RuntimeSettings.cs" />
-    <Compile Include="ShiftJISCharacterEnumerator.cs" />
     <Compile Include="SmartIrc4net\Consts.cs" />
     <Compile Include="SmartIrc4net\EventArgs.cs" />
     <Compile Include="SmartIrc4net\Exceptions.cs" />
@@ -87,17 +81,13 @@
     <Compile Include="SmartIrc4net\IrcConnection\IrcProperties.cs" />
     <Compile Include="SmartIrc4net\IrcConnection\IrcTcpClient.cs" />
     <Compile Include="SmartIrc4net\Logger.cs" />
-    <Compile Include="Tasks\ClientLaunchTask.cs" />
     <Compile Include="Tasks\DoTradeTask.cs" />
     <Compile Include="Tasks\GetInventoryRoomTask.cs" />
     <Compile Include="Tasks\LoggingTask.cs" />
     <Compile Include="Tasks\ReplyTask.cs" />
-    <Compile Include="TextFinder.cs" />
     <Compile Include="TradeLog.cs" />
     <Compile Include="TradeResult.cs" />
     <Compile Include="TradeWindowFinalizer.cs" />
-    <Compile Include="VMultiClient.cs" />
-    <Compile Include="WindowsAPI.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource.resx">
@@ -107,22 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\beast_blood.png" />
-    <Content Include="Resources\character_select_dialog.png" />
-    <Content Include="Resources\chat_log_minus_button.png" />
-    <Content Include="Resources\chat_log_plus_button.png" />
     <Content Include="Resources\chat_log_scroll_up_button.png" />
-    <Content Include="Resources\chronicle_notify_message.png" />
-    <Content Include="Resources\close_button.png" />
-    <Content Include="Resources\field_in_button.png" />
-    <Content Include="Resources\icon_mask.png" />
-    <Content Include="Resources\login.png" />
-    <Content Include="Resources\logout_confirm_dialog.png" />
-    <Content Include="Resources\maintenance_login_error.png" />
-    <Content Include="Resources\map_akelnar.png" />
-    <Content Include="Resources\map_azelwood_marker_a.png" />
-    <Content Include="Resources\map_capital_azelwood.png" />
-    <Content Include="Resources\map_move_handle.png" />
-    <Content Include="Resources\network_error_dialog.png" />
     <Content Include="Resources\number0.png" />
     <Content Include="Resources\number1.png" />
     <Content Include="Resources\number2.png" />
@@ -133,7 +108,6 @@
     <Content Include="Resources\number7.png" />
     <Content Include="Resources\number8.png" />
     <Content Include="Resources\number9.png" />
-    <Content Include="Resources\roy_message_header.png" />
     <Content Include="Resources\trade_error_dialog.png" />
     <Content Include="Resources\trade_ok_active.png" />
     <Content Include="Resources\trade_window.png" />
@@ -143,6 +117,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fez-trade-bot.conf.tmpl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="common\common.csproj">
+      <Project>{34FB41E0-A2E3-44E5-8192-2EBF23207574}</Project>
+      <Name>common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
