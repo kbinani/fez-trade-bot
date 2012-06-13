@@ -5,21 +5,34 @@ using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace FEZTradeBot {
-    class ClientLaunchTask : IDisposable {
-        private RuntimeSettings settings;
+    public class ClientLaunchTask : IDisposable {
         private bool stopRequested = false;
+        private string loginId = "";
+        private string loginPassword = "";
+        private string loginCharacterName = "";
+        private string fezLauncherPath = "";
 
-        public ClientLaunchTask( RuntimeSettings settings ) {
-            this.settings = settings;
+        public ClientLaunchTask( string loginId, string loginPassword, string loginCharacterName, string fezLauncherPath ) {
+            this.loginId = loginId;
+            this.loginPassword = loginPassword;
+            this.loginCharacterName = loginCharacterName;
+            this.fezLauncherPath = fezLauncherPath;
         }
 
         public void Run() {
             var handle = StartClient();
-            using( var window = new FEZWindow( handle ) ) {
+            FEZWindow window = null;
+            try {
+                window = new FEZWindow( handle );
                 Login( window );
                 Move( window );
+            } catch( ApplicationException e ) {
+                Console.Error.WriteLine( e.Message );
+            } finally {
+                if( window != null ) {
+                    window.Dispose();
+                }
             }
-
         }
 
         public void Dispose() {
@@ -62,8 +75,9 @@ namespace FEZTradeBot {
                 client.ClearKey();
 
                 // 2回左ステップ
+                Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
                 InputKey( client, (byte)'Q' );
-                Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
+                Thread.Sleep( TimeSpan.FromSeconds( 10 ) );
                 InputKey( client, (byte)'Q' );
                 Thread.Sleep( TimeSpan.FromSeconds( 2 ) );
 
@@ -135,7 +149,7 @@ namespace FEZTradeBot {
                 WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( WindowsAPI.VK_BACK_SPACE, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
-            foreach( char c in settings.LoginId.ToUpper().ToCharArray() ) {
+            foreach( char c in loginId.ToUpper().ToCharArray() ) {
                 WindowsAPI.keybd_event( (byte)c, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( (byte)c, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
@@ -143,7 +157,7 @@ namespace FEZTradeBot {
 
             // ログインPASS入力
             window.Click( window.GetLoginDialogPasswordPosition() );
-            foreach( char c in settings.LoginPassword.ToUpper().ToCharArray() ) {
+            foreach( char c in loginPassword.ToUpper().ToCharArray() ) {
                 WindowsAPI.keybd_event( (byte)c, 0, 0, UIntPtr.Zero );
                 WindowsAPI.keybd_event( (byte)c, 0, WindowsAPI.KEYEVENTF_KEYUP, UIntPtr.Zero );
             }
@@ -155,13 +169,23 @@ namespace FEZTradeBot {
             // キャラクタ選択ダイアログが表示されるまで待つ
             var characterSelectDialog = window.GetCharacterSelectDialogGeometry();
             while( !ImageComparator.Compare( window.CaptureWindow( characterSelectDialog ), Resource.character_select_dialog ) ) {
+                var screenShot = window.CaptureWindow();
+
+                // メンテナンス中はログイン出来ないため、その旨メッセージダイアログが出る
+                var maintenanceLoginErrorDialogGeometry = window.GetLoginMaintenanceErrorDialogGeometry();
+                var maintenanceLoginErrorDialogImage = screenShot.Clone( maintenanceLoginErrorDialogGeometry, screenShot.PixelFormat );
+                if( ImageComparator.CompareStrict( maintenanceLoginErrorDialogImage, Resource.maintenance_login_error ) ) {
+                    const int waitMinutes = 10;
+                    Console.WriteLine( "メンテナンス中のためログインできなかった。" + waitMinutes + "分待って再試行します。" );
+                    Thread.Sleep( TimeSpan.FromMinutes( waitMinutes ) );
+                    throw new ApplicationException( GetType() + "の例外: メンテナンスのためログインできなかった。" );
+                }
+
                 // ログインボタン押し下げ後、何らかのお知らせダイアログが表示されることがあるので、
                 // 「閉じる」ボタンが見つからなくなるまで押し続ける
                 try {
-                    while( true ) {
-                        var position = FindButton( window.CaptureWindow(), Resource.close_button );
-                        window.Click( position );
-                    }
+                    var position = FindButton( screenShot, Resource.close_button );
+                    window.Click( position );
                 } catch( ApplicationException e ) { }
                 Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
             }
@@ -170,7 +194,7 @@ namespace FEZTradeBot {
             while( true ) {
                 try {
                     var characterName = GetCharacterName( window );
-                    if( characterName == settings.LoginCharacterName ) {
+                    if( characterName == loginCharacterName ) {
                         break;
                     }
                 } catch( ApplicationException e ) {
@@ -262,7 +286,7 @@ namespace FEZTradeBot {
 
         private void StartUpdater() {
             Process process = new Process();
-            process.StartInfo.FileName = settings.FezLauncher;
+            process.StartInfo.FileName = fezLauncherPath;
             process.Start();
         }
 
