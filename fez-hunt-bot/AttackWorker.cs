@@ -70,8 +70,8 @@ namespace FEZTradeBot {
             int centerX = width / 2;
             int centerY = height / 2;
             Parallel.ForEach( PixelEnumerator.GetEnumerable( horizontalGridCount, verticalGridCount ), grid => {
-                int left = centerX - ((horizontalGridCount / 2) - grid.X + 1) * gridSize;
-                int top = centerY - ((verticalGridCount / 2) - grid.Y + 1) * gridSize;
+                int left = centerX - ((horizontalGridCount / 2) - grid.X) * gridSize;
+                int top = centerY - ((verticalGridCount / 2) - grid.Y) * gridSize;
                 int match = 0;
 
                 int startX = left < 0 ? 0 : left;
@@ -112,8 +112,8 @@ namespace FEZTradeBot {
             if( max == 0.0 ) {
                 return Point.Empty;
             } else {
-                int left = centerX - ((horizontalGridCount / 2) - gridX + 1) * gridSize;
-                int top = centerY - ((verticalGridCount / 2) - gridY + 1) * gridSize;
+                int left = centerX - ((horizontalGridCount / 2) - gridX) * gridSize;
+                int top = centerY - ((verticalGridCount / 2) - gridY) * gridSize;
                 return new Point( left + gridSize / 2, top + gridSize / 2 );
             }
         }
