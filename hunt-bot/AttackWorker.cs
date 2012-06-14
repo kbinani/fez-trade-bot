@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace FEZTradeBot {
     /// <summary>
@@ -43,10 +44,31 @@ namespace FEZTradeBot {
         /// </summary>
         /// <returns>MOBが表示されている位置。MOBが見つからなければPoint.Emptyを返す</returns>
         private Point DetectMobPosition() {
+            var screenImage = window.CaptureWindow();
+            int width = screenImage.Width;
+            int height = screenImage.Height;
+
             // 画面をgridSize x gridSizeピクセルのグリッドに分割する
+            // そのうち、画面中心から、上下に200px, 左右に300pxの範囲のみを、検査対象とする
             const int gridSize = 50;
+            const int targetWidth = 600;
+            const int targetHeight = 400;
             int horizontalGridCount = ((int)Math.Ceiling( (window.Width / 2.0) / gridSize )) * 2;
             int verticalGridCount = ((int)Math.Ceiling( (window.Height / 2.0) / gridSize )) * 2;
+
+            // 全グリッドのうち、検査対象とするグリッドを取り出しておく
+            int centerX = width / 2;
+            int centerY = height / 2;
+            List<Point> targetGrids = new List<Point>();
+            for( int x = 0; x < width / gridSize + 2; ++x ) {
+                for( int y = 0; y < height / gridSize + 2; ++y ) {
+                    var area = GetGridBound( width, height, x, y );
+                    if( (centerX - targetWidth / 2 <= area.Right && area.Left <= centerX + targetWidth / 2) &&
+                        (centerY - targetHeight / 2 <= area.Bottom && area.Top <= centerY + targetHeight / 2) ) {
+                            targetGrids.Add( new Point( x, y ) );
+                    }
+                }
+            }
 
             // 各グリッドの全ピクセルのうち、MOBの体色のピクセルが占める割合
             double[,] percentage = new double[horizontalGridCount, verticalGridCount];
@@ -57,9 +79,6 @@ namespace FEZTradeBot {
             }
 
             // 各グリッドについて、MOBの体色のピクセルを調べる
-            var screenImage = window.CaptureWindow();
-            int width = screenImage.Width;
-            int height = screenImage.Height;
             Color[,] screen = new Color[width, height];
             for( int y = 0; y < height; y++ ) {
                 for( int x = 0; x < width; x++ ){
@@ -67,21 +86,13 @@ namespace FEZTradeBot {
                 }
             }
 
-            int centerX = width / 2;
-            int centerY = height / 2;
-            Parallel.ForEach( PixelEnumerator.GetEnumerable( horizontalGridCount, verticalGridCount ), grid => {
-                int left = centerX - ((horizontalGridCount / 2) - grid.X) * gridSize;
-                int top = centerY - ((verticalGridCount / 2) - grid.Y) * gridSize;
-                int match = 0;
-
-                int startX = left < 0 ? 0 : left;
-                int endX = width < left + gridSize ? width : left + gridSize;
-                int startY = top < 0 ? 0 : top;
-                int endY = height < top + gridSize ? height : top + gridSize;
+            Parallel.ForEach( targetGrids, grid => {
+                var area = GetGridBound( width, height, grid.X, grid.Y );
 
                 int total = 0;
-                for( int y = startY; y < endY; y++ ) {
-                    for( int x = startX; x < endX; x++ ) {
+                int match = 0;
+                for( int y = area.Top; y < area.Bottom; y++ ) {
+                    for( int x = area.Left; x < area.Right; x++ ) {
                         var color = screen[x, y];
                         if( color.R == 0 &&
                             3 <= color.G && color.G <= 148 &&
@@ -112,10 +123,22 @@ namespace FEZTradeBot {
             if( max == 0.0 ) {
                 return Point.Empty;
             } else {
-                int left = centerX - ((horizontalGridCount / 2) - gridX) * gridSize;
-                int top = centerY - ((verticalGridCount / 2) - gridY) * gridSize;
-                return new Point( left + gridSize / 2, top + gridSize / 2 );
+                var area = GetGridBound( width, height, gridX, gridY );
+                return new Point( area.Left + area.Width / 2, area.Top + area.Height / 2 );
             }
+        }
+
+        private Rectangle GetGridBound( int width, int height, int gridX, int gridY ) {
+            const int gridSize = 50;
+            int horizontalGridCount = ((int)Math.Ceiling( (width / 2.0) / gridSize )) * 2;
+            int verticalGridCount = ((int)Math.Ceiling( (height / 2.0) / gridSize )) * 2;
+
+            int centerX = width / 2;
+            int centerY = height / 2;
+            int left = centerX - ((horizontalGridCount / 2) - gridX) * gridSize;
+            int top = centerY - ((verticalGridCount / 2) - gridY) * gridSize;
+
+            return new Rectangle( left, top, gridSize, gridSize );
         }
     }
 }
