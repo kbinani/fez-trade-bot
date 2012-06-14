@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle( "common" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "dwango" )]
+[assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "common" )]
-[assembly: AssemblyCopyright( "Copyright © dwango 2012" )]
+[assembly: AssemblyCopyright( "Copyright © kbinani 2012" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 

@@ -44,9 +44,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\fez-trade-bot.csproj">
-      <Project>{A8515993-354E-4DAD-AC5F-955399A47715}</Project>
-      <Name>fez-trade-bot</Name>
+    <ProjectReference Include="..\common\common.csproj">
+      <Project>{34FB41E0-A2E3-44E5-8192-2EBF23207574}</Project>
+      <Name>common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

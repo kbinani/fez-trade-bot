@@ -119,7 +119,7 @@
     <None Include="fez-trade-bot.conf.tmpl" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="common\common.csproj">
+    <ProjectReference Include="..\common\common.csproj">
       <Project>{34FB41E0-A2E3-44E5-8192-2EBF23207574}</Project>
       <Name>common</Name>
     </ProjectReference>
