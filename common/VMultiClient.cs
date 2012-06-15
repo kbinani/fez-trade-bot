@@ -20,7 +20,7 @@ namespace FEZTradeBot {
         public VMultiKeyboardClient() {
             handle = VMultiCreateKeyboardClient();
             if( handle == IntPtr.Zero ) {
-                throw new CommonException( "仮想キーボードの初期化に失敗した。" );
+                throw new FEZBotException( "仮想キーボードの初期化に失敗した。" );
             }
         }
 

@@ -29,7 +29,7 @@ namespace FEZTradeBot {
                     lines = GetLines( screenShot );
                     MergeLogLines( lines );
                 }
-            } catch( TradeBotException e ) {
+            } catch( FEZBotException e ) {
             }
         }
 
@@ -48,7 +48,7 @@ namespace FEZTradeBot {
         public ChatLogLine Next() {
             var index = currentBufferIndex + 1;
             if( buffer.Count <= index ) {
-                throw new TradeBotException( "行データが取得できない" );
+                throw new FEZBotException( "行データが取得できない" );
             }
             var result = buffer[index];
             currentBufferIndex++;
@@ -121,7 +121,7 @@ namespace FEZTradeBot {
                     if( lineString != "" ) {
                         result.Add( new ChatLogLine( lineString, lineType ) );
                     }
-                } catch( CommonException e ) {
+                } catch( FEZBotException e ) {
                 }
             }
 
@@ -154,13 +154,13 @@ namespace FEZTradeBot {
                         if( draft == ChatLogLine.LineType.UNKNOWN ) {
                             draft = type;
                         } else if( draft != type ) {
-                            throw new TradeBotException( "複数の発言種類の文字が、同一行に存在する" );
+                            throw new FEZBotException( "複数の発言種類の文字が、同一行に存在する" );
                         }
                     }
                 }
             }
             if( draft == ChatLogLine.LineType.UNKNOWN ) {
-                throw new TradeBotException( "発言種類を判定できなかった" );
+                throw new FEZBotException( "発言種類を判定できなかった" );
             } else {
                 return draft;
             }

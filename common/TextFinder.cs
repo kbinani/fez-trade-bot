@@ -156,7 +156,7 @@ namespace FEZTradeBot {
             // 認識に失敗した文字を列挙する
             for( int i = 0; i < textCount; i++ ) {
                 if( keys[i] != accepted[i] ) {
-                    throw new CommonException( "該当する文字が見つからなかった" );
+                    throw new FEZBotException( "該当する文字が見つからなかった" );
                 }
             }
 
