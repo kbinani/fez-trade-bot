@@ -121,7 +121,7 @@ namespace FEZTradeBot {
                     if( lineString != "" ) {
                         result.Add( new ChatLogLine( lineString, lineType ) );
                     }
-                } catch( TradeBotException e ) {
+                } catch( CommonException e ) {
                 }
             }
 
