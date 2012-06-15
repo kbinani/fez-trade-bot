@@ -75,7 +75,7 @@ namespace FEZTradeBot {
                             continue;
                         }
                         window = CreateWindow( handle, out logStream );
-                    } catch( TradeBotException e ) {
+                    } catch( FEZBotException e ) {
                         Console.WriteLine( e.Message );
                         continue;
                     }
@@ -98,7 +98,7 @@ namespace FEZTradeBot {
                         Irc.SendMessage( "\x03" + ChatLogLine.GetIrcColorByType( line.Type ) + line.Line + "\x03" );
                         TradeLog.InsertChatLog( DateTime.Now, line.Line, line.Type );
                     }
-                } catch( TradeBotException e ) {
+                } catch( FEZBotException e ) {
                     Console.WriteLine( e.Message );
                     window.Dispose();
                     window = null;
@@ -258,13 +258,13 @@ namespace FEZTradeBot {
 
             try {
                 strictCustomerName = TextFinder.Find( customerNameImage );
-            } catch( TradeBotException e ) {
+            } catch( FEZBotException e ) {
             }
 
             if( strictCustomerName == "" ) {
                 try {
                     fuzzyCustomerName = TextFinder.FuzzyFind( customerNameImage );
-                } catch( TradeBotException e ) {
+                } catch( FEZBotException e ) {
                 }
             }
 
