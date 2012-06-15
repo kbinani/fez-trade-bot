@@ -839,7 +839,7 @@ namespace FEZTradeBot {
             IntPtr winDC = WindowsAPI.GetWindowDC( this.windowHandle );
             WindowsAPI.RECT winRect = new WindowsAPI.RECT();
             if( !WindowsAPI.GetWindowRect( this.windowHandle, ref winRect ) ) {
-                throw new ApplicationException( "ウィンドウサイズを取得できなかった" );
+                throw new CommonException( "ウィンドウサイズを取得できなかった" );
             }
             Bitmap bmp = new Bitmap( winRect.right - winRect.left,
                 winRect.bottom - winRect.top );

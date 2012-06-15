@@ -19,7 +19,7 @@ namespace FEZTradeBotTest {
             try {
                 ImageComparator.FindWithTolerance( Resource.ImageComparator_Image, Resource.ImageComparator_Template_Gray128, 9 );
                 Assert.Fail( "例外が投げられるはずやった" );
-            } catch( FEZTradeBot.ApplicationException e ) {
+            } catch( FEZTradeBot.TradeBotException e ) {
                 Assert.AreEqual( "一致する部分を見つけられなかった", e.Message );
             } catch( Exception e ) {
                 Console.WriteLine( e.Message );
@@ -53,7 +53,7 @@ namespace FEZTradeBotTest {
             try {
                 ImageComparator.Find( Resource.ImageComparator_Image, Resource.ImageComparator_Template_Gray128 );
                 Assert.Fail( "例外となるはずだったのに" );
-            } catch( FEZTradeBot.ApplicationException e ) {
+            } catch( FEZTradeBot.TradeBotException e ) {
                 Assert.AreEqual( "一致する部分を見つけられなかった", e.Message );
             } catch {
                 Assert.Fail( "想定してない例外" );
