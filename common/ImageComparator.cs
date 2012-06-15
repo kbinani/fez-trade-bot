@@ -43,13 +43,13 @@ namespace FEZTradeBot {
                 Parallel.ForEach( PixelEnumerator.GetEnumerable( maxX, maxY ), pixel => {
                     if( CompareAt( screen, pixel.X, pixel.Y, mask, maskTransparentColor ) ) {
                         result = pixel;
-                        throw new ApplicationException( "一致する箇所が見つかった。" );
+                        throw new CommonException( "一致する箇所が見つかった。" );
                     }
                 } );
             } catch( AggregateException e ) {
                 return result;
             }
-            throw new ApplicationException( "一致する部分を見つけられなかった" );
+            throw new CommonException( "一致する部分を見つけられなかった" );
         }
 
         private static bool CompareAt( Color[,] screen, int offsetX, int offsetY, Color[,] mask, Color maskTransparentColor ) {
@@ -96,13 +96,13 @@ namespace FEZTradeBot {
                 Parallel.ForEach( PixelEnumerator.GetEnumerable( maxX, maxY ), pixel => {
                     if( CompareWithToleranceAt( screen, pixel.X, pixel.Y, mask, tolerance, maskTransparentColor ) ) {
                         result = pixel;
-                        throw new ApplicationException( "一致する箇所が見つかった" );
+                        throw new CommonException( "一致する箇所が見つかった" );
                     }
                 } );
             } catch( AggregateException e ) {
                 return result;
             }
-            throw new ApplicationException( "一致する部分を見つけられなかった" );
+            throw new CommonException( "一致する部分を見つけられなかった" );
         }
 
         /// <summary>

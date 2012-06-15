@@ -26,7 +26,7 @@ namespace FEZTradeBot {
                 window = new FEZWindow( handle );
                 Login( window );
                 Move( window );
-            } catch( ApplicationException e ) {
+            } catch( CommonException e ) {
                 Console.Error.WriteLine( e.Message );
             } finally {
                 if( window != null ) {
@@ -50,7 +50,7 @@ namespace FEZTradeBot {
                 try {
                     mapHeaderPosition = ImageComparator.Find( screenShot, Resource.map_move_handle );
                     break;
-                } catch( ApplicationException e ) {
+                } catch( CommonException e ) {
                     screenShot.Save( GetType() + "_Move_" + DateTime.Now.ToFileTime() + ".png", ImageFormat.Png );
                     Console.WriteLine( "マップがどこに表示されているか見つけられなかった。リトライする。" );
                 }
@@ -93,7 +93,7 @@ namespace FEZTradeBot {
                         if( position.Y <= -36 ) {
                             break;
                         }
-                    } catch( ApplicationException e ) {
+                    } catch( CommonException e ) {
                         Console.Error.WriteLine( "座標が検出できない。とりあえず前進し続ける" );
                     }
                 }
@@ -178,7 +178,7 @@ namespace FEZTradeBot {
                     const int waitMinutes = 10;
                     Console.WriteLine( "メンテナンス中のためログインできなかった。" + waitMinutes + "分待って再試行します。" );
                     Thread.Sleep( TimeSpan.FromMinutes( waitMinutes ) );
-                    throw new ApplicationException( GetType() + "の例外: メンテナンスのためログインできなかった。" );
+                    throw new CommonException( GetType() + "の例外: メンテナンスのためログインできなかった。" );
                 }
 
                 // ログインボタン押し下げ後、何らかのお知らせダイアログが表示されることがあるので、
@@ -186,7 +186,7 @@ namespace FEZTradeBot {
                 try {
                     var position = FindButton( screenShot, Resource.close_button );
                     window.Click( position );
-                } catch( ApplicationException e ) { }
+                } catch( CommonException e ) { }
                 Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
             }
 
@@ -197,7 +197,7 @@ namespace FEZTradeBot {
                     if( characterName == loginCharacterName ) {
                         break;
                     }
-                } catch( ApplicationException e ) {
+                } catch( CommonException e ) {
                     Console.WriteLine( "ClientLaunchTaskの例外: " + e.Message );
                 }
                 window.Click( window.GetCharacterSelectNextRightPosition() );
@@ -217,7 +217,7 @@ namespace FEZTradeBot {
                 try {
                     cecedriaContinentPosition = FindButton( window.CaptureWindow(), Resource.map_akelnar );
                     break;
-                } catch( ApplicationException e ) {
+                } catch( CommonException e ) {
                     Console.WriteLine( "本土大陸の位置を検出できなかった" );
                 }
 
@@ -232,7 +232,7 @@ namespace FEZTradeBot {
                 try {
                     cecedriaCapitalPosition = FindButton( window.CaptureWindow(), Resource.map_capital_azelwood );
                     break;
-                } catch( ApplicationException e ) {
+                } catch( CommonException e ) {
                     Console.WriteLine( "首都の位置を検出できなかった" );
                 }
                 window.Click( cecedriaContinentPosition );
@@ -246,7 +246,7 @@ namespace FEZTradeBot {
                 try {
                     fieldInPosition = FindButton( window.CaptureWindow(), Resource.field_in_button );
                     break;
-                } catch( ApplicationException e ) {
+                } catch( CommonException e ) {
                     Console.WriteLine( "フィールドインボタンを検出できなかった" );
                 }
                 window.Click( cecedriaCapitalPosition );
@@ -312,7 +312,7 @@ namespace FEZTradeBot {
                 }
             }
             if( updater == IntPtr.Zero ) {
-                throw new ApplicationException( "クライアント・ランチャが起動できなかった" );
+                throw new CommonException( "クライアント・ランチャが起動できなかった" );
             }
 
             // ランチャーの「START」ボタンを押す

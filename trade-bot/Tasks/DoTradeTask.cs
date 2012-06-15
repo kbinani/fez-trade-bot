@@ -26,7 +26,7 @@ namespace FEZTradeBot {
             Point position = Point.Empty;
             try {
                 position = FindTradeItem( Resource.beast_blood );
-            } catch( ApplicationException e ) {
+            } catch( TradeBotException e ) {
             }
             if( position == Point.Empty ) {
                 CloseTradeWindow();
@@ -89,7 +89,7 @@ namespace FEZTradeBot {
                         }
                     }
                 }
-            } catch( ApplicationException e ) {
+            } catch( TradeBotException e ) {
                 var screenShot = window.CaptureWindow();
                 CloseTradeWindow();
                 return new TradeResult( TradeResult.StatusType.FAILED, screenShot );
@@ -134,7 +134,7 @@ namespace FEZTradeBot {
                     return new Point( geometry.Left + geometry.Width / 2, geometry.Top + geometry.Height / 2 );
                 }
             }
-            throw new ApplicationException( "アイテムを見つけられなかった" );
+            throw new TradeBotException( "アイテムを見つけられなかった" );
         }
 
         /// <summary>

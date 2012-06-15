@@ -26,7 +26,7 @@ namespace FEZTradeBot {
                         CheckRoyMessageDialog();
                         CheckNetworkErrorDialog();
                         CheckClientException();
-                    } catch( ApplicationException e ) {
+                    } catch( CommonException e ) {
                         Console.WriteLine( e.Message );
                     }
                 }

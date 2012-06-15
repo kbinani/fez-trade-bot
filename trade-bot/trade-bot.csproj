@@ -46,7 +46,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationException.cs" />
     <Compile Include="ChatLogStream.cs" />
     <Compile Include="DaemonRunner.cs" />
     <Compile Include="Irc.cs" />
@@ -85,6 +84,7 @@
     <Compile Include="Tasks\GetInventoryRoomTask.cs" />
     <Compile Include="Tasks\LoggingTask.cs" />
     <Compile Include="Tasks\ReplyTask.cs" />
+    <Compile Include="TradeBotException.cs" />
     <Compile Include="TradeLog.cs" />
     <Compile Include="TradeResult.cs" />
     <Compile Include="TradeWindowFinalizer.cs" />

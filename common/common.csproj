@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonException.cs" />
     <Compile Include="CurrentPositionDetector.cs" />
     <Compile Include="FEZWindow.cs" />
     <Compile Include="ImageComparator.cs" />
