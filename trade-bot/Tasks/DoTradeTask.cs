@@ -8,7 +8,7 @@ namespace FEZTradeBot {
     /// <summary>
     /// トレードを実行するタスク
     /// </summary>
-    class DoTradeTask : IDisposable {
+    class DoTradeTask {
         private FEZWindow window;
 
         public DoTradeTask( FEZWindow window ) {
@@ -94,10 +94,6 @@ namespace FEZTradeBot {
                 CloseTradeWindow();
                 return new TradeResult( TradeResult.StatusType.FAILED, screenShot );
             }
-        }
-
-        public void Dispose() {
-            this.window.Dispose();
         }
 
         /// <summary>

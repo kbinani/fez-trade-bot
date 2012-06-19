@@ -116,9 +116,8 @@ namespace FEZTradeBot {
 
             // トレードを行う
             TradeResult result = null;
-            using( var doTradeTask = new DoTradeTask( window ) ) {
-                result = doTradeTask.Run();
-            }
+            var doTradeTask = new DoTradeTask( window );
+            result = doTradeTask.Run();
 
             // トレード後のインベントリの空き容量を検出
             var inventoryRoomAfter = getInventoryRoomTask.Run();
