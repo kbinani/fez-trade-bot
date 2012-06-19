@@ -101,15 +101,33 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
-        /// トレード要請のアイコンをクリックすることで，トレード画面を開く
+        /// トレード要請を受諾し、トレード画面を開く。
+        /// トレード要請のアイコンとPT要請のアイコンは同じ位置に出るので、タイミングによっては
+        /// PT要請のアイコンを押してしまう可能性がある。このため、可能な限りキーボードから
+        /// 操作するようにした。
         /// </summary>
-        /// <param name="screenShot"></param>
         private void OpenTradeWindow() {
-            var iconArea = window.GetIconAreaRectangle();
-            int x = iconArea.Left + iconArea.Width / 2;
-            int y = iconArea.Top + iconArea.Height / 2;
-            var position = new Point( x, y );
-            window.Click( position );
+            VMultiKeyboardClient client = null;
+            try {
+                client = new VMultiKeyboardClient();
+            } catch( FEZBotException e ) {
+                Console.Error.WriteLine( e.Message );
+            }
+
+            if( client == null ) {
+                var iconArea = window.GetIconAreaRectangle();
+                int x = iconArea.Left + iconArea.Width / 2;
+                int y = iconArea.Top + iconArea.Height / 2;
+                var position = new Point( x, y );
+                window.Click( position );
+            } else {
+                client.ClearKey();
+                window.Activate();
+                client.SetKey( (byte)'T' );
+                Thread.Sleep( TimeSpan.FromMilliseconds( 50 ) );
+                client.ClearKey();
+                client.Dispose();
+            }
             Thread.Sleep( 3000 );
         }
 
