@@ -613,6 +613,20 @@ namespace FEZTradeBot {
         }
 
         /// <summary>
+        /// メンテナンス中による認証エラーダイアログのokボタンのいちを取得する
+        /// </summary>
+        /// <returns></returns>
+        public Point GetLoginMaintenanceErrorDialogOkButtonPosition() {
+            // ダイアログに対して
+            // 左上: x=90, y=48
+            // 右下: x=230, y=64
+            var dialog = GetLoginMaintenanceErrorDialogGeometry();
+            int x = dialog.Left + (90 + 230) / 2;
+            int y = dialog.Top + (48 + 64) / 2;
+            return new Point( x, y );
+        }
+
+        /// <summary>
         /// ログイン画面のExitボタンを押した後の確認ダイアログの領域を取得する
         /// </summary>
         /// <returns></returns>

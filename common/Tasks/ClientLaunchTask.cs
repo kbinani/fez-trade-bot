@@ -178,6 +178,10 @@ namespace FEZTradeBot {
                     const int waitMinutes = 10;
                     Console.WriteLine( "メンテナンス中のためログインできなかった。" + waitMinutes + "分待って再試行します。" );
                     Thread.Sleep( TimeSpan.FromMinutes( waitMinutes ) );
+
+                    // okボタン押す
+                    window.Click( window.GetLoginMaintenanceErrorDialogOkButtonPosition() );
+
                     throw new FEZBotException( GetType() + "の例外: メンテナンスのためログインできなかった。" );
                 }
 
